@@ -1,0 +1,22 @@
+/* $Id$ */
+
+/**
+ * @file
+ * Sweaver Custom css plugin CSS.
+ */
+ 
+#sweaver #sweaver_plugin_customcss .form-submit,
+#sweaver #sweaver_plugin_customcss .form-item {
+  float: left !important;
+  clear: none !important;
+  margin: 0 !important;
+}
+
+#sweaver #sweaver_plugin_customcss .form-item {
+  padding: 0 !important;
+  margin: 0 10px 0 0 !important;
+}
+
+#sweaver #sweaver_plugin_customcss textarea {
+  width: 400px !important;
+}
