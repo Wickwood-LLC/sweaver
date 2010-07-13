@@ -1,0 +1,29 @@
+/* $Id */
+
+/**
+ * @file
+ * Administration CSS.
+ */
+
+/* Objects table */
+
+#objects tr.disabled {
+  filter:alpha(opacity=60);
+  opacity:0.6;
+}
+
+#objects tr.odd td.empty {
+  background-color: #fff;
+}
+
+/* Editor configuration form */
+
+#editor-configuration-form tr.container-row {
+  background-color: #D4E7F3;
+}
+
+#editor-configuration-form .container-label-edit {
+  font-size: 16px;
+  font-weight: bold;
+  border: 1px solid #eee;
+}

@@ -1,0 +1,178 @@
+/* $Id$ */
+
+Hook for ctools
+------------------------------------------------------
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function hook_ctools_plugin_api($owner, $api) {
+  if ($owner == 'sweaver' && $api == 'sweaver') {
+    return array('version' => 1);
+  }
+}
+
+Hooks for registering selectors, properties and types
+------------------------------------------------------
+
+/**
+ * Implementation of hook_default_sweaver_selector().
+ */
+function hook_default_sweaver_selector() {
+
+  $selectors = array();
+
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE; // Set this to true if you want to disable this by default.
+  $selector->name = 'machine_name';
+  $selector->description = 'Description';
+  $selector->selector_selector = '.selector'; // css selector.
+  $selector->selector_highlight = FALSE; // Whether to highlight the selector in the active path. 
+  $selectors['machine_name'] = $selector;
+  
+  return $selectors;
+}
+
+/**
+ * Implementation of hook_default_sweaver_property().
+ */
+function hook_default_sweaver_property() {
+
+  $propertys = array();
+
+  // Font.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE; // Set this to true if you want to disable this by default.
+  $property->name = 'machine_name';
+  $property->description = 'Description';
+  $property->property_parent = ''; // Wether this property has a parent.
+  $property->property_type = 'select'; // Can be select, slider, image, color or parent.
+  // Prefix or suffix: eg: padding has suffix 'px', url has prefix 'url(' and suffix ');'
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  // Slider min & max - only applicable for slider.
+  $property->property_slider_min = ''; // Minimum for slider  , usually 1.
+  $property->property_slider_max = ''; // Maximum for slider
+  // Options are only applicable for select.
+  $property->property_options = array(
+        'option_1' => 'Readable option 1',
+        'option_2' => 'Readable option 2',
+        'option_2' => 'Readable option 3',
+      );
+  $propertys['font-machine_name'] = $property;
+
+  // Yes you need to return propertys, that's the way Ctools works :)
+  return $propertys;
+}
+
+/**
+ * Implementation of hook_sweaver_type().
+ */
+function sweaver_default_sweaver_type() {
+
+  $types = array();
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'machine_name';
+  $type->description = 'Description';
+  $type->type_options = array(
+    'property_1' => 'property_1',
+    'property_2' => 'property_2',
+    'property_3' => 'property_2',
+  );
+  $types['machine_name'] = $type;
+  
+  return $types;
+}
+
+
+Hooks and plugin example class for a new plugin
+-----------------------------------------------
+
+/**
+ * Implementation of hook_sweaver_plugins().
+ */
+function hook_sweaver_plugins() {
+  $plugins = array();
+  
+  $plugins['yourpluginname'] = array(
+    'handler' => array(
+      'tab' => t('Tab name'), // If you want todo something in the frontend of course.
+      'tab_description' => t('Description of your plugin in frontend'),
+      'path' => drupal_get_path('module', 'yourmodulename') .'/plugins/yourpluginname',
+      'file' => 'yourpluginname.inc',
+      'class' => 'yourclassnameusuallythesameasyourpluginname',
+      'parent' => 'sweaver_plugin', // This is required.
+    ),
+  );
+  
+  return $plugins;
+}
+
+/**
+ * Your plugin
+ *
+ * All methods are optional.
+ */
+class pluginname extends sweaver_plugin {
+
+  /**
+   * Status of plugin.
+   */
+  function is_enabled($plugin_name) {
+    return variable_get('sweaver_plugin_status_'. $plugin_name, TRUE);
+  }
+
+  /**
+   * Menu registry.
+   */
+  function menu_registry(&$weight) {
+    // Return menu items for Drupal.
+  }
+
+  /**
+   * Theme registry.
+   */
+  function theme_registry() {
+    // Return theming functions for Drupal.
+  }
+
+  /**
+   * Init function.
+   */
+  function init() {
+    // Do stuff during hook_init() of Drupal.
+  }
+
+  /**
+   * Frontend form.
+   */
+  function frontend_form() {
+    return array();
+  }
+
+  /**
+   * Frontend form render.
+   */
+  function frontend_form_render(&$vars, &$form, $plugin) {
+    // Do some extra rendering on the form.
+  }
+
+  /**
+   * Frontend css and js.
+   */
+  function frontend_css_js(&$inline_settings) {
+    // Add css, js and manipulate the inline settings of sweaver.
+  }
+
+  /**
+   * Frontend form submit.
+   */
+  function frontend_form_submit($form_state, $form) {
+    // Do something with the submitted values.
+  }
+}

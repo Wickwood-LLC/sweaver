@@ -1,0 +1,6 @@
+; $Id$
+name = Sweaver
+description = "Visual interface for tweaking or building Drupal themes."
+core = 6.x
+dependencies[] = ctools
+dependencies[] = jquery_ui
