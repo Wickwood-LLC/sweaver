@@ -62,6 +62,16 @@ body.sweaver {
   outline: none !important;
 }
 
+#sweaver .close a {
+  background: url(images/close.png) no-repeat center center;
+  text-indent: -10000px;
+  overflow: hidden;
+}
+
+#sweaver .close.active-tab a {
+  background-image: url(images/open.png);
+}
+
 #sweaver .active-tab a {
   background-color: #333 !important;
 }
@@ -83,9 +93,7 @@ body.sweaver {
   margin: 0 7px 7px;
   background-color: #bcd62b;
   position: relative;
-  min-height: 230px;
-  height: 230px;
-  overflow: scroll;
+  height: 200px;
 }
 
 /* general theming */
@@ -121,6 +129,7 @@ body.sweaver {
 
 #sweaver input,
 #sweaver select {
+	text-transform: none !important;
   width: 150px !important;
   border: 1px solid #fff !important;
   padding: 2px !important;
@@ -130,6 +139,7 @@ body.sweaver {
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
+  height: auto !important;
 }
 
 #sweaver select {
@@ -160,6 +170,14 @@ body.sweaver {
   clear: left;
   display: block;
   margin: 1em 0 0 0 !important;
+  background-color: #333 !important;
+  color: #fff !important;  
+  border-radius: 7px;
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  border: 0 none !important;
+  width: auto !important;
+  padding: 5px !improtant;
 }
 
 /* containers */
