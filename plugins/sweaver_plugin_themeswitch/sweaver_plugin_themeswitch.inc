@@ -53,8 +53,6 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
     foreach ($themes as $key => $theme) {
       if ($theme->status) {
 
-        $content .= '<div class="sweaver-theme container" style="margin-right: 16px;">';
-
         if (isset($theme->info['screenshot']) && file_exists($theme->info['screenshot'])) {
           $image_file = $theme->info['screenshot'];
         }
@@ -66,13 +64,14 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
           $switch_description = t('Switch to @theme', array('@theme' => $theme->info['name']));
           $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
           $image = l($image, 'sweaver_themeswitch/'. $key, array('html' => TRUE));
+          $content .= '<div class="theme">'. $image;
         }
         else {
           $switch_description = t('This theme is currently selected');
           $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
+          $content .= '<div class="theme default-theme">'. $image;
         }
 
-        $content .= $image;
         $content .= '<br />'. check_plain($theme->info['name']);
 
         $content .= '</div>';
@@ -96,4 +95,12 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
       variable_set('theme_default', $theme_key);
     }
   }
+
+  /**
+   * Frontend css and js.
+   */
+  function frontend_css_js(&$inline_settings) {
+    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.css', 'module');
+  }
+
 }

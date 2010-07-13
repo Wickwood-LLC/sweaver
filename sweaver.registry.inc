@@ -223,6 +223,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
+        '' => 'Theme default',
         'Helvetica, Arial' => 'Helvetica, Arial',
         'Verdana' => 'Verdana',
         'Sans-Serif' => 'Verdana, Sans-Serif',

@@ -55,19 +55,20 @@ class sweaver_plugin_imagecache extends sweaver_plugin {
     foreach ($imagecache_presets as $preset_key => $preset) {
       $image_edit = '';
       if (user_access('administer imagecache')) {
-        $image_edit = ' - '.l(t('Edit preset'), 'admin/build/imagecache/'. $preset_key);
+        $image_edit = l(t('Edit preset'), 'admin/build/imagecache/'. $preset_key);
       }
-      $content .= '<div><h3>'. $preset['presetname'] . $image_edit .'</h3>';
+      $content .= '<div class="imagecache clear-block"><h3>'. $preset['presetname'] . '<br />' .$image_edit .'</h3>';
 
+      $content .= '<div class="imagecache-description">';
       foreach ($preset['actions'] as $action_key => $action) {
         // skip unknown actions...
         if (!$definition = imagecache_action_definition($action['action'])) {
           continue;
         }
 
-        $content .= '<br>'. t($definition['name']) .': '. theme($action['action'], array('#value' => $action['data']));
+        $content .= '<p>'. t($definition['name']) .': '. theme($action['action'], array('#value' => $action['data'])) .'</p>';
       }
-      $content .= '</div>';
+      $content .= '</div></div>';
     }
 
     $form['sweaver_imagecache_values'] = array(
@@ -76,5 +77,12 @@ class sweaver_plugin_imagecache extends sweaver_plugin {
     );
 
     return $form;
+  }
+
+  /**
+   * Frontend css and js.
+   */
+  function frontend_css_js(&$inline_settings) {
+    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_imagecache/sweaver_plugin_imagecache.css', 'module');
   }
 }

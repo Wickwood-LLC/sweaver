@@ -130,14 +130,14 @@ class sweaver_plugin_styles extends sweaver_plugin {
     // Containers.
     $output = '';
     foreach ($form[$name]['form']['#style_containers'] as $key => $container_value) {
-      $output .= '<div class="container" style="margin-right: 60px;">';
+      $output .= '<div class="container container-4"><div class="container-inner">';
       $output .= '<h2>'. $container_value['container_name'] .'</h2>';
       foreach ($container_value['properties'] as $key => $form_element) {
         if (isset($form[$name]['form'][$form_element])) {
           $output .= drupal_render($form[$name]['form'][$form_element]);
         }
       }
-      $output .= '</div>';
+      $output .= '</div></div>';
     }
 
     $vars['tabs_data'][$name]['content'] = $output;

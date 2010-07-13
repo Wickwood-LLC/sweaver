@@ -34,7 +34,7 @@
 }
 
 #sweaver .sweaver-group-active {
-  background: #444 !important;
+  background: #333 !important;
 }
 
 #sweaver .sweaver-group-active label {
@@ -45,7 +45,7 @@
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	background: #444;
+	background: #333;
 	visibility: hidden;
 	right:-10000px;
 	padding:5px 10px;
