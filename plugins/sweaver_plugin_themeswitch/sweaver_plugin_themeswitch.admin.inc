@@ -13,12 +13,13 @@ function sweaver_plugin_themeswitch_switch($theme) {
 
     if ($theme != $theme_default) {
       $_SESSION['sweaver_plugin_switch_theme'] = $theme;
-      $_SESSION['sweaver_editor_messages'][] = t('You have switched to @new_theme', array('@new_theme' => $all_themes[$theme]->info['name']));
     }
     else {
       // Reset session variable because it's the default.
       unset($_SESSION['sweaver_plugin_switch_theme']);
     }
+
+    $_SESSION['sweaver_editor_messages'][] = t('You have switched to @new_theme', array('@new_theme' => $all_themes[$theme]->info['name']));
   }
 
   // Go back to previous page.
