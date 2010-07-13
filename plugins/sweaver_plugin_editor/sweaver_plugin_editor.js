@@ -61,6 +61,12 @@ function sweaver_plugin_editor_updateCss() {
     }
   }
   
+  // Store css in hidden field in save form
+  $("#sweaver #edit-css").val($.toJSON(Drupal.Sweaver.css));
+
+  // Add inline css
+  $("#sweaver-form #edit-css").val(fullCss);  
+  
   return fullCss;
 }
 
@@ -321,7 +327,7 @@ Drupal.Sweaver.bindClicks = function() {
 	    $('#sweaver_plugin_editor .slider-wrapper').css({'visibility' : 'hidden'});
 	
 	    var left = slider.siblings('label').width() - 10;
-	    var top = slider.parent().height() + parseInt(slider.parent().css('padding-top')) + parseInt(slider.parent().css('padding-bottom'));
+	    var top = slider.parent().outerHeight();
 	    slider.css({'left' : left, 'top' : top}).css({'visibility' : 'visible'});
 	  }
   });
@@ -602,9 +608,9 @@ Drupal.behaviors.openGroup = function() {
       // Open the clicked group and make sure it does not cover the label or fall off the screen.
       group = $(this);
       var right = 0;
-      var top = group.height() + parseInt(group.css('padding-top')) + parseInt(group.css('padding-bottom')) - 10;
+      var top = group.outerHeight() - 10;
       var position = group.offset();
-      if (position.top + content.height() > $(window).height()) {
+      if (position.top + content.outerHeight() > $(window).height()) {
         top = - content.height();
       }
       content.css({'right' : right, 'top' : top, 'visibility' : 'visible'}).parent().toggleClass('sweaver-group-active');

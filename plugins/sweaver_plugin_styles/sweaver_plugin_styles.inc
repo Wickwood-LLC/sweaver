@@ -89,7 +89,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $form['save_active'] = array(
       '#type' => 'checkbox',
       '#title' => t('Set as active style'),
-      '#default_value' => 1,
+      '#default_value' => FALSE,
     );
     $form['save_submit'] = array(
       '#type' => 'submit',
@@ -108,11 +108,6 @@ class sweaver_plugin_styles extends sweaver_plugin {
         '#type' => 'select',
         '#title' => t('Style name'),
         '#options' => $existing_styles,
-      );
-      $form['load_active'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Set as active style'),
-        '#default_value' => TRUE,
       );
       $form['load_submit'] = array(
         '#type' => 'submit',
@@ -189,29 +184,35 @@ class sweaver_plugin_styles extends sweaver_plugin {
       $style->timestamp = time();
       $style->active = $form_state['values']['save_active'];
       drupal_write_record('sweaver_style', $style, $update);
-      $this->sweaver_export_file($form_state['values']['css_rendered'], $theme_key);
       $form_state['saved_style_id'] = $style->thid;
-      $_SESSION['sweaver_editor_messages']['style_save'] = t('The style @style has been saved', array('@style' => $style->style));
+      $form_state['saved_style_status'] = $style->active;
+      $_SESSION['sweaver_editor_messages']['style_save'] = t('The style @style has been saved.', array('@style' => $style->style));
+
+      // Write out CSS.
+      $this->sweaver_export_file($form_state['values']['css_rendered'], $style);
+
+      if ($style->active) {
+        $_SESSION['sweaver']['draft_mode'] = FALSE;
+        $_SESSION['sweaver']['loaded_style'] = FALSE;
+      }
     }
 
     // Load style.
     if ($form_state['clicked_button']['#value'] == t('Load style')) {
-      $theme_key = $form['#current_theme'];
-      //if ($form_state['values']['load_active'] == 1) {
-        db_query("UPDATE {sweaver_style} set active = 0 where active = 1 and theme = '%s'", $theme_key);
-        db_query("UPDATE {sweaver_style} set active = 1 where thid = %d and theme = '%s' ", $form_state['values']['load_thid'], $theme_key);
-        $_SESSION['sweaver_editor_messages']['style_load'] = t('The style has been loaded');
-      //}
+      $thid = $form_state['values']['load_thid'];
+      $_SESSION['sweaver']['draft_mode'] = TRUE;
+      $_SESSION['sweaver']['loaded_style'] = $thid;
+      $_SESSION['sweaver_editor_messages']['style_load'] = t('The style has been loaded and you are now working in draft mode.');
     }
   }
 
   /**
    * Export css to file.
    */
-  function sweaver_export_file($css, $theme_key) {
+  function sweaver_export_file($css, $style) {
     $css = str_replace('<style type="text/css">', '', $css);
     $css = str_replace('</style>', '', $css);
-    $filename = 'sweaver_' . $theme_key . '.css';
+    $filename = 'sweaver_' . $style->theme . '_'. $style->thid .'.css';
 
     // Create the css within the files folder.
     $path = file_create_path('sweaver');
@@ -219,9 +220,10 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $file = $path .'/'. $filename;
     if (!$fp = fopen($file, 'w')) {
       $_SESSION['sweaver_editor_messages'][] = t('The css file could not be created.');
-      return FALSE;
     }
-    fwrite($fp, $css);
-    fclose($fp);
+    else {
+      fwrite($fp, $css);
+    }
+    @fclose($fp);
   }
 }

@@ -76,6 +76,44 @@ body.sweaver {
   background-color: #333 !important;
 }
 
+/* message region */
+
+#sweaver-messages {
+  -moz-border-radius: 7px !important;
+  -webkit-border-radius: 7px !important;
+  border-radius: 7px !important;
+  background: rgb(51,51,51) !important;
+  background: rgba(51,51,51,0.9) !important;
+  color: #fff !important;
+  display: none;
+  padding: 15px !important;
+  position: absolute !important;
+  font-size: 11px !important;
+  z-index: 1100 !important;
+  text-decoration: none !important;
+  top: 0;
+  left: 0;
+  width: 300px;
+  min-height: 50px;
+  font-family: "trebuchet MS", Helvetica, Arial !important;
+  font-size: 12px !important;   
+}
+
+#sweaver-messages .close {
+  background: url(images/close-message.png) no-repeat center center;
+  text-indent: -10000px;
+  overflow: hidden;
+  width: 16px;
+  height: 15px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#sweaver-messages .close:hover {
+	cursor: pointer;
+}
+
 /* header region */
 
 #sweaver .sweaver-header {
@@ -127,23 +165,35 @@ body.sweaver {
   font-weight: bold !important;
 }
 
+#sweaver .form-item {
+  padding: 5px 0 !important;
+  margin: 0 !important;
+}
+
 #sweaver input,
-#sweaver select {
+#sweaver select,
+#sweaver textarea {
 	text-transform: none !important;
   width: 150px !important;
   border: 1px solid #fff !important;
   padding: 2px !important;
+  margin: 0 !important;
   color: #222 !important;
   background-image: none !important;
   background-color: #fff !important;
-  border-radius: 2px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
+  border-radius: 2px !important;
+  -moz-border-radius: 2px !important;
+  -webkit-border-radius: 2px !important;
   height: auto !important;
+  box-shadow: 1px 1px 2px #8A9F16 !important;
+  -moz-box-shadow: 1px 1px 2px #8A9F16 !important;
+  -webkit-box-shadow: 1px 1px 2px #8A9F16 !important;  
+  font-family: "trebuchet MS", Helvetica, Arial !important;
+  font-size: 12px !important;  
 }
 
 #sweaver select {
-  width: 156px;
+  width: 156px !important;
 }
 
 #sweaver a.button {
@@ -168,17 +218,28 @@ body.sweaver {
 
 #sweaver input.form-submit {
   clear: left;
-  display: block;
+  display: block !important;
   margin: 1em 0 0 0 !important;
   background-color: #333 !important;
   color: #fff !important;  
-  border-radius: 7px;
-  -moz-border-radius: 7px;
-  -webkit-border-radius: 7px;
   border: 0 none !important;
   width: auto !important;
-  padding: 5px !improtant;
+  padding: 5px !important;
 }
+
+
+#sweaver label.option {
+  width: auto!important;
+  float: none!important;
+  margin-left: 120px!important;
+}
+
+#sweaver input.form-checkbox {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+
 
 /* containers */
 

@@ -17,6 +17,7 @@ sweaver_plugin_customcss_updateCss = function() {
 Drupal.behaviors.SweaverCustomCss = function(context) {
   $('.sweaver_plugin_custom_css_button').click(function(){
     Drupal.Sweaver.writeCss();
+    Drupal.Sweaver.setMessage(Drupal.t('Your custom css has been succesfully applied.'));
     return false;
   });
 }

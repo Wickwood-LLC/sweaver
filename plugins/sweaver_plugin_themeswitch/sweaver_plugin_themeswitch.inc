@@ -86,4 +86,14 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
 
     return $form;
   }
+
+  /**
+   * Frontend form submit handler.
+   */
+  function frontend_form_submit($form, &$form_state) {
+    if ($form_state['clicked_button']['#value'] == t('Save style') && isset($form_state['saved_style_status']) && $form_state['saved_style_status'] == TRUE) {
+      $theme_key = $form['#current_theme'];
+      variable_set('theme_default', $theme_key);
+    }
+  }
 }

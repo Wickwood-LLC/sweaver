@@ -90,5 +90,5 @@ class sweaver_plugin {
   /**
    * Frontend form submit handler.
    */
-  function frontend_form_submit($form, $form_state) {}
+  function frontend_form_submit($form, &$form_state) {}
 }

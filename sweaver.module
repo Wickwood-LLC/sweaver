@@ -10,7 +10,7 @@
  * Default paths to exclude the frontend editor from.
  */
 define('SWEAVER_PATHS_DEFAULT', "admin*\nnode/add*\nnode/*/edit\nuser/*/edit");
-define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver\n#admin-menu\n.colorpicker");
+define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver\n#admin-menu\n.colorpicker\n#sweaver-messages");
 
 /**
  * Implementation of hook_perm().
@@ -239,17 +239,20 @@ function sweaver_show_editor() {
   if (!$run) {
     $run = TRUE;
 
-    // Path visibility.
-    $path = drupal_get_path_alias($_GET['q']);
-    $page_match = drupal_match_path($path, variable_get('sweaver_paths', SWEAVER_PATHS_DEFAULT));
-    if ($path != $_GET['q']) {
-      $page_match = $page_match || drupal_match_path($_GET['q'], variable_get('sweaver_paths', SWEAVER_PATHS_DEFAULT));
-    }
-    $page_match = !(0 xor $page_match);
+    // Let's do the check for the editor early.
+    if (variable_get('sweaver_enabled', TRUE)) {
+      // Path visibility.
+      $path = drupal_get_path_alias($_GET['q']);
+      $page_match = drupal_match_path($path, variable_get('sweaver_paths', SWEAVER_PATHS_DEFAULT));
+      if ($path != $_GET['q']) {
+        $page_match = $page_match || drupal_match_path($_GET['q'], variable_get('sweaver_paths', SWEAVER_PATHS_DEFAULT));
+      }
+      $page_match = !(0 xor $page_match);
 
-    // Compare all variables.
-    if (variable_get('sweaver_enabled', TRUE) && user_access('use editor') && $page_match) {
-      $return = TRUE;
+      // Compare all variables.
+      if (user_access('use editor') && $page_match) {
+        $return = TRUE;
+      }
     }
   }
   return $return;
@@ -268,6 +271,24 @@ function sweaver_init() {
       if ($object->is_enabled($plugin_name)) {
         $object->init();
       }
+    }
+  }
+}
+
+/**
+ * Implementation of hook_preprocess_vars().
+ */
+function sweaver_preprocess_page(&$vars) {
+  if (variable_get('sweaver_load_style_when_editor_inactive', TRUE) || sweaver_show_editor()) {
+    // Load css for this theme.
+    global $theme_key;
+    $current_style = sweaver_get_current_style($theme_key);
+    if (isset($current_style->css)) {
+      $css = $vars['css'];
+      $css_path = file_directory_path() .'/sweaver/sweaver_' . $theme_key . '_'. $current_style->thid .'.css';
+      drupal_add_css($css_path, 'theme');
+      $vars['css']['all']['theme'][$css_path] = TRUE;
+      $vars['styles'] = drupal_get_css();
     }
   }
 }
@@ -300,6 +321,7 @@ function sweaver_editor_block() {
   if (sweaver_show_editor()) {
 
     if (!isset($_SESSION['sweaver_editor_messages'])) {
+      $_SESSION['sweaver'] = array();
       $_SESSION['sweaver_editor_messages'] = array();
     }
 
@@ -309,13 +331,6 @@ function sweaver_editor_block() {
     // the js ourselves.  We use a global variable and will return it in sweaver_footer().
     global $current_theme;
     $sweaver_frontend = drupal_get_form('sweaver_frontend');
-
-    // Load css for this theme.
-    $current_style = sweaver_get_current_style($current_theme);
-    if (isset($current_style->css)) {
-      drupal_add_css(file_directory_path() .'/sweaver/sweaver_' . $current_theme . '.css', 'theme');
-    }
-
     return $sweaver_frontend;
   }
 }
@@ -426,7 +441,12 @@ function sweaver_get_current_style($theme) {
   static $run = FALSE;
 
   if (!$run) {
-    $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where theme = '%s' and active = 1", $theme));
+    if (isset($_SESSION['sweaver']['draft_mode']) && $_SESSION['sweaver']['draft_mode']) {
+      $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where thid = %d", $_SESSION['sweaver']['loaded_style']));
+    }
+    else {
+      $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where theme = '%s' and active = 1", $theme));
+    }
     if ($css) {
       return $css;
     }

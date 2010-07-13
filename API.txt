@@ -172,7 +172,7 @@ class pluginname extends sweaver_plugin {
   /**
    * Frontend form submit.
    */
-  function frontend_form_submit($form_state, $form) {
+  function frontend_form_submit($form, &$form_state) {
     // Do something with the submitted values.
   }
 }

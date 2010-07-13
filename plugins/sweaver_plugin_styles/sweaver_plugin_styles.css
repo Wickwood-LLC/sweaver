@@ -9,15 +9,3 @@
 
 #sweaver #sweaver_plugin_styles {
 }
-
-#sweaver #sweaver_plugin_styles label.option {
-  width: auto;
-  float: none;
-  margin-left: 120px;
-}
-
-#sweaver #sweaver_plugin_styles input.form-checkbox {
-  margin: 0;
-  padding: 0;
-  width: auto;
-}

@@ -35,10 +35,31 @@ function sweaver_styles_list() {
       t('Operations'),
     );
 
-    $output = theme('table', $header, $rows);
+    // Settings.
+    $output = drupal_get_form('sweaver_plugin_styles_settings');
+
+    // Styles list.
+    $output .= theme('table', $header, $rows);
+
   }
 
   return $output;
+}
+
+/**
+ * Styles settings form.
+ */
+function sweaver_plugin_styles_settings(&$form_state) {
+  $form = array();
+
+  $form['sweaver_load_style_when_editor_inactive'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Load style'),
+    '#description' => t('Load active style for the theme when the editor is inactive. You can also add a line to the info file of your theme like this: stylesheets[all][] = /path/to/cssfile after you copied the file to your theme path. If you do that, you can ignore this setting completely and even disable this module after you have themed your website.'),
+    '#default_value' => variable_get('sweaver_load_style_when_editor_inactive', TRUE),
+  );
+
+  return system_settings_form($form);
 }
 
 /**
