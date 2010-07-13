@@ -327,7 +327,7 @@ Drupal.Sweaver.bindClicks = function() {
 	    $('#sweaver_plugin_editor .slider-wrapper').css({'visibility' : 'hidden'});
 	
 	    var left = slider.siblings('label').width() - 10;
-	    var top = slider.parent().outerHeight();
+	    var top = slider.siblings('.slider-value').outerHeight() + parseInt(slider.parent().css('padding-top')) + 5;
 	    slider.css({'left' : left, 'top' : top}).css({'visibility' : 'visible'});
 	  }
   });
