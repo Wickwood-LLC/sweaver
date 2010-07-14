@@ -13,28 +13,25 @@
   <div id="sweaver-tabs" class="clear-block">
     <div class="close"><?php print '<a href="javascript:;">x</a>'; ?></div>
     <?php
-    $active = 'active-tab';
-    foreach ($tabs as $key => $tab): ?>
-      <div id="tab-<?php print $key; ?>" class="tab <?php print $active; ?> <?php print $key; ?>">
+    foreach ($tabs as $key => $tab):
+    ?>
+      <div id="tab-<?php print $key; ?>" class="tab <?php if ($active_tab == $key) print 'active-tab'; ?> <?php print $key; ?>">
         <a href="javascript:;"><?php print $tab['#tab_name']; ?></a>
       </div>
     <?php
-    $active = '';
     endforeach; ?>
   </div>
 
   <div id="sweaver-middle" class="clear-block">
      <?php
-     $i = 0;
      foreach ($tabs_data as $key => $tab_data):
      ?>
      <!-- <?php print $key; ?> -->
       <div id="<?php print $key;?>">
-       <div class="sweaver-header" <?php ($i != 0) ? print 'style="display:none"' : '' ?>><?php print $tab_data['#tab_description']; ?></div>
-       <div class="sweaver-content" <?php ($i != 0) ? print 'style="display:none"' : '' ?>><?php print $tab_data['content']; ?></div>
+       <div class="sweaver-header" <?php ($active_tab != $key) ? print 'style="display:none"' : '' ?>><?php print $tab_data['#tab_description']; ?></div>
+       <div class="sweaver-content" <?php ($active_tab != $key) ? print 'style="display:none"' : '' ?>><?php print $tab_data['content']; ?></div>
       </div>
     <?php
-      $i++;
       endforeach;
     ?>
   </div>
