@@ -1,0 +1,86 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Tests for sweaver
+ * Note: run this patch on D6 to allow posts to hidden fields:
+ * http://drupal.org/node/488810#comment-1693662 .
+ */
+
+class sweaverEditor extends DrupalWebTestCase {
+  /**
+   * Implementation of getInfo().
+   */
+  function getInfo() {
+    return array(
+      'name' => t('Sweaver editor'),
+      'description' => t('Tests for the editor and saving and loading styles.'),
+      'group' => t('Sweaver'),
+    );
+  }
+
+  /**
+   * Implementation of setUp().
+   */
+  function setUp() {
+    parent::setUp('sweaver', 'ctools', 'jquery_ui');
+  }
+
+  /**
+   * Test styles
+   */
+  function testEditorStyles() {
+    $admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver'));
+    $this->drupalLogin($admin_user);
+    $editor_tests = t('Editor testing');
+
+    // Enable minelli.
+    db_query("UPDATE {system} set status = 1 where type = 'theme' AND name = 'minnelli'");
+
+    // Assert custom css plugin is disabled.
+    $this->drupalGet('user');
+    $this->assertNoRaw('Custom css', t('Custom css tab not found'), $editor_tests);
+
+    // Enable custom css & switchtheme plugin.
+    $edit = array('sweaver_plugin_customcss[status]' => 1, 'sweaver_plugin_themeswitch[status]' => 1);
+    $this->drupalPost('admin/settings/sweaver/plugins', $edit, t('Save'));
+    $this->drupalGet('user');
+    $this->assertRaw('Custom css', t('Custom css tab found'), $editor_tests);
+
+    // Switch to minnelli.
+    $this->assertNoRaw('sweaver_themeswitch/garland', t('Can not switch to garland'), $editor_tests);
+    $this->drupalGet('sweaver_themeswitch/minnelli');
+    $this->assertRaw(t('You have switched to Minnelli'), t('Switch to minelli success.'), $editor_tests);
+
+    // Switch back to garland.
+    $this->assertNoRaw('sweaver_themeswitch/minnelli', t('Can not switch to minnelli'), $editor_tests);
+    $this->drupalGet('sweaver_themeswitch/garland');
+    $this->assertRaw(t('You have switched to Garland'), t('Switch to garland success.'), $editor_tests);
+
+    // Set some styles for garland.
+    $edit = array(
+      'css' => '{"#center ":{"font-size":30}}',
+      'css_rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
+      'sweaver_plugin_custom_css' => '#header { background-color: blue; }',
+      'save_style_name' => 'Garland 1',
+      'save_active' => 1,
+    );
+
+    // Save style and assert it's saved. We'll look for the message, the entry
+    // into the database and the css file in the sweaver directory.
+    $this->drupalPost('user', $edit, t('Save style'));
+    $this->assertRaw(t('The style Garland 1 has been saved'), t('Style has been saved'), $editor_tests);
+    $css = sweaver_get_current_style('garland');
+    $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
+    $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
+    //$this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid), 'Filename written', $editor_tests);
+
+    // Set some styles for garland 2.
+    $edit = array(
+      'css' => '{"#center ":{"font-size":40}}',
+      'css_rendered' => '<style type="text/css">#center { font-size: 40px; } </style>',
+      'save_style_name' => 'Garland 2',
+    );
+  }
+}
