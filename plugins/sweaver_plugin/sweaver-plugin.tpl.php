@@ -29,9 +29,9 @@
      foreach ($tabs_data as $key => $tab_data):
      ?>
      <!-- <?php print $key; ?> -->
-      <div id="<?php print $key;?>" <?php ($i != 0) ? print 'style="display:none"' : '' ?>>
-       <div class="sweaver-header"><?php print $tab_data['#tab_description']; ?></div>
-       <div class="sweaver-content"><?php print $tab_data['content']; ?></div>
+      <div id="<?php print $key;?>">
+       <div class="sweaver-header" <?php ($i != 0) ? print 'style="display:none"' : '' ?>><?php print $tab_data['#tab_description']; ?></div>
+       <div class="sweaver-content" <?php ($i != 0) ? print 'style="display:none"' : '' ?>><?php print $tab_data['content']; ?></div>
       </div>
     <?php
       $i++;
