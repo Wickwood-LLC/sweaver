@@ -33,10 +33,10 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
    * Init
    */
   function init() {
-    global $custom_theme, $current_theme;
+    global $custom_theme, $theme_key;
     if (isset($_SESSION['sweaver_plugin_switch_theme'])) {
       $custom_theme = $_SESSION['sweaver_plugin_switch_theme'];
-      $current_theme = $_SESSION['sweaver_plugin_switch_theme'];
+      $theme_key = $_SESSION['sweaver_plugin_switch_theme'];
     }
   }
 
@@ -46,7 +46,7 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
   function frontend_form() {
     $form = array();
     $content = '';
-    global $current_theme;
+    global $theme_key;
     $no_image = drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/no_screenshot.png';
 
     $themes = system_theme_data();
@@ -60,7 +60,7 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
           $image_file = $no_image;
         }
 
-        if ($current_theme != $key) {
+        if ($theme_key != $key) {
           $switch_description = t('Switch to @theme', array('@theme' => $theme->info['name']));
           $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
           $image = l($image, 'sweaver_themeswitch/'. $key, array('html' => TRUE));

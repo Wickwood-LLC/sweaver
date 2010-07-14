@@ -5,7 +5,6 @@
  * Theme switcher.
  */
 function sweaver_plugin_themeswitch_switch($theme) {
-  global $current_theme;
   $theme_default = variable_get('theme_default','garland');
 
   $all_themes = system_theme_data();

@@ -96,7 +96,7 @@ body.sweaver {
   width: 300px;
   min-height: 50px;
   font-family: "trebuchet MS", Helvetica, Arial !important;
-  font-size: 12px !important;   
+  font-size: 12px !important;
 }
 
 #sweaver-messages .close {
@@ -187,9 +187,9 @@ body.sweaver {
   height: auto !important;
   box-shadow: 1px 1px 2px #8A9F16 !important;
   -moz-box-shadow: 1px 1px 2px #8A9F16 !important;
-  -webkit-box-shadow: 1px 1px 2px #8A9F16 !important;  
+  -webkit-box-shadow: 1px 1px 2px #8A9F16 !important;
   font-family: "trebuchet MS", Helvetica, Arial !important;
-  font-size: 12px !important;  
+  font-size: 12px !important;
 }
 
 #sweaver select {
@@ -221,7 +221,7 @@ body.sweaver {
   display: block !important;
   margin: 1em 0 0 0 !important;
   background-color: #333 !important;
-  color: #fff !important;  
+  color: #fff !important;
   border: 0 none !important;
   width: auto !important;
   padding: 5px !important;

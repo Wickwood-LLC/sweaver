@@ -40,14 +40,14 @@ class sweaver_plugin_styles extends sweaver_plugin {
   function frontend_form() {
     $form = array();
     $form['#style_containers'];
-    global $current_theme;
+    global $theme_key;
 
     // Current style.
-    $current_style = sweaver_get_current_style($current_theme);
+    $current_style = sweaver_get_current_style($theme_key);
 
     // Saved styles in database.
     $existing_styles = array(0 => t('Select'));
-    $results = db_query("SELECT thid, style FROM {sweaver_style} where theme = '%s'", $current_theme);
+    $results = db_query("SELECT thid, style FROM {sweaver_style} where theme = '%s'", $theme_key);
     while ($data = db_fetch_array($results)) {
       $existing_styles[$data['thid']] = $data['style'];
     }

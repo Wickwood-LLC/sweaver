@@ -263,20 +263,28 @@ function sweaver_show_editor() {
  */
 function sweaver_init() {
   if (sweaver_show_editor()) {
+    $inline_js_settings = array('sweaver' => array('invokes' => array()));
+
     ctools_include('plugins');
     $plugins = ctools_get_plugins('sweaver', 'plugins');
     foreach ($plugins as $plugin) {
       $plugin_name = $plugin['name'];
       $object = sweaver_get_plugin($plugins, $plugin_name);
       if ($object->is_enabled($plugin_name)) {
+        // Fire init.
         $object->init();
+        // CSS and JS.
+        $object->frontend_css_js($inline_js_settings);
       }
     }
+
+    // JS inline settings.
+    drupal_add_js($inline_js_settings, 'setting');
   }
 }
 
 /**
- * Implementation of hook_preprocess_vars().
+ * Implementation of hook_preprocess_page().
  */
 function sweaver_preprocess_page(&$vars) {
   if (variable_get('sweaver_load_style_when_editor_inactive', TRUE) || sweaver_show_editor()) {
@@ -294,44 +302,12 @@ function sweaver_preprocess_page(&$vars) {
 }
 
 /**
- * Implementation of hook_block().
+ * Implementation of hook_footer().
  */
-function sweaver_block($op = 'list', $delta = 0, $edit = array()) {
-  if ($op == 'list') {
-    $blocks[0] = array(
-      'info' => t('Sweaver editor'),
-      'weight' => 0,
-      'status' => 1,
-      'region' => 'left',
-      'cache' => BLOCK_NO_CACHE,
-    );
-    return $blocks;
-  }
-  elseif ($op == 'view') {
-    $block = array('subject' => '', 'content' => sweaver_editor_block());
-    return $block;
-  }
-}
-
-/**
- * Block callback: show editor.
- */
-function sweaver_editor_block() {
-
+function sweaver_footer($main = 0) {
+  // We return the complete form in the footer.
   if (sweaver_show_editor()) {
-
-    if (!isset($_SESSION['sweaver_editor_messages'])) {
-      $_SESSION['sweaver'] = array();
-      $_SESSION['sweaver_editor_messages'] = array();
-    }
-
-    // When calling hook_footer, the scripts js var is already set and processed,
-    // we are calling our form here, so ahah.js and inline settings for the file
-    // upload form are added to the javascript - so we don't have to manipulate
-    // the js ourselves.  We use a global variable and will return it in sweaver_footer().
-    global $current_theme;
-    $sweaver_frontend = drupal_get_form('sweaver_frontend');
-    return $sweaver_frontend;
+    return drupal_get_form('sweaver_frontend') . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>';
   }
 }
 
@@ -341,11 +317,10 @@ function sweaver_editor_block() {
 function sweaver_frontend(&$form_state) {
   $form = array();
   $weight = 1;
-  global $current_theme;
+  global $theme_key;
   $form['#plugins'] = array();
   $form['#theme'] = 'sweaver_plugin';
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
-  $inline_js_settings = array('sweaver' => array('invokes' => array()));
   $plugins_order = variable_get('sweaver_plugins_weight', array());
 
   ctools_include('plugins');
@@ -357,9 +332,6 @@ function sweaver_frontend(&$form_state) {
     $object = sweaver_get_plugin($plugins, $plugin_name);
 
     if ($object->is_enabled($plugin_name)) {
-
-      // Init.
-      $object->init();
 
       // Calculate weight.
       $default_weight = in_array($plugin_name, $plugins_order) ? array_search($plugin_name, $plugins_order) : $weight++;
@@ -374,9 +346,6 @@ function sweaver_frontend(&$form_state) {
           $form[$plugin['name']]['#tab_description'] = isset($plugin['handler']['tab_description']) ? $plugin['handler']['tab_description'] : '';
         }
       }
-
-      // CSS and JS.
-      $object->frontend_css_js($inline_js_settings);
     }
   }
 
@@ -392,11 +361,11 @@ function sweaver_frontend(&$form_state) {
   );
   $_SESSION['sweaver_editor_messages'] = array();
 
-  $form['#current_theme'] = $current_theme;
+  $form['#current_theme'] = $theme_key;
 
-  // CSS and JS
-  drupal_add_js($inline_js_settings, 'setting');
 
+  // TODO cleanup all other ['#submits'] and readd validates - it might be possible we'll have to remove drupal_set_messages and form_set_errors
+  // to get those stuff in our messages.
   return $form;
 }
 
@@ -437,12 +406,13 @@ function sweaver_containers() {
  * @param string $theme The machine name of the theme.
  */
 function sweaver_get_current_style($theme) {
-  $css = NULL;
+  static $css = NULL;
   static $run = FALSE;
 
   if (!$run) {
+    $run = TRUE;
     if (isset($_SESSION['sweaver']['draft_mode']) && $_SESSION['sweaver']['draft_mode']) {
-      $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where thid = %d", $_SESSION['sweaver']['loaded_style']));
+      $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where thid = %d AND theme = '%s'", $_SESSION['sweaver']['loaded_style'], $theme));
     }
     else {
       $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where theme = '%s' and active = 1", $theme));
@@ -450,7 +420,6 @@ function sweaver_get_current_style($theme) {
     if ($css) {
       return $css;
     }
-    $run = TRUE;
   }
 
   return $css;

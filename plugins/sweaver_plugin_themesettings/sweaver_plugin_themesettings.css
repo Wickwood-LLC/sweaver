@@ -1,0 +1,17 @@
+/* $Id$ */
+
+#sweaver_plugin_themesettings .create-tab {
+  border: 0px;
+  float: left;
+}
+
+#sweaver_plugin_themesettings a {
+  background: none;
+}
+
+#sweaver_plugin_themesettings .create-tab legend {
+  color: #fff;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #333;
+}

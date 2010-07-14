@@ -11,8 +11,8 @@ class sweaver_plugin_customcss extends sweaver_plugin {
    */
   function frontend_form() {
     $form = array();
-    global $current_theme;
-    $current_style = sweaver_get_current_style($current_theme);
+    global $theme_key;
+    $current_style = sweaver_get_current_style($theme_key);
 
     $attributes = array();
     $form['sweaver_plugin_custom_css'] = array(

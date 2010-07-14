@@ -40,24 +40,25 @@ $(document).ready(function() {
  * 
  * Return editor css.
  */
-// JYVE - LOOK AT the check op if (css != '') eigenlijk gaat die altijd er zijn, dus hoeft hier niet te zijn
-// Daarom dat er dus af en toe lege selectors zijn - nie schoon eh ..
 function sweaver_plugin_editor_updateCss() {
   var css = '';
   var fullCss = '';
+  var cssContent = '';
 
   for (var key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
-    css += key + '{\n';
     for(var prop in target) {
       if (Drupal.Sweaver.properties[prop]) {
-        css += prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
+        cssContent += prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
       }
     }
-    if (css != '') {
+    if (cssContent != '') {
+      css += key + '{\n';
+      css += cssContent;
       css += '}\n';
       fullCss += css;
       css = '';
+      cssContent = '';
     }
   }
   
@@ -98,9 +99,6 @@ Drupal.Sweaver.init = function() {
   // Add div to store inline css and fill it up
   $('body > div:first').before('<div id="sweaver-css"></div>');
 
-  // Divide the header region into two areas
-  $('#sweaver_plugin_editor .sweaver-header').after('<div id="full-path" class="clear-block"></div><div id="selected-path" class="clear-block"></div>');  
-
   // Add a link to be able to follow links.
   $('body').append('<a href="" id="follow-link">' + Drupal.t('Click here to follow this link') + '</div>');
 }
@@ -118,7 +116,7 @@ Drupal.Sweaver.updateForm = function() {
   // Update form with saved settings
   if (Drupal.Sweaver.activePath != '') {
     if ($("#tab-sweaver_plugin_editor").hasClass('active-tab')) {
-      $("#sweaver_plugin_editor #editor-styler").show();
+      $("#sweaver_plugin_editor #sweaver-editor").show();
     }
     var target = '';
     if (!isEmpty(Drupal.Sweaver.activeElement)) {
@@ -150,14 +148,7 @@ Drupal.Sweaver.initForm = function() {
 
   if (!isEmpty(Drupal.Sweaver.activeElement)) {
     var type = Drupal.Sweaver.activeElement.type;
-/*
-    // Empty form values so that they are not copied over when switching
-    $('#sweaver input, #sweaver #sweaver_plugin_editor select').each(function () {
-      $(this).val('');
-    });
-    $('#sweaver .colorSelector div').css('backgroundColor', '#fff');
-    $('#sweaver .slider-value').val('');
-*/
+
     // First hide all form elements
     $('#sweaver #sweaver_plugin_editor .form-item, #sweaver #sweaver_plugin_editor .slider-wrapper').each(function (i) {
       $(this).hide();
@@ -184,7 +175,11 @@ Drupal.Sweaver.addColorPicker = function() {
       color: '#ffffff',
       onShow: function (colpkr) {
         $(colpkr).fadeIn(500);
-        Drupal.Sweaver.hideOverlays();        
+        console.log(object.parents('.sweaver-group-content').length);
+        if (object.parents('.sweaver-group-content').length == 0) {
+          Drupal.Sweaver.hideOverlays();
+          Drupal.Sweaver.hideChanges();          
+        }        
         return false;
       },
       onHide: function (colpkr) {
@@ -274,14 +269,14 @@ Drupal.Sweaver.bindClicks = function() {
     $(object.selector).filter(':parents(' + excludes + '):not(' + excludes + ')').click(function(event) {
       event.stopPropagation();
       // Only do something when the content area is visible.
-      if (Drupal.Sweaver.open) { 
-	      $('#sweaver_plugin_editor .sweaver-header').html('');
+      if (Drupal.Sweaver.open && $('#sweaver_plugin_editor .sweaver-content').is(':visible')) { 
+        $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clear-block"></div><div id="selected-path" class="clear-block"></div>');
 	      
 	      // handle clicking on a link.
 	      $('#follow-link').hide();
 	      if(object.selector == 'a' && $(this).attr('id') != 'follow-link') {
 	        var position = $(this).offset();
-	        $('#follow-link').attr('href', $(this).attr('href')).css({'top' : position.top + $(this).height() + 5, 'left': position.left}).fadeIn();
+	        $('#follow-link').attr('href', $(this).attr('href')).css({'top' : position.top + $(this).outerHeight() + 5, 'left': position.left}).fadeIn();
 	        event.preventDefault();
 	      }
 	
@@ -300,10 +295,25 @@ Drupal.Sweaver.bindClicks = function() {
       }
     });
   });
+  
+	// Toggle changes area.
+	$('#changes-toggler').click(function(event){
+	  event.stopPropagation();
+	  toggler = $('#editor-changes');
+	  if (parseInt(toggler.css('left')) < 0) {
+		  Drupal.Sweaver.writeChanges();
+		  toggler.css({'left' : '0px'});
+      $(this).toggleClass('open').html(Drupal.t('Hide changes'));
+		} else {
+      toggler.css({'left' : '-1000px'});
+      $(this).toggleClass('open').html(Drupal.t('Show changes'));      		
+		}
+	});
 
   // Hide sliders and close groups when clicking outside of them.
   $("#sweaver").click(function() {
     Drupal.Sweaver.hideOverlays();
+    Drupal.Sweaver.hideChanges();    
   });
 
   // Update css when something is changed in the form.
@@ -470,54 +480,25 @@ Drupal.Sweaver.setValue = function(property, value) {
   Drupal.Sweaver.writeCss();
 }
 
-// JYVE REWORK ME :) Mischien eerder naar 1 button die 'show history' doet en dan 'hide history' ?
-// code rond history & styler is in sweaver_plugin_editor.inc (vanaf lijn 154 in form & in render)
-// Kijk ook eens naar de 2 functies hieronder (writeHistory) - deletePropertyFromHistory
-// Vraag is ook, history is misschien slechte naam, want da impliceert kunnen undo & redo, terwijl
-// ge enkel kunt delete - dus mss eerder hernoemen naar 'current selections' ofzo?
-Drupal.Sweaver.editortab = 'editor-styler';
-Drupal.behaviors.editorTabToggle = function(context) {
-  $('.editor-switcher a').click(function(){
-	if (Drupal.Sweaver.editortab == 'editor-styler') {
-      $('#editor-styler').hide();
-      $('#editor-history').show();
-      Drupal.Sweaver.editortab =  'editor-history';
-      Drupal.Sweaver.writeHistory();
-    }
-    else {
-      $('#editor-styler').show();
-      $('#editor-history').hide();
-      Drupal.Sweaver.editortab =  'editor-styler';
-    }
-  });
-}
-
 /**
- * Write history.
+ * Write changes.
  */
-Drupal.Sweaver.writeHistory = function() {
-	
-  var history = '';
-  for (var key in Drupal.Sweaver.css) {
+Drupal.Sweaver.writeChanges = function() {
+  $('#editor-changes').html('');
+  for (key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
-	for (var prop in target) {
+		for (prop in target) {
       if (Drupal.Sweaver.properties[prop]) {
-        history += '<div>';
-        history += '<a href="javascript:Drupal.Sweaver.deleteProperty(\''+ key +'\', \''+ prop +'\');">'+ Drupal.t('Delete') +'</a> ';
-        history += key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';';
-        history += '</div>';
-	  }
-	}
+			  $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
+			}
+		}
   }
-  
-  $('#editor-history-list').html(history);	
 }
 
 /**
  * Delete a property from a selector.
  */
 Drupal.Sweaver.deleteProperty = function(key, property) {
-
   var target = Drupal.Sweaver.css[key];
   Drupal.Sweaver.css[key] = {};
   for (var prop in target) {
@@ -525,9 +506,9 @@ Drupal.Sweaver.deleteProperty = function(key, property) {
       Drupal.Sweaver.css[key][prop] = target[prop];
     }
   }
-  
   Drupal.Sweaver.writeCss();
-  Drupal.Sweaver.writeHistory();
+  Drupal.Sweaver.writeChanges();
+  Drupal.Sweaver.updateForm();
 }
 
 /**
@@ -595,12 +576,18 @@ Drupal.Sweaver.hideOverlays = function() {
   $('#sweaver .sweaver-group-active').removeClass('sweaver-group-active');
 }
 
+Drupal.Sweaver.hideChanges = function() {
+  $('#editor-changes').css({'left' : '-1000px'});
+  $('#changes-toggler').removeClass('open').html(Drupal.t('Show changes'));      
+}
+
 Drupal.behaviors.openGroup = function() {
 
   // Open a group when it is clicked.
   $('#sweaver .sweaver-group').click(function (event) {
     event.stopPropagation();  
     Drupal.Sweaver.hideOverlays(); 
+    Drupal.Sweaver.hideChanges();    
     
     var content = $('.sweaver-group-content', this);
     if(!content.is(':visible')) {

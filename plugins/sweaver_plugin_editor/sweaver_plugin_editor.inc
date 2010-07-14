@@ -154,12 +154,24 @@ class sweaver_plugin_editor extends sweaver_plugin {
   function frontend_form() {
     $form = array();
     $form['#editor_containers'];
+    global $theme_key;
+
+    $current_style = sweaver_get_current_style($theme_key);
+    $form['css'] = array(
+      '#type' => 'hidden',
+      '#default_value' => isset($current_style->css) ? $current_style->css : '',
+    );
+    $form['css_rendered'] = array(
+      '#type' => 'hidden',
+      '#default_value' => '',
+    );
 
     $properties = sweaver_object_load(NULL, 'property');
     $sweaver_editor_form_configuration = variable_get('sweaver_editor_form_configuration',array());
 
     // Switcher.
-    $tab_switcher = '<div class="editor-switcher"><span class="swichter-link"><a href="javascript:;">'. t('Style') .'</a></span><span class="swichter-link"><a href="javascript:;">'. t('History') .'</a></span></div>';
+//    $tab_switcher = '<div class="editor-switcher"><span class="swichter-link"><a href="javascript:;">'. t('Style') .'</a></span><span class="swichter-link"><a href="javascript:;">'. t('History') .'</a></span></div>';
+    $tab_switcher = '<div id="changes-toggler">'. t('Show changes') .'</div>';
     $form['editor_switcher'] = array(
       '#type' => 'markup',
       '#value' => $tab_switcher,
@@ -207,10 +219,10 @@ class sweaver_plugin_editor extends sweaver_plugin {
       }
     }
 
-    // History.
-    $form['editor_history'] = array(
+    // Changes.
+    $form['editor_changes'] = array(
       '#type' => 'markup',
-      '#value' => '<div id="editor-history"><h2>History</h2><div id="editor-history-list"></div></div>',
+      '#value' => '<div id="editor-changes"></div>',
     );
 
     return $form;
@@ -230,11 +242,12 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     $output = '';
 
+    $output .= '<div id="sweaver-editor">';
+
     // Tab switcher.
     $output .= drupal_render($form[$name]['form']['editor_switcher']);
 
     // Containers.
-    $output .= '<div id="editor-styler">';
     foreach ($form[$name]['form']['#editor_containers'] as $key => $container_value) {
       $output .= '<div class="'. $container_class .' container"><div class="container-inner">';
       $output .= '<h2>'. $container_value['title'] .'</h2>';
@@ -243,10 +256,11 @@ class sweaver_plugin_editor extends sweaver_plugin {
       }
       $output .= '</div></div>';
     }
-    $output .= '</div>';
 
-    // History
-    $output .= drupal_render($form[$name]['form']['editor_history']);
+    // Changes
+    $output .= drupal_render($form[$name]['form']['editor_changes']);
+
+    $output .= '</div>';
 
     $vars['tabs_data'][$name]['content'] = $output;
   }

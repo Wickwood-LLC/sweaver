@@ -5,9 +5,7 @@
  * Sweaver CSS.
  */
 
-#editor-styler,
-#editor-history,
-.editor-switcher {
+#sweaver_plugin_editor #sweaver-editor {
 	display: none;
 }
 
@@ -123,8 +121,12 @@
 
 #sweaver #full-path,
 #sweaver #selected-path {
-  padding: 0px 7px;
-  margin: 3px 0;
+  margin: 0 0 0 -7px;
+  padding: 3px 7px 3px 0;
+}
+
+#sweaver #selected-path {
+	padding-bottom: 0;
 }
 
 #sweaver #selected-path .label,
@@ -134,8 +136,8 @@
 	clear:left;
 	display:block;
 	float:left;
-	margin: -3px 10px 5px 0 !important;
-	padding: 3px !important;
+	margin: -3px 10px 0 0 !important;
+	padding: 3px 3px 3px 10px !important;
 }
 
 #sweaver #selected-path span,
@@ -172,10 +174,44 @@
   text-decoration: underline !important;
 }
 
-/* History */
+/* Changes */
 
-#editor-history-list {
-  height: 200px;
-  overflow: auto;
+#editor-changes {
+	position: absolute !important;
+	bottom: 20px;
+	left: -1000px;
+	padding: 5px !important;
+	width: 600px !important;
+	background-color: #333 !important;
+	color: #fff !important;
+  height: 160px;
+  overflow-y: scroll;
   border: 1px solid #333;
+  z-index : 1110;
+}
+
+#sweaver #changes-toggler { 
+	border-radius: 0 7px 0 0 !important;
+	-moz-border-radius: 0 7px 0 0 !important;
+  -webkit-border-radius: 0 7px 0 0 !important;	
+	background: #333333 url(../sweaver_plugin/images/open2.png) no-repeat 95% 50%;
+	background-position-x : -10px;
+  position: absolute;
+	bottom: 0;
+	left: 0;
+	padding: 5px 24px 5px 5px;
+  z-index : 1111;	
+  width: 80px;
+  cursor: pointer;
+}
+
+#sweaver #changes-toggler.open {
+  background-image: url(../sweaver_plugin/images/close2.png);
+}
+
+#sweaver #editor-changes p {
+	margin-bottom: 5px !important;
+	padding: 2px 2px 2px 20px !important;
+  background: #444444 url(../sweaver_plugin/images/remove.png) no-repeat left center !important;
+  cursor: pointer;
 }

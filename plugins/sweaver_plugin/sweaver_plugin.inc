@@ -41,28 +41,12 @@ class sweaver_plugin {
    * Init function.
    */
   function init() {
-    global $current_theme;
-    // Check which theme we are in. Unfortunately we cannot use global $theme_key here yet.
-    $current_theme = variable_get('theme_default','garland');
   }
 
   /**
    * Frontend form.
    */
   function frontend_form() {
-    $form = array();
-    global $current_theme;
-
-    $current_style = sweaver_get_current_style($current_theme);
-    $form['css'] = array(
-      '#type' => 'hidden',
-      '#default_value' => isset($current_style->css) ? $current_style->css : '',
-    );
-    $form['css_rendered'] = array(
-      '#type' => 'hidden',
-      '#default_value' => '',
-    );
-    return $form;
   }
 
   /**

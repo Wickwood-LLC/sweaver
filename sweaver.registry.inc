@@ -92,7 +92,7 @@ function _sweaver_sweaver_plugins() {
   $plugins['sweaver_plugin_images'] = array(
     'handler' => array(
       'tab' => t('Images'),
-      'tab_description' => t('Upload images to use as a background color.'),
+      'tab_description' => t('Upload images to use as a background image.'),
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_images',
       'file' => 'sweaver_plugin_images.inc',
       'class' => 'sweaver_plugin_images',

@@ -16,7 +16,6 @@ Drupal.Sweaver.writeCss = function(context) {
     }
   });
 
-
   fullCss = '<style type="text/css">' + fullCss + '</style>';
   $('#sweaver-css').html(fullCss);
   $('#edit-css-rendered').val(fullCss);
@@ -26,11 +25,9 @@ Drupal.Sweaver.writeCss = function(context) {
  * Close/open style tab.
  */
 Drupal.Sweaver.open = true;
+Drupal.Sweaver.activeTab = '';
 
 $(document).ready(function() {
-
-  // Add area to print messages
-  $('body').append('<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>');  
 
   // Set bar height
   var contentHeight = 200;
@@ -38,20 +35,19 @@ $(document).ready(function() {
     if ($(this).height() > contentHeight) contentHeight = $(this).height();
   });
   if (contentHeight > 350) contentHeight = 350;
-  $('#sweaver-middle .sweaver-content').height(contentHeight);
+  $('#sweaver-middle .sweaver-content').height(contentHeight); //DIRTY FIX
 
   // open/close bar
-  var activeTab = '';
   $('#sweaver-tabs .close a').click(function(){
     if (Drupal.Sweaver.open == false) {
       $('#sweaver').css("height", 'auto');
       $(this).parent().removeClass('active-tab');
-      $('#' + activeTab).addClass('active-tab');
+      $('#' + Drupal.Sweaver.activeTab).addClass('active-tab');
       Drupal.Sweaver.open = true;
     }
     else {
       $('#sweaver').css("height", 0);
-      activeTab =  $('#sweaver-tabs .active-tab').attr('id');
+      Drupal.Sweaver.activeTab =  $('#sweaver-tabs .active-tab').attr('id');
       $('#sweaver-tabs .active-tab').removeClass('active-tab');
       $(this).parent().addClass('active-tab');
       Drupal.Sweaver.open = false;
@@ -69,8 +65,8 @@ $(document).ready(function() {
       }
 		  $(this).parent().siblings().removeClass('active-tab');
 		  $(this).parent().toggleClass('active-tab');
-		  $('#'+ container).show();
-		  $('#'+ Drupal.Sweaver.container).hide();
+		  $('#'+ container + ' > div').show();
+		  $('#'+ Drupal.Sweaver.container + ' > div').hide();
 		  Drupal.Sweaver.container = container;
 		} else {
       if (!Drupal.Sweaver.open) {
@@ -80,6 +76,7 @@ $(document).ready(function() {
         Drupal.Sweaver.open = true;
       }
 		}
+    Drupal.Sweaver.activeTab =  $(this).parent().attr('id');   
   });
 
   // Print messages if any
