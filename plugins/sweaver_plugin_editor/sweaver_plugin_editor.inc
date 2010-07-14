@@ -153,7 +153,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
    */
   function frontend_form() {
     $form = array();
-    $form['#editor_containers'];
+    $form['#editor_containers'] = array();
     global $theme_key;
 
     $current_style = sweaver_get_current_style($theme_key);

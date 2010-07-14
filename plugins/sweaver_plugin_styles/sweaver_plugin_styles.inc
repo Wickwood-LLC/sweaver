@@ -39,7 +39,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
    */
   function frontend_form() {
     $form = array();
-    $form['#style_containers'];
+    $form['#style_containers'] = array();
     global $theme_key;
 
     // Current style.

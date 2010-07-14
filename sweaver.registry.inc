@@ -210,7 +210,7 @@ function _sweaver_default_sweaver_selector() {
 function _sweaver_default_sweaver_property() {
   $propertys = array();
 
-  // Font.
+  // Font family.
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -230,6 +230,7 @@ function _sweaver_default_sweaver_property() {
       );
   $propertys['font-family'] = $property;
 
+  // Font style.
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -247,6 +248,7 @@ function _sweaver_default_sweaver_property() {
       );
   $propertys['font-style'] = $property;
 
+  // Font weight.
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -264,6 +266,7 @@ function _sweaver_default_sweaver_property() {
       );
   $propertys['font-weight'] = $property;
 
+  // Font size
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -275,11 +278,10 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 1;
   $property->property_slider_max = 200;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['font-size'] = $property;
 
+  // Text alignment.
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -289,6 +291,8 @@ function _sweaver_default_sweaver_property() {
   $property->property_type = 'select';
   $property->property_prefix = '';
   $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
   $property->property_options = array(
         'left' => 'Left',
         'right' => 'Right',
@@ -296,6 +300,7 @@ function _sweaver_default_sweaver_property() {
       );
   $propertys['text-align'] = $property;
 
+  // Color.
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;

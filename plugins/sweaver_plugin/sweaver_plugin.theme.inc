@@ -21,12 +21,12 @@ function template_preprocess_sweaver_plugin(&$vars) {
 
   $i = 0;
   foreach ($form['#plugins'] as $key => $plugin) {
-    if ($i == 0) {
+    if ($i == 0 && $plugin['name'] != 'sweaver_plugin') {
       $active_tab = $plugin['name'];
+      $i++;
     }
     $object = sweaver_get_plugin($plugins, $plugin['name']);
     $object->frontend_form_render($vars, $form, $plugin);
-    $i++;
   }
 
   // Active tab
