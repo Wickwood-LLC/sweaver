@@ -670,7 +670,7 @@ function sweaver_plugin_editor_config_editor_submit(&$form, &$form_state) {
  */
 function sweaver_plugin_editor_config_plugins(&$form_state) {
   $form = array();
-  $weight = 1;
+  $weight = 100;
   $form['#tree'] = TRUE;
   $form['#plugins'] = array();
   $plugins_order = variable_get('sweaver_plugins_weight', array());
