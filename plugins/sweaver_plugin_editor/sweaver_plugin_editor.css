@@ -195,13 +195,12 @@
 	-moz-border-radius: 0 7px 0 0 !important;
   -webkit-border-radius: 0 7px 0 0 !important;	
 	background: #333333 url(../sweaver_plugin/images/open2.png) no-repeat 95% 50%;
-	background-position-x : -10px;
   position: absolute;
 	bottom: 0;
 	left: 0;
 	padding: 5px 24px 5px 5px;
   z-index : 1111;	
-  width: 80px;
+  width: 90px;
   cursor: pointer;
 }
 

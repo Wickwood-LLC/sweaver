@@ -170,6 +170,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
       if (!empty($form_state['values']['save_existing_style'])) {
         $update = array('thid');
         $style->thid = $form_state['values']['save_existing_style'];
+        $style->style = $form['sweaver_plugin_styles']['form']['save_existing_style']['#options'][$style->thid];
       }
       else {
         $style->style = $form_state['values']['save_style_name'];

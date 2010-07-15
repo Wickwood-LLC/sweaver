@@ -65,6 +65,14 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         $theme_form_keys = array_merge($theme_form_keys, array('default_favicon', 'favicon_path', 'favicon_upload'));
       }
 
+      // Theme specific settings.
+      /*if (isset($form['sweaver_plugin_themesettings']['form']['theme_specific'])) {
+        $theme_specific_keys = array();
+        $ignore_keys = array('fieldset', 'options');
+        $this->get_theme_specific_keys($form['sweaver_plugin_themesettings']['form']['theme_specific'], $theme_specific_keys);
+        dsm($theme_specific_keys);
+      }*/
+
       // Only save necessary theme values.
       foreach ($values as $fkey => $fvalue) {
         if (in_array($fkey, $theme_form_keys)) {
@@ -72,10 +80,10 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         }
       }
 
-      // TODO theme specific settings & additional submits.
-
       // And finally save.
       variable_set($key, $theme_values);
+
+      // TODO Fire other submit functions one the theme settings form.
     }
   }
 
@@ -83,7 +91,24 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
    * Frontend css and js.
    */
   function frontend_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.js', 'module');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.css', 'theme');
+    drupal_add_js('misc/collapse.js');
+    //drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.js', 'module');
+    //drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.css', 'theme');
+  }
+
+  /**
+   * Get theme specific keys.
+   */
+  function get_theme_specific_keys($theme_specific_form, &$theme_specific_keys, $ignore_keys) {
+    $children = element_children($theme_specific_form);
+    if (!empty($children)) {
+      foreach ($children as $key => $element) {
+        //dsm("$key - $element");
+        if ($theme_specific_form[$element]['#type'] != 'fieldset') {
+          $theme_specific_keys[] = $element;
+        }
+        $this->get_theme_specific_keys($theme_specific_form[$element], $theme_specific_keys);
+      }
+    }
   }
 }

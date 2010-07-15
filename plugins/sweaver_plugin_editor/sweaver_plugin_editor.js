@@ -175,7 +175,6 @@ Drupal.Sweaver.addColorPicker = function() {
       color: '#ffffff',
       onShow: function (colpkr) {
         $(colpkr).fadeIn(500);
-        console.log(object.parents('.sweaver-group-content').length);
         if (object.parents('.sweaver-group-content').length == 0) {
           Drupal.Sweaver.hideOverlays();
           Drupal.Sweaver.hideChanges();          

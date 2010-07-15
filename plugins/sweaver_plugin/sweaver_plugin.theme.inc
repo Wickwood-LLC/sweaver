@@ -37,10 +37,16 @@ function template_preprocess_sweaver_plugin(&$vars) {
   $vars['active_tab'] = $active_tab;
 
   // Open or closed.
-  if (isset($_COOKIE['sweaver_editor_open']) && !empty($_COOKIE['sweaver_editor_open'])) {
-    $sweaver_editor_open = $_COOKIE['sweaver_editor_open'];
+  if (isset($_COOKIE['sweaver_open']) && !empty($_COOKIE['sweaver_open'])) {
+    $sweaver_open = $_COOKIE['sweaver_open'];
   }
-  $vars['sweaver_editor_open'] = $sweaver_editor_open;
+  $vars['sweaver_open'] = $sweaver_open;
+
+  // Heigt of content area
+  if (isset($_COOKIE['sweaver_height']) && !empty($_COOKIE['sweaver_height'])) {
+    $sweaver_height = $_COOKIE['sweaver_height'];
+  }
+  $vars['sweaver_height'] = $sweaver_height;
 
   // Rest of the form.
   $vars['rest_of_form'] = drupal_render($form);

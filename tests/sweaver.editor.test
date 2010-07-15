@@ -74,13 +74,28 @@ class sweaverEditor extends DrupalWebTestCase {
     $css = sweaver_get_current_style('garland');
     $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
     $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
-    //$this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid), 'Filename written', $editor_tests);
+    $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
+    $this->assertRaw('sweaver/sweaver_garland_'. $css->thid .'.css', t('The style Garland 1 has been loaded'), $editor_tests);
 
     // Set some styles for garland 2.
     $edit = array(
       'css' => '{"#center ":{"font-size":40}}',
       'css_rendered' => '<style type="text/css">#center { font-size: 40px; } </style>',
       'save_style_name' => 'Garland 2',
+      'save_active' => 1,
+      'save_existing_style' => 0,
+      'sweaver_plugin_custom_css' => '#header { background-color: red; }',
     );
+
+    // Save style and assert it's saved. We'll look for the message, the entry
+    // into the database and the css file in the sweaver directory.
+    $this->drupalPost('user', $edit, t('Save style'));
+    $this->assertRaw(t('The style Garland 2 has been saved'), t('Style has been saved'), $editor_tests);
+    $css = sweaver_get_current_style('garland', TRUE);
+    $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
+    $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
+    $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
+    $this->assertRaw('sweaver/sweaver_garland_'. $css->thid .'.css', t('The style Garland 2 has been loaded'), $editor_tests);
+    $this->assertEqual($css->thid, 2, t('New revision'), $editor_tests);
   }
 }

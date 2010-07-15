@@ -401,12 +401,14 @@ function sweaver_containers() {
  * Check if we have active style for this theme.
  *
  * @param string $theme The machine name of the theme.
+ *
+ * // TODO use ctools_static here.
  */
-function sweaver_get_current_style($theme) {
+function sweaver_get_current_style($theme, $reset = FALSE) {
   static $css = NULL;
   static $run = FALSE;
 
-  if (!$run) {
+  if (!$run || $reset) {
     $run = TRUE;
     if (isset($_SESSION['sweaver']['draft_mode']) && $_SESSION['sweaver']['draft_mode']) {
       $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where thid = %d AND theme = '%s'", $_SESSION['sweaver']['loaded_style'], $theme));
