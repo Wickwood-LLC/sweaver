@@ -12,6 +12,7 @@
 function template_preprocess_sweaver_plugin(&$vars) {
   $form = &$vars['form'];
   $active_tab = '';
+  $sweaver_editor_open = '';
   $vars['tabs'] = array();
   $vars['tabs_data'] = array();
 
@@ -29,11 +30,17 @@ function template_preprocess_sweaver_plugin(&$vars) {
     $object->frontend_form_render($vars, $form, $plugin);
   }
 
-  // Active tab
+  // Active tab.
   if (isset($_COOKIE['sweaver_active_tab']) && !empty($_COOKIE['sweaver_active_tab'])) {
     $active_tab = str_replace('tab-', '', $_COOKIE['sweaver_active_tab']);
   }
   $vars['active_tab'] = $active_tab;
+
+  // Open or closed.
+  if (isset($_COOKIE['sweaver_editor_open']) && !empty($_COOKIE['sweaver_editor_open'])) {
+    $sweaver_editor_open = $_COOKIE['sweaver_editor_open'];
+  }
+  $vars['sweaver_editor_open'] = $sweaver_editor_open;
 
   // Rest of the form.
   $vars['rest_of_form'] = drupal_render($form);

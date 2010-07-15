@@ -24,61 +24,67 @@ Drupal.Sweaver.writeCss = function(context) {
 /**
  * Close/open style tab.
  */
-Drupal.Sweaver.open = true;
 
 $(document).ready(function() {
 
-  Drupal.Sweaver.activeTab = Drupal.Sweaver.cookie('sweaver_active_tab');
-	
-  // Set bar height
-  var contentHeight = 200;
-  $('#sweaver-middle > div').each(function() {
-    if ($(this).height() > contentHeight) contentHeight = $(this).height();
-  });
-  if (contentHeight > 350) contentHeight = 350;
-  $('#sweaver-middle .sweaver-content').height(contentHeight); //DIRTY FIX
+  Drupal.Sweaver.activeTab = (Drupal.Sweaver.cookie('sweaver_active_tab') == null) ? $('#sweaver-tabs .tab:first').attr('id')  : Drupal.Sweaver.cookie('sweaver_active_tab');
+  Drupal.Sweaver.open = (Drupal.Sweaver.cookie('sweaver_open') == null) ? 'true' : Drupal.Sweaver.cookie('sweaver_open');
 
+  // Set bar height
+	if (Drupal.Sweaver.cookie('sweaver_height') == null) {
+	console.log('hier');
+	  var contentHeight = 200;
+	  $('#sweaver-middle > div').each(function() {
+	    if ($(this).height() > contentHeight) contentHeight = $(this).height();
+	  });
+	  if (contentHeight > 350) contentHeight = 350;
+	  $('#sweaver-middle .sweaver-content').height(contentHeight);
+	  Drupal.Sweaver.cookie('sweaver_height', contentHeight); 
+  }
+  
   // open/close bar
   $('#sweaver-tabs .close a').click(function(){
-    if (Drupal.Sweaver.open == false) {
+    if (Drupal.Sweaver.open == 'false') {
       $('#sweaver').css("height", 'auto');
       $(this).parent().removeClass('active-tab');
       $('#' + Drupal.Sweaver.activeTab).addClass('active-tab');
-      Drupal.Sweaver.open = true;
+      Drupal.Sweaver.open = 'true';
+      Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);         
     }
     else {
       $('#sweaver').css("height", 0);
       Drupal.Sweaver.activeTab =  $('#sweaver-tabs .active-tab').attr('id');
-      $('#sweaver-tabs .active-tab').removeClass('active-tab');
       $(this).parent().addClass('active-tab');
-      Drupal.Sweaver.open = false;
+      Drupal.Sweaver.open = 'false';
+      Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);      
       Drupal.Sweaver.cookie('sweaver_active_tab', Drupal.Sweaver.activeTab);
     }
   });
 
   // toggle tabs
-  Drupal.Sweaver.container = $('#sweaver-tabs .active-tab').attr('id').substr(4, $('#sweaver-tabs .active-tab').attr('id').length - 4);
+  Drupal.Sweaver.container = Drupal.Sweaver.activeTab.substr(4, Drupal.Sweaver.activeTab.length - 4);
   $('#sweaver-tabs .tab a').click(function(){
     var container = $(this).parent().attr('id').replace('tab-', '');
     if (container != Drupal.Sweaver.container) {
-	    if (!Drupal.Sweaver.open) {
+	    if (Drupal.Sweaver.open == 'false') {
         $('#sweaver').css("height", 'auto');
-        Drupal.Sweaver.open = true;
-      }
+        Drupal.Sweaver.open = 'true';
+      } 
 		  $(this).parent().siblings().removeClass('active-tab');
 		  $(this).parent().toggleClass('active-tab');
 		  $('#'+ container + ' > div').show();
 		  $('#'+ Drupal.Sweaver.container + ' > div').hide();
 		  Drupal.Sweaver.container = container;
 		} else {
-      if (!Drupal.Sweaver.open) {
+      if (Drupal.Sweaver.open == 'false') {
         $(this).parent().siblings().removeClass('active-tab');
         $(this).parent().toggleClass('active-tab');
         $('#sweaver').css("height", 'auto');
-        Drupal.Sweaver.open = true;
-      }
+        Drupal.Sweaver.open = 'true';
+      } 
 		}
     Drupal.Sweaver.activeTab =  $(this).parent().attr('id');  
+    Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);   
     Drupal.Sweaver.cookie('sweaver_active_tab', Drupal.Sweaver.activeTab);
   });
 

@@ -6,12 +6,11 @@
  * Themer editor form.
  */
 ?>
-
-<div id="sweaver">
+<div id="sweaver" <?php ($sweaver_editor_open == 'true') ? '' : print ' style="height:0"'; ?>>
 
   <!-- tabs -->
   <div id="sweaver-tabs" class="clear-block">
-    <div class="close"><?php print '<a href="javascript:;">x</a>'; ?></div>
+    <div class="close<?php ($sweaver_editor_open == 'true') ? '' : print ' active-tab'; ?>"><?php print '<a href="javascript:;">x</a>'; ?></div>
     <?php
     foreach ($tabs as $key => $tab):
     ?>
