@@ -14,7 +14,7 @@ To submit bug reports and feature suggestions, or to track changes:
 -- REQUIRED --
 
 CTools - http://drupal.org/project/ctools
-Jquery UI - http://drupal.org/project/jquery_ui
+jQuery UI - http://drupal.org/project/jquery_ui
 
 -- MAINTAINERS --
 
