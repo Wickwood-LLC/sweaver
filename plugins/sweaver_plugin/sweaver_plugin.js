@@ -32,7 +32,6 @@ $(document).ready(function() {
 
   // Set bar height
 	if (Drupal.Sweaver.cookie('sweaver_height') == null) {
-	console.log('hier');
 	  var contentHeight = 200;
 	  $('#sweaver-middle > div').each(function() {
 	    if ($(this).height() > contentHeight) contentHeight = $(this).height();
