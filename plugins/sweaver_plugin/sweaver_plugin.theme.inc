@@ -12,7 +12,8 @@
 function template_preprocess_sweaver_plugin(&$vars) {
   $form = &$vars['form'];
   $active_tab = '';
-  $sweaver_editor_open = '';
+  $sweaver_open = '';
+  $sweaver_height = '';
   $vars['tabs'] = array();
   $vars['tabs_data'] = array();
 
