@@ -131,7 +131,6 @@ body.sweaver {
   margin: 0 7px 7px;
   background-color: #bcd62b;
   position: relative;
-  height: 200px;
 }
 
 /* general theming */
@@ -142,7 +141,7 @@ body.sweaver {
   font-family: Georgia !important;
   font-size: 18px !important;
   text-transform: uppercase !important;
-  padding: 0 0 15px 0 !important;
+  padding: 0 0 5px 0 !important;
   margin: 0 !important;
   line-height: 1em !important;
 }

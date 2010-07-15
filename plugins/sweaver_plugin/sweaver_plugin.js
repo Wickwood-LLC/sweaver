@@ -33,8 +33,8 @@ $(document).ready(function() {
   // Set bar height
 	if (Drupal.Sweaver.cookie('sweaver_height') == null) {
 	  var contentHeight = 200;
-	  $('#sweaver-middle > div').each(function() {
-	    if ($(this).height() > contentHeight) contentHeight = $(this).height();
+	  $('#sweaver-middle .sweaver-content').each(function() {
+	    if ($(this).outerHeight() > contentHeight) contentHeight = $(this).outerHeight();
 	  });
 	  if (contentHeight > 350) contentHeight = 350;
 	  $('#sweaver-middle .sweaver-content').height(contentHeight);

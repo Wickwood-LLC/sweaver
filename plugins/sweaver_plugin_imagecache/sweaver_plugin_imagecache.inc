@@ -14,7 +14,7 @@ class sweaver_plugin_imagecache extends sweaver_plugin {
         $imagecache_access = FALSE;
       }
     }
-    if ($plugin_status && $imagecache_access) {
+    if ($plugin_status && $imagecache_access && module_exists('imagecache')) {
       return TRUE;
     }
     return FALSE;

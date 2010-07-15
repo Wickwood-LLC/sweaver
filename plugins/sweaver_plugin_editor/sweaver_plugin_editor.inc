@@ -242,7 +242,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     $output = '';
 
-    $output .= '<div id="sweaver-editor">';
+    $output .= '<div id="sweaver-editor" class="clear-block">';
 
     // Tab switcher.
     $output .= drupal_render($form[$name]['form']['editor_switcher']);

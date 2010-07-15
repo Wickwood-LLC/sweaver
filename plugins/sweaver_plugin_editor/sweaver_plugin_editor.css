@@ -5,6 +5,10 @@
  * Sweaver CSS.
  */
 
+#sweaver_plugin_editor .sweaver-content {
+  padding-bottom: 36px;
+}
+
 #sweaver_plugin_editor #sweaver-editor {
 	display: none;
 }
@@ -18,7 +22,7 @@
 
 /* parent / children */
 
-#sweaver .sweaver-group {
+#sweaver_plugin_editor .sweaver-group {
 	position: relative;
   background: #666 !important;
   padding: 5px !important;
@@ -31,15 +35,15 @@
   -webkit-box-shadow: 1px 1px 2px #8A9F16 !important;    
 }
 
-#sweaver .sweaver-group-active {
+#sweaver_plugin_editor .sweaver-group-active {
   background: #333 !important;
 }
 
-#sweaver .sweaver-group-active label {
+#sweaver_plugin_editor .sweaver-group-active label {
   z-index:100;
 }
 
-#sweaver .sweaver-group .sweaver-group-content {
+#sweaver_plugin_editor .sweaver-group .sweaver-group-content {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
@@ -54,7 +58,7 @@
 
 /* slider */
 
-#sweaver .slider-value {
+#sweaver_plugin_editor .slider-value {
   border: none !important;
   background-color: #fff !important;
   width: 30px !important;
@@ -63,11 +67,11 @@
   text-align: center !important;
 }
 
-#sweaver .slider {
+#sweaver_plugin_editor .slider {
   width: 122px;
 }
 
-#sweaver .slider-wrapper {
+#sweaver_plugin_editor .slider-wrapper {
   visibility: hidden;
   padding: 10px !important;
   background-color: #666 !important;
@@ -82,7 +86,7 @@
 
 /* color widget */
 
-#sweaver .colorSelector-wrapper {
+#sweaver_plugin_editor .colorSelector-wrapper {
   height:36px;
   position:relative;
   float: left;
@@ -92,7 +96,7 @@
   z-index: 10001;
 }
 
-#sweaver .colorSelector {
+#sweaver_plugin_editor .colorSelector {
   background:transparent url(colorpicker/images/select2.png) repeat scroll 0 0;
   height:36px;
   left:0;
@@ -101,7 +105,7 @@
   width:36px;
 }
 
-#sweaver .colorSelector div {
+#sweaver_plugin_editor .colorSelector div {
   background:transparent url(colorpicker/images/select2.png) repeat scroll center center;
   height:28px;
   left:4px;
@@ -113,24 +117,24 @@
   -webkit-box-shadow: 1px 1px 2px #8A9F16 !important;    
 }
 
-#sweaver label.color {
+#sweaver_plugin_editor label.color {
   padding: 10px 0 10px 0 !important;
 }
 
 /* selectors path */
 
-#sweaver #full-path,
-#sweaver #selected-path {
+#sweaver_plugin_editor #full-path,
+#sweaver_plugin_editor #selected-path {
   margin: 0 0 0 -7px;
   padding: 3px 7px 3px 0;
 }
 
-#sweaver #selected-path {
+#sweaver_plugin_editor #selected-path {
 	padding-bottom: 0;
 }
 
-#sweaver #selected-path .label,
-#sweaver #full-path .label {
+#sweaver_plugin_editor #selected-path .label,
+#sweaver_plugin_editor #full-path .label {
 	width: 100px !important;
 	background-color: #444 !important;
 	clear:left;
@@ -140,13 +144,13 @@
 	padding: 3px 3px 3px 10px !important;
 }
 
-#sweaver #selected-path span,
-#sweaver #full-path span {
+#sweaver_plugin_editor #selected-path span,
+#sweaver_plugin_editor #full-path span {
   padding: 3px 0 !important;
 }
 
-#sweaver #selected-path span.active a,
-#sweaver #full-path span.active a {
+#sweaver_plugin_editor #selected-path span.active a,
+#sweaver_plugin_editor #full-path span.active a {
   text-decoration: underline !important;
 }
 
@@ -190,7 +194,7 @@
   z-index : 1110;
 }
 
-#sweaver #changes-toggler { 
+#sweaver_plugin_editor #changes-toggler { 
 	border-radius: 0 7px 0 0 !important;
 	-moz-border-radius: 0 7px 0 0 !important;
   -webkit-border-radius: 0 7px 0 0 !important;	
@@ -204,11 +208,11 @@
   cursor: pointer;
 }
 
-#sweaver #changes-toggler.open {
+#sweaver_plugin_editor #changes-toggler.open {
   background-image: url(../sweaver_plugin/images/close2.png);
 }
 
-#sweaver #editor-changes p {
+#sweaver_plugin_editor #editor-changes p {
 	margin-bottom: 5px !important;
 	padding: 2px 2px 2px 20px !important;
   background: #444444 url(../sweaver_plugin/images/remove.png) no-repeat left center !important;

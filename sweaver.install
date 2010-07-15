@@ -69,9 +69,10 @@ function sweaver_install() {
       'properties' => array(
         0 => 'font-family',
         1 => 'font-style',
-        2 => 'font-size',
-        3 => 'text-align',
-        4 => 'color'
+        2 => 'font-weight',
+        3 => 'font-size',
+        4 => 'text-align',
+        5 => 'color'
       ),
     ),
     'two' => array(
