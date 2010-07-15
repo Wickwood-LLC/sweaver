@@ -405,6 +405,7 @@ function sweaver_containers() {
  * // TODO use ctools_static here.
  */
 function sweaver_get_current_style($theme, $reset = FALSE) {
+
   static $css = NULL;
   static $run = FALSE;
 
@@ -422,4 +423,15 @@ function sweaver_get_current_style($theme, $reset = FALSE) {
   }
 
   return $css;
+}
+
+/**
+ * Get theme info.
+ *
+ * @param string $theme_key The machine name for the theme.
+ */
+function sweaver_get_theme_info($theme) {
+  $info = db_result(db_query("SELECT info FROM {system} WHERE name = '%s' AND type ='theme'", $theme));
+  $theme_info = unserialize($info);
+  return $theme_info;
 }

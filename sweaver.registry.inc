@@ -129,6 +129,16 @@ function _sweaver_sweaver_plugins() {
       'parent' => 'sweaver_plugin',
     ),
   );
+  $plugins['sweaver_plugin_themeclasses'] = array(
+    'handler' => array(
+      'tab' => t('Theme styles'),
+      'tab_description' => t('Click on a style - if any - to highlight them on the page.'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeclasses',
+      'file' => 'sweaver_plugin_themeclasses.inc',
+      'class' => 'sweaver_plugin_themeclasses',
+      'parent' => 'sweaver_plugin',
+    ),
+  );
   return $plugins;
 }
 
