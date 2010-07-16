@@ -10,12 +10,6 @@
   margin-right: 5px;
 }
 
-// Still needed ?
-#sweaver_plugin_themesettings fieldset {
-	padding: 0 !important;
-	margin: 0 15px 0 0 !important;
-}
-
 #sweaver_plugin_themesettings .sweaver-settings-popup a {
 	background-image: none !important;
 	display: block !important;

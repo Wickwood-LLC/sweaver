@@ -144,6 +144,12 @@ body.sweaver {
   margin-left: 10px !important;
 }
 
+#sweaver-popup fieldset fieldset {
+  background: transparent none !important;
+  padding: 5px !important;
+  margin: 5px !important;
+  border: 0 none !important;
+}
 
 /* header region */
 
