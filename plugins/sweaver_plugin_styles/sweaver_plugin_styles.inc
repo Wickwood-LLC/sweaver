@@ -109,7 +109,12 @@ class sweaver_plugin_styles extends sweaver_plugin {
         '#title' => t('Style name'),
         '#options' => $existing_styles,
       );
-      $form['load_submit'] = array(
+    $form['load_active'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Set as active style'),
+      '#default_value' => FALSE,
+    );
+    $form['load_submit'] = array(
         '#type' => 'submit',
         '#value' => t('Load style'),
       );
@@ -201,9 +206,21 @@ class sweaver_plugin_styles extends sweaver_plugin {
     // Load style.
     if ($form_state['clicked_button']['#value'] == t('Load style')) {
       $thid = $form_state['values']['load_thid'];
-      $_SESSION['sweaver']['draft_mode'] = TRUE;
-      $_SESSION['sweaver']['loaded_style'] = $thid;
-      $_SESSION['sweaver_editor_messages']['style_load'] = t('The style has been loaded and you are now working in draft mode.');
+      $active = $form_state['values']['load_active'];
+      $theme_key = $form['#current_theme'];
+      $style_name = $form['sweaver_plugin_styles']['form']['load_thid']['#options'][$thid];
+
+      if ($active == FALSE) {
+        $_SESSION['sweaver']['draft_mode'] = TRUE;
+        $_SESSION['sweaver']['loaded_style'] = $thid;
+        $_SESSION['sweaver_editor_messages']['style_load'] = t('The style @style has been loaded and you are now working in draft mode.', array('@style' => $style_name));
+      }
+      else {
+        $_SESSION['sweaver']['draft_mode'] = FALSE;
+        db_query("UPDATE {sweaver_style} set active = 0 WHERE theme = '%s'", $theme_key);
+        db_query("UPDATE {sweaver_style} set active = 1 WHERE theme = '%s' AND thid = %d", $theme_key, $thid);
+        $_SESSION['sweaver_editor_messages']['style_load'] = t('The style @style has been loaded and set active.', array('@style' => $style_name));
+      }
     }
   }
 

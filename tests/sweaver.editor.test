@@ -15,7 +15,7 @@ class sweaverEditor extends DrupalWebTestCase {
   function getInfo() {
     return array(
       'name' => t('Sweaver editor'),
-      'description' => t('Tests for the editor and saving and loading styles.'),
+      'description' => t('Tests for the frontend editor.'),
       'group' => t('Sweaver'),
     );
   }
@@ -28,9 +28,9 @@ class sweaverEditor extends DrupalWebTestCase {
   }
 
   /**
-   * Test styles
+   * Test frontend editor
    */
-  function testEditorStyles() {
+  function testFrontendEditor() {
     $admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver'));
     $this->drupalLogin($admin_user);
     $editor_tests = t('Editor testing');
@@ -43,7 +43,11 @@ class sweaverEditor extends DrupalWebTestCase {
     $this->assertNoRaw('Custom css', t('Custom css tab not found'), $editor_tests);
 
     // Enable custom css & switchtheme plugin.
-    $edit = array('sweaver_plugin_customcss[status]' => 1, 'sweaver_plugin_themeswitch[status]' => 1);
+    $edit = array(
+      'sweaver_plugin_customcss[status]' => 1,
+      'sweaver_plugin_themeswitch[status]' => 1,
+      'sweaver_plugin_themesettings[status]' => 1
+    );
     $this->drupalPost('admin/settings/sweaver/plugins', $edit, t('Save'));
     $this->drupalGet('user');
     $this->assertRaw('Custom css', t('Custom css tab found'), $editor_tests);
@@ -97,5 +101,31 @@ class sweaverEditor extends DrupalWebTestCase {
     $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
     $this->assertRaw('sweaver/sweaver_garland_'. $css->thid .'.css', t('The style Garland 2 has been loaded'), $editor_tests);
     $this->assertEqual($css->thid, 2, t('New revision'), $editor_tests);
+
+    // Load styles.
+    $edit = array(
+      'load_thid' => 1,
+    );
+    $this->drupalPost('user', $edit, t('Load style'));
+    $this->assertRaw(t('The style Garland 1 has been loaded and you are now working in draft mode.'), t('Draft mode'), $editor_tests);
+
+    $edit = array(
+      'load_thid' => 2,
+      'load_active' => 1,
+    );
+    $this->drupalPost('user', $edit, t('Load style'));
+    $this->assertRaw(t('The style Garland 2 has been loaded and set active.'), t('Active style'), $editor_tests);
+
+    // Test themesettings.
+    $edit = array(
+      'toggle_logo' => 0,
+    );
+    $this->drupalPost('user', $edit, t('Save configuration'));
+    $this->assertNoRaw('id="logo"', t('No logo found'), $editor_tests);
+    $edit = array(
+      'toggle_logo' => TRUE,
+    );
+    $this->drupalPost('user', $edit, t('Save configuration'));
+    $this->assertRaw('id="logo"', t('Logo found'), $editor_tests);
   }
 }
