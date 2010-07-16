@@ -130,9 +130,12 @@ class sweaverAdministration extends DrupalWebTestCase {
 
     // Test imagecache if available.
     if ($this->imagecache_tests) {
-      //<option value="/drupal6/sites/default/files/imagecache/1/sites/default/files/sweaver/sweaver_image_19.JPG">test (sweavertest)</option>
-      ///drupal6/sites/default/files/imagecache/1/sites/default/files/sweaver/sweaver_image_19.JPG
-      $this->assertNoRaw('<h3>sweavertest</h3>', t('Imagecache tab not found'), $editor_tests);
+
+      // Enable imagecache plugin.
+      $edit = array('sweaver_plugin_imagecache[status]' => 1);
+      $this->drupalPost('admin/settings/sweaver/plugins', $edit, t('Save'));
+      $this->drupalGet('user');
+      $this->assertRaw('<a href="javascript:;">Imagecache</a>', t('Imagecache tab found'), $editor_tests);
 
       $raw_imagecache = '<option value="'. base_path().file_directory_path() .'/imagecache/'. $this->preset_id .'/'. file_directory_path() .'/sweaver/sweaver_image_1.png">Image test (sweavertest)</option>';
       $this->assertNoRaw($raw_imagecache, t('Imagecache version of image not found'), $editor_tests);
@@ -142,7 +145,6 @@ class sweaverAdministration extends DrupalWebTestCase {
         'sweaver_plugin_imagecache_alter_images' => TRUE,
       );
       $this->drupalPost('admin/settings/sweaver/imagecache', $edit, t('Save configuration'));
-      $this->assertRaw('<h3>sweavertest</h3>', t('Imagecache tab found'), $editor_tests);
       $this->drupalGet('user');
       $raw_imagecache = '<option value="'. base_path().file_directory_path() .'/imagecache/'. $this->preset_id .'/'. file_directory_path() .'/sweaver/sweaver_image_1.png">Image test (sweavertest)</option>';
       $this->assertRaw($raw_imagecache, t('Imagecache version of image found'), $editor_tests);
