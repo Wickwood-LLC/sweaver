@@ -132,7 +132,7 @@ function _sweaver_sweaver_plugins() {
   $plugins['sweaver_plugin_themeclasses'] = array(
     'handler' => array(
       'tab' => t('Theme styles'),
-      'tab_description' => t('Click on a style - if any - to highlight them on the page.'),
+      'tab_description' => t('Select an item - if any - to style it. Clicking will switch to the style editor form.'),
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeclasses',
       'file' => 'sweaver_plugin_themeclasses.inc',
       'class' => 'sweaver_plugin_themeclasses',
