@@ -15,7 +15,11 @@ $(document).ready(function() {
 /**
  * Switch to style editor and start editing the class.
  */
+
+Drupal.Sweaver.currentClass = '';
 Drupal.Sweaver.ThemeClasses = function(class_name) {
+  $('.'+ Drupal.Sweaver.currentClass).css('background-color', 'none');
   var class_name = class_name.replace('spt-', '');
-  $('.'+ class_name).css('border', '1px dotted blue');
+  $('.'+ class_name).css('background-color', 'lime');
+  Drupal.Sweaver.currentClass = class_name;
 }
