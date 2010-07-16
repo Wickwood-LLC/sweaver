@@ -78,7 +78,8 @@ body.sweaver {
 
 /* message region */
 
-#sweaver-messages {
+#sweaver-messages,
+#sweaver-popup {
   -moz-border-radius: 7px !important;
   -webkit-border-radius: 7px !important;
   border-radius: 7px !important;
@@ -99,7 +100,13 @@ body.sweaver {
   font-size: 12px !important;   
 }
 
-#sweaver-messages .close {
+#sweaver-popup {
+	width: auto;
+	padding: 25px 15px !important; 
+}
+
+#sweaver-messages .close,
+#sweaver-popup .close {
   background: url(images/close-message.png) no-repeat center center;
   text-indent: -10000px;
   overflow: hidden;
@@ -110,8 +117,19 @@ body.sweaver {
   right: 5px;
 }
 
-#sweaver-messages .close:hover {
+#sweaver-messages .close:hover,
+#sweaver-popup .close:hover {
 	cursor: pointer;
+}
+
+#sweaver-popup .content {
+	overflow-y: scroll;
+}
+
+#sweaver-popup a {
+  font-family: "trebuchet MS", Helvetica, Arial !important;
+  color: #fff !important;
+  text-decoration: underline !important;
 }
 
 /* header region */

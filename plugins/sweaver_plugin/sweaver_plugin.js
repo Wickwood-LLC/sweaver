@@ -21,10 +21,6 @@ Drupal.Sweaver.writeCss = function(context) {
   $('#edit-css-rendered').val(fullCss);
 };
 
-/**
- * Close/open style tab.
- */
-
 $(document).ready(function() {
 
   Drupal.Sweaver.activeTab = (Drupal.Sweaver.cookie('sweaver_active_tab') == null) ? $('#sweaver-tabs .tab:first').attr('id')  : Drupal.Sweaver.cookie('sweaver_active_tab');
@@ -99,7 +95,6 @@ $(document).ready(function() {
   });
 });
 
-
 /**
  * Display Sweaver messages.
  */
@@ -109,6 +104,36 @@ Drupal.Sweaver.setMessage = function(message) {
   $('#sweaver-messages .message').html(message)
   $('#sweaver-messages').css({'left' : messageLeft, 'top' : messageTop}).fadeIn('fast');
 	Drupal.Sweaver.messageTimer = window.setTimeout(function() {$('#sweaver-messages').fadeOut('normal');}, 5000);  
+}
+
+/**
+ * Display a fullscreen popup.
+ */
+Drupal.Sweaver.showPopup = function(message, object) {
+  popup = $('#sweaver-popup');
+  popupBorder = 7;
+  popupTop = $(window).scrollTop() + popupBorder;
+  popupWidth = $(window).width() - (popupBorder * 2) - parseInt(popup.css('padding-left')) - parseInt(popup.css('padding-right'));
+  popupHeight = $(window).height() - $('#sweaver').outerHeight() - $('#sweaver-tabs').outerHeight() - (popupBorder * 2) - parseInt(popup.css('padding-top')) - parseInt(popup.css('padding-bottom'));
+  $('.content', popup).html(message.html()).css({'height' : popupHeight, 'width' : popupWidth});
+  popup.css({'left' : popupBorder, 'top' : popupTop}).fadeIn('fast');
+  $('.close', popup).click(function(){
+    Drupal.Sweaver.hidePopup();
+  });  
+  $('.content', popup).change(function() {
+  console.log(object);
+console.log($('.content', popup));  
+    object = $('.content', popup);
+  });
+}
+
+/**
+ * Close the popup and return .
+ */
+Drupal.Sweaver.hidePopup = function() {
+  popup = $('#sweaver-popup');
+  $('.content', popup).empty();  
+	popup.hide();
 }
 
 /**

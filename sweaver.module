@@ -10,7 +10,7 @@
  * Default paths to exclude the frontend editor from.
  */
 define('SWEAVER_PATHS_DEFAULT', "admin*\nnode/add*\nnode/*/edit\nuser/*/edit");
-define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver\n#admin-menu\n.colorpicker\n#sweaver-messages");
+define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver\n#admin-menu\n.colorpicker\n#sweaver-messages\n#sweaver-popup");
 
 /**
  * Implementation of hook_perm().
@@ -307,7 +307,7 @@ function sweaver_preprocess_page(&$vars) {
 function sweaver_footer($main = 0) {
   // We return the complete form in the footer.
   if (sweaver_show_editor()) {
-    return drupal_get_form('sweaver_frontend') . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>';
+    return drupal_get_form('sweaver_frontend') . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>' . '<div id="sweaver-popup"><div class="close">x</div><div class="content"></div></div>';
   }
 }
 
@@ -403,9 +403,9 @@ function sweaver_containers() {
  * @param string $theme The machine name of the theme.
  *
  * // TODO use ctools_static here.
+ *
  */
 function sweaver_get_current_style($theme, $reset = FALSE) {
-
   static $css = NULL;
   static $run = FALSE;
 
@@ -421,7 +421,6 @@ function sweaver_get_current_style($theme, $reset = FALSE) {
       return $css;
     }
   }
-
   return $css;
 }
 
@@ -430,6 +429,7 @@ function sweaver_get_current_style($theme, $reset = FALSE) {
  *
  * @param string $theme_key The machine name for the theme.
  */
+
 function sweaver_get_theme_info($theme) {
   $info = db_result(db_query("SELECT info FROM {system} WHERE name = '%s' AND type ='theme'", $theme));
   $theme_info = unserialize($info);

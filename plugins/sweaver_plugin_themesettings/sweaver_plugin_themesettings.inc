@@ -91,7 +91,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
    * Frontend css and js.
    */
   function frontend_css_js(&$inline_settings) {
-    drupal_add_js('misc/collapse.js');
+    //drupal_add_js('misc/collapse.js');
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.js', 'module');
     drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.css', 'theme');
   }
