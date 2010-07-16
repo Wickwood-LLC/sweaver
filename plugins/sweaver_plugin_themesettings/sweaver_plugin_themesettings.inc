@@ -11,6 +11,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
    */
   function frontend_form() {
     $form = array();
+    $form['#popups'] = array();
     global $theme_key;
 
     $form_state = array();
@@ -20,12 +21,30 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     // Let other modules alter the form.
     drupal_prepare_form('system_theme_settings', $form, $form_state);
 
-    // Convert all fieldsets to collapsible collapsed.
+    // Convert all fieldsets to something completely new!
+    $i = 1;
+    $weight = -100;
     foreach (element_children($form) as $key) {
       if (isset($form[$key]['#type']) && $form[$key]['#type'] == 'fieldset') {
-        $form[$key]['#collapsible'] = TRUE;
-        $form[$key]['#collapsed'] = TRUE;
-        $form[$key]['#attributes']['class'] = 'create-tab';
+
+        $title = $form[$key]['#title'];
+
+        $form['item_'. $i] = array(
+          '#type' => 'markup',
+          '#value' => '<div class="sweaver-settings-popup"><a href="#" id="theme-settings-link-'. $i .'">'. check_plain($title) .'</a></div>',
+          '#weight' => $weight++,
+        );
+
+        $form[$key]['#prefix'] = '<div class="sweaver-themesettings-wrapper" id="theme-settings-data-'. $i .'">';
+        $form[$key]['#suffix'] = '</div>';
+        unset($form[$key]['#collapsible']);
+        unset($form[$key]['#collapsed']);
+        unset($form[$key]['#attributes']);
+
+        // Add to popup
+        $form['#popups'][] = $key;
+
+        $i++;
       }
     }
 
@@ -91,7 +110,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
    * Frontend css and js.
    */
   function frontend_css_js(&$inline_settings) {
-    //drupal_add_js('misc/collapse.js');
+    drupal_add_js('misc/collapse.js');
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.js', 'module');
     drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.css', 'theme');
   }

@@ -39,3 +39,4 @@
 
   <?php print $rest_of_form; ?>
 </div>
+<div id="sweaver-popup"><div class="close">x</div><div class="content"><?php print $sweaver_popup; ?></div></div>

@@ -731,6 +731,8 @@ function sweaver_plugin_editor_config_plugins(&$form_state) {
 
 /**
  * Plugins form submit callback.
+ *
+ * TODO remove all cookies.
  */
 function sweaver_plugin_editor_config_plugins_submit(&$form, &$form_state) {
   drupal_set_message(t('Your settings have been saved.'));

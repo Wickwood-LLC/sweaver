@@ -34,9 +34,9 @@ $(document).ready(function() {
 	  });
 	  if (contentHeight > 350) contentHeight = 350;
 	  $('#sweaver-middle .sweaver-content').height(contentHeight);
-	  Drupal.Sweaver.cookie('sweaver_height', contentHeight); 
+	  Drupal.Sweaver.cookie('sweaver_height', contentHeight);
   }
-  
+
   // open/close bar
   $('#sweaver-tabs .close a').click(function(){
     if (Drupal.Sweaver.open == 'false') {
@@ -44,14 +44,14 @@ $(document).ready(function() {
       $(this).parent().removeClass('active-tab');
       $('#' + Drupal.Sweaver.activeTab).addClass('active-tab');
       Drupal.Sweaver.open = 'true';
-      Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);         
+      Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
     }
     else {
       $('#sweaver').css("height", 0);
       Drupal.Sweaver.activeTab =  $('#sweaver-tabs .active-tab').attr('id');
       $(this).parent().addClass('active-tab');
       Drupal.Sweaver.open = 'false';
-      Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);      
+      Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
       Drupal.Sweaver.cookie('sweaver_active_tab', Drupal.Sweaver.activeTab);
     }
   });
@@ -64,7 +64,7 @@ $(document).ready(function() {
 	    if (Drupal.Sweaver.open == 'false') {
         $('#sweaver').css("height", 'auto');
         Drupal.Sweaver.open = 'true';
-      } 
+      }
 		  $(this).parent().siblings().removeClass('active-tab');
 		  $(this).parent().toggleClass('active-tab');
 		  $('#'+ container + ' > div').show();
@@ -76,10 +76,10 @@ $(document).ready(function() {
         $(this).parent().toggleClass('active-tab');
         $('#sweaver').css("height", 'auto');
         Drupal.Sweaver.open = 'true';
-      } 
+      }
 		}
-    Drupal.Sweaver.activeTab =  $(this).parent().attr('id');  
-    Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);   
+    Drupal.Sweaver.activeTab =  $(this).parent().attr('id');
+    Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
     Drupal.Sweaver.cookie('sweaver_active_tab', Drupal.Sweaver.activeTab);
   });
 
@@ -87,11 +87,11 @@ $(document).ready(function() {
   if ($('#edit-sweaver-editor-messages').val() != '') {
     Drupal.Sweaver.setMessage($('#edit-sweaver-editor-messages').val());
   }
-  
+
   // Close messages
   $('#sweaver-messages .close').click(function(){
     $('#sweaver-messages').hide();
-    clearTimeout(Drupal.Sweaver.messageTimer);   
+    clearTimeout(Drupal.Sweaver.messageTimer);
   });
 });
 
@@ -103,27 +103,24 @@ Drupal.Sweaver.setMessage = function(message) {
   messageTop = $(window).height() - $('#sweaver').outerHeight() - $('#sweaver-messages').outerHeight() - $('#sweaver-tabs').outerHeight() - 7;
   $('#sweaver-messages .message').html(message)
   $('#sweaver-messages').css({'left' : messageLeft, 'top' : messageTop}).fadeIn('fast');
-	Drupal.Sweaver.messageTimer = window.setTimeout(function() {$('#sweaver-messages').fadeOut('normal');}, 5000);  
+	Drupal.Sweaver.messageTimer = window.setTimeout(function() {$('#sweaver-messages').fadeOut('normal');}, 5000);
 }
 
 /**
  * Display a fullscreen popup.
  */
-Drupal.Sweaver.showPopup = function(message, object) {
+Drupal.Sweaver.showPopup = function(message) {
   popup = $('#sweaver-popup');
   popupBorder = 7;
   popupTop = $(window).scrollTop() + popupBorder;
   popupWidth = $(window).width() - (popupBorder * 2) - parseInt(popup.css('padding-left')) - parseInt(popup.css('padding-right'));
   popupHeight = $(window).height() - $('#sweaver').outerHeight() - $('#sweaver-tabs').outerHeight() - (popupBorder * 2) - parseInt(popup.css('padding-top')) - parseInt(popup.css('padding-bottom'));
-  $('.content', popup).html(message.html()).css({'height' : popupHeight, 'width' : popupWidth});
+  $('.content', popup).css({'height' : popupHeight, 'width' : popupWidth});
+  $(message).show();
   popup.css({'left' : popupBorder, 'top' : popupTop}).fadeIn('fast');
   $('.close', popup).click(function(){
+    $(message).hide();
     Drupal.Sweaver.hidePopup();
-  });  
-  $('.content', popup).change(function() {
-  console.log(object);
-console.log($('.content', popup));  
-    object = $('.content', popup);
   });
 }
 
@@ -132,7 +129,6 @@ console.log($('.content', popup));
  */
 Drupal.Sweaver.hidePopup = function() {
   popup = $('#sweaver-popup');
-  $('.content', popup).empty();  
 	popup.hide();
 }
 

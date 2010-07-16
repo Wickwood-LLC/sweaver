@@ -307,7 +307,7 @@ function sweaver_preprocess_page(&$vars) {
 function sweaver_footer($main = 0) {
   // We return the complete form in the footer.
   if (sweaver_show_editor()) {
-    return drupal_get_form('sweaver_frontend') . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>' . '<div id="sweaver-popup"><div class="close">x</div><div class="content"></div></div>';
+    return drupal_get_form('sweaver_frontend') . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>';
   }
 }
 

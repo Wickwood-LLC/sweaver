@@ -16,6 +16,7 @@ function template_preprocess_sweaver_plugin(&$vars) {
   $sweaver_height = '';
   $vars['tabs'] = array();
   $vars['tabs_data'] = array();
+  $vars['sweaver_popup'] = '';
 
   ctools_include('plugins');
   ksort($form['#plugins']);

@@ -55,6 +55,14 @@ class sweaver_plugin {
   function frontend_form_render(&$vars, &$form, $plugin) {
     $name = $plugin['name'];
     if (isset($form[$name])) {
+
+      // Popups.
+      if (isset($form[$name]['form']['#popups'])) {
+        foreach ($form[$name]['form']['#popups'] as $key => $form_key) {
+          $vars['sweaver_popup'] .= drupal_render($form[$name]['form'][$form_key]);
+        }
+      }
+
       if (isset($form[$name]['#tab_name'])) {
         $vars['tabs'][$name]['#tab_name'] = $form[$name]['#tab_name'];
       }

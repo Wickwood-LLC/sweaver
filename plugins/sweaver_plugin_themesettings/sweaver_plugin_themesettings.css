@@ -1,17 +1,23 @@
 /* $Id$ */
 
-#sweaver_plugin_themesettings .create-tab {
-  border: 0px;
-  float: left;
+.sweaver-themesettings-wrapper {
+  display: none;
 }
 
+#sweaver_plugin_themesettings .sweaver-settings-popup {
+  border: 0px;
+  float: left;
+  margin-right: 5px;
+}
+
+// Still needed ?
 #sweaver_plugin_themesettings fieldset {
 	padding: 0 !important;
 	margin: 0 15px 0 0 !important;
 }
 
-#sweaver_plugin_themesettings .create-tab legend a {
-	background-image: none !important; 
+#sweaver_plugin_themesettings .sweaver-settings-popup a {
+	background-image: none !important;
 	display: block !important;
   color: #fff !important;
   font-weight: bold !important;

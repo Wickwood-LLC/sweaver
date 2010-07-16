@@ -97,12 +97,12 @@ body.sweaver {
   width: 300px;
   min-height: 50px;
   font-family: "trebuchet MS", Helvetica, Arial !important;
-  font-size: 12px !important;   
+  font-size: 12px !important;
 }
 
 #sweaver-popup {
 	width: auto;
-	padding: 25px 15px !important; 
+	padding: 25px 15px !important;
 }
 
 #sweaver-messages .close,
@@ -131,6 +131,19 @@ body.sweaver {
   color: #fff !important;
   text-decoration: underline !important;
 }
+
+#sweaver-popup fieldset {
+  background: transparent none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 none !important;
+}
+
+#sweaver-popup fieldset .description {
+  color: #eee !important;
+  margin-left: 10px !important;
+}
+
 
 /* header region */
 
@@ -169,7 +182,7 @@ body.sweaver {
 	font-size:13px !important;
 	font-weight:bold !important;
 	line-height:18px !important;
-	margin: 5px 0 !important;  
+	margin: 5px 0 !important;
 }
 
 #sweaver p,
@@ -212,9 +225,9 @@ body.sweaver {
   height: auto !important;
   box-shadow: 1px 1px 2px #8A9F16 !important;
   -moz-box-shadow: 1px 1px 2px #8A9F16 !important;
-  -webkit-box-shadow: 1px 1px 2px #8A9F16 !important;  
+  -webkit-box-shadow: 1px 1px 2px #8A9F16 !important;
   font-family: "trebuchet MS", Helvetica, Arial !important;
-  font-size: 12px !important;  
+  font-size: 12px !important;
 }
 
 #sweaver select {
@@ -246,7 +259,7 @@ body.sweaver {
   display: block !important;
   margin: 1em 0 0 0 !important;
   background-color: #333 !important;
-  color: #fff !important;  
+  color: #fff !important;
   border: 0 none !important;
   width: auto !important;
   padding: 5px !important;
