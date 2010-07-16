@@ -203,7 +203,11 @@ class sweaver_plugin_editor extends sweaver_plugin {
         $form['#editor_containers'][$container]['title'] = check_plain($settings['title']);
         foreach ($settings['properties'] as $weight => $property_key) {
           $form['#editor_containers'][$container]['properties'][$property_key] = $property_key;
-          // Create property element.
+
+          // Create property element, continue if it doesn't exist.
+          if (!isset($properties[$property_key])) {
+            continue;
+          }
           $property = $properties[$property_key];
           sweaver_export_check_serialized_keys($property);
           $form[$property->name] = $this->sweaver_property_element($property, $images);
