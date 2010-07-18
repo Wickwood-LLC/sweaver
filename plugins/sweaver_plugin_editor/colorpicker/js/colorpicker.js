@@ -167,6 +167,18 @@
 				$(document).bind('mouseup', current, upSelector);
 				$(document).bind('mousemove', current, moveSelector);
 			},
+			// Also change color on click.
+			clickSelector = function (ev) {
+				var current = {
+					cal: $(this).parent(),
+					pos: $(this).offset()
+				};
+				current.preview = current.cal.data('colorpicker').livePreview;
+				ev.data = {};
+				ev.data.cal = current.cal;
+				ev.data.pos = current.pos;
+				moveSelector(ev);
+			},
 			moveSelector = function (ev) {
 				change.apply(
 					ev.data.cal.data('colorpicker')
@@ -404,7 +416,7 @@
 						cal
 							.find('span').bind('mousedown', downIncrement).end()
 							.find('>div.colorpicker_current_color').bind('click', restoreOriginal);
-						options.selector = cal.find('div.colorpicker_color').bind('mousedown', downSelector);
+						options.selector = cal.find('div.colorpicker_color').bind('mousedown', downSelector).bind('click', clickSelector);
 						options.selectorIndic = options.selector.find('div div');
 						options.el = this;
 						options.hue = cal.find('div.colorpicker_hue div');
