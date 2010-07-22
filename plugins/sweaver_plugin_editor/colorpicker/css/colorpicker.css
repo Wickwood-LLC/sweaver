@@ -147,6 +147,16 @@
 	top: 142px;
 	overflow: hidden;
 }
+.colorpicker_transparent {
+  position: absolute;
+  width: 22px;
+  left: 288px;
+  top: 144px;
+  overflow: hidden;	
+}
+.colorpicker_transparent a {
+	color: #898989 !important;
+}
 .colorpicker_focus {
 	background-position: center;
 }

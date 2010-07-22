@@ -8,7 +8,7 @@
  * properties are available to drag and drop into a region.
  */
 
- $count = 0;
+  $count = 0;
 ?>
 
 <div id="editor-configuration-form">

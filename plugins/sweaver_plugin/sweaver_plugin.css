@@ -46,7 +46,8 @@ body.sweaver {
 }
 
 #sweaver .close a,
-#sweaver .tab a {
+#sweaver .tab a,
+#sweaver .tab-move a {
   background-color: #999 !important;
   font-weight: normal !important;
   height: 16px !important;
@@ -60,6 +61,12 @@ body.sweaver {
   border-radius: 7px 7px 0 0 !important;
   -webkit-border-radius: 7px 7px 0 0 !important;
   outline: none !important;
+}
+
+#sweaver .tab-move a {
+  float: right !important;
+  margin-right: 7px !important;
+  cursor: move;
 }
 
 #sweaver .close a {
@@ -149,6 +156,23 @@ body.sweaver {
   padding: 5px !important;
   margin: 5px !important;
   border: 0 none !important;
+}
+
+#sweaver .popup-link {
+  border: 0px;
+  float: left;
+  margin-right: 5px;
+}
+
+#sweaver .popup-link a {
+  background-image: none !important;
+  display: block !important;
+  color: #fff !important;
+  font-weight: bold !important;
+  padding: 10px !important;
+  background: #333 none !important;
+  display: block !important;
+  float: left !important;
 }
 
 /* header region */
@@ -289,6 +313,10 @@ body.sweaver {
 	margin-top: 5px !important;
 }
 
+#sweaver .display-none, #sweaver-popup .display-none {
+	display: none;
+}
+
 /* containers */
 
 #sweaver .container {
@@ -312,4 +340,68 @@ body.sweaver {
 }
 #sweaver .container-4 {
   width: 25%;
+}
+
+/* General styling */
+
+#sweaver h3 {
+  float: left !important;
+  width: 250px !important;
+  margin: 0  !important;
+}
+
+#sweaver .float-left {
+  float: left;
+}
+
+#sweaver .margin-bottom {
+  margin-bottom: 15px;
+}
+
+#sweaver .form-floater .form-submit,
+#sweaver .form-floater .form-item {
+  float: left !important;
+  clear: none !important;
+  margin: 0 !important;
+}
+
+#sweaver .form-floater .form-item {
+  padding: 0 !important;
+  margin: 0 10px 0 0 !important;
+}
+
+#sweaver textarea {
+  width: 400px !important;
+}
+
+#sweaver .sweaver-text-float {
+  float: left !important;
+  background-color: #333 !important;
+  margin-right: 3px !important;
+  margin-bottom: 3px !important;
+  padding: 3px !important;
+}
+
+#sweaver .sweaver-text-float a {
+  color: #fff !important;
+}
+
+/* Images and selected images */
+
+#sweaver .selected-image {
+  -moz-box-shadow: 1px 1px 2px #8A9F16;
+  background: #FFFFFF;
+  color: #333333;
+  float: left;
+  margin-right: 25px;
+  padding: 5px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#sweaver .selected-image-default {
+  background: #333333;
+  color: #FFFFFF;
+  margin-top: 0;
+  padding: 15px;
 }

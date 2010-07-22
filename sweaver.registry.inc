@@ -13,14 +13,19 @@ function _sweaver_menu() {
   $weight = 0;
   $items = array();
 
-  ctools_include('plugins');
-  $plugins = ctools_get_plugins('sweaver', 'plugins');
+  $base = array(
+    'access arguments' => array('configure sweaver'),
+    'page callback' => 'sweaver_menu_callback',
+  );
 
-  foreach ($plugins as $plugin) {
+  foreach (sweaver_get_plugin() as $plugin) {
     $plugin_name = $plugin['name'];
-    $object = sweaver_get_plugin($plugins, $plugin_name);
-    if ($object->is_enabled($plugin_name)) {
-      $items += $object->menu_registry($weight);
+    $object = sweaver_get_plugin($plugin_name);
+    if ($object->sweaver_enabled($plugin_name)) {
+      $page_arguments = array(
+        'plugin' => $plugin_name,
+      );
+      $items += $object->sweaver_menu($weight, $page_arguments, $base);
     }
   }
 
@@ -33,14 +38,11 @@ function _sweaver_menu() {
 function _sweaver_theme() {
   $theme_functions = array();
 
-  ctools_include('plugins');
-  $plugins = ctools_get_plugins('sweaver', 'plugins');
-
-  foreach ($plugins as $plugin) {
+  foreach (sweaver_get_plugin() as $plugin) {
     $plugin_name = $plugin['name'];
-    $object = sweaver_get_plugin($plugins, $plugin_name);
-    if ($object->is_enabled($plugin_name)) {
-      $theme_functions += $object->theme_registry();
+    $object = sweaver_get_plugin($plugin_name);
+    if ($object->sweaver_enabled($plugin_name)) {
+      $theme_functions += $object->sweaver_theme();
     }
   }
   return $theme_functions;
@@ -116,16 +118,6 @@ function _sweaver_sweaver_plugins() {
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings',
       'file' => 'sweaver_plugin_themesettings.inc',
       'class' => 'sweaver_plugin_themesettings',
-      'parent' => 'sweaver_plugin',
-    ),
-  );
-  $plugins['sweaver_plugin_imagecache'] = array(
-    'handler' => array(
-      'tab' => t('Imagecache'),
-      'tab_description' => t('A list of the available imagecache settings for your site.'),
-      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_imagecache',
-      'file' => 'sweaver_plugin_imagecache.inc',
-      'class' => 'sweaver_plugin_imagecache',
       'parent' => 'sweaver_plugin',
     ),
   );

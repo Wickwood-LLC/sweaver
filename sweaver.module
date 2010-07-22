@@ -2,9 +2,9 @@
 // $Id$
 
 /**
-* @file
-* Sweaver functions.
-*/
+ * @file
+ * Sweaver functions.
+ */
 
 /**
  * Default paths to exclude the frontend editor from.
@@ -16,7 +16,7 @@ define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver\n#admin-menu\n.colorpicker\n#sweav
  * Implementation of hook_perm().
  */
 function sweaver_perm() {
-  return array('configure sweaver','use editor');
+  return array('configure sweaver', 'use editor');
 }
 
 /**
@@ -33,6 +33,25 @@ function sweaver_menu() {
 function sweaver_theme() {
   module_load_include('inc', 'sweaver', 'sweaver.registry');
   return _sweaver_theme();
+}
+
+/**
+ * Implementation of hook_ctools_plugin_api().
+ */
+function sweaver_ctools_plugin_api($owner, $api) {
+  if ($owner == 'sweaver' && ($api == 'sweaver' || $api == 'plugins')) {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implementation of hook_ctools_plugin_plugins().
+ */
+function sweaver_ctools_plugin_plugins() {
+  return array(
+    'cache' => TRUE,
+    'use hooks' => TRUE,
+  );
 }
 
 /**
@@ -65,87 +84,6 @@ function sweaver_default_sweaver_type() {
 function sweaver_sweaver_plugins() {
   module_load_include('inc', 'sweaver', 'sweaver.registry');
   return _sweaver_sweaver_plugins();
-}
-
-/**
- * Implementation of hook_ctools_plugin_api().
- */
-function sweaver_ctools_plugin_api($owner, $api) {
-  if ($owner == 'sweaver' && ($api == 'sweaver' || $api == 'plugins')) {
-    return array('version' => 1);
-  }
-}
-
-/**
- * Implementation of hook_ctools_plugin_plugins().
- */
-function sweaver_ctools_plugin_plugins() {
-  return array(
-    'cache' => TRUE,
-    'use hooks' => TRUE,
-  );
-}
-
-/**
- * Load one object or all objects.
- *
- * @param string $name
- *    The machine name.
- * @param mixed $map
- *    Can be an array passed on by the load arguments of the menu or a string.
- *    If it's a map, the object_type will be index 4 otherwise we just have a string.
- * @param string $type
- *    Whether to return all objects or only enabled.
- */
-function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
-
-  static $run = FALSE;
-  static $objects = array();
-  $object_type = is_array($map) ? $map[4] : $map;
-
-  if (!$run) {
-
-    if ($objects_cache = cache_get('sweaver')) {
-      $objects = $objects_cache->data;
-    }
-    else {
-      ctools_include('export');
-      $objects = new stdClass;
-      $all_objects = ctools_export_load_object('sweaver_selector');
-      $all_objects += ctools_export_load_object('sweaver_property');
-      $all_objects += ctools_export_load_object('sweaver_type');
-      foreach ($all_objects as $key => $object) {
-        $object_type_key = str_replace('sweaver_', '', $object->table);
-        if (!isset($object->disabled) || (isset($object->disabled) && $object->disabled == FALSE)) {
-          $objects->{$object_type_key}->enabled[$key] = $object;
-        }
-        $objects->{$object_type_key}->all[$key] = $object;
-      }
-      cache_set('sweaver', $objects);
-    }
-    $run = TRUE;
-  }
-
-  if ($name) {
-    return isset($objects->{$object_type}->all[$name]) ? $objects->{$object_type}->all[$name] : FALSE;
-  }
-  else {
-    return isset($objects->{$object_type}->{$status}) ? $objects->{$object_type}->{$status} : array();
-  }
-}
-
-/**
- * Get a plugin handler.
- */
-function sweaver_get_plugin($plugins, $key) {
-  static $cache = array();
-
-  if (!isset($cache[$key])) {
-    if ($class = ctools_plugin_get_class($plugins[$key], 'handler')) {
-      $cache[$key] = new $class($plugins[$key]);
-    }
-  }
-  return isset($cache[$key]) ? $cache[$key] : FALSE;
 }
 
 /**
@@ -215,9 +153,11 @@ function sweaver_export_sweaver_object($object, $object_type) {
 }
 
 /**
- * Check if we have a serialized key. If so convert it to an array.
+ * Helper function to check if we have a serialized key.
+ * If so convert it to an array.
  *
- * @param stdClass $object A sweaver object.
+ * @param stdClass $object
+ *   A sweaver object.
  */
 function sweaver_export_check_serialized_keys($object) {
   if (isset($object->table)) {
@@ -226,6 +166,140 @@ function sweaver_export_check_serialized_keys($object) {
     if (isset($object->{$key}) && !empty($object->{$key}) && is_string($object->{$key})) {
       $object->{$key} = unserialize($object->{$key});
     }
+  }
+}
+
+/**
+ * Load one object or all objects.
+ *
+ * @param string $name
+ *   The machine name of the object.
+ * @param mixed $map
+ *   Can be an array passed on by the load arguments of the menu or a string.
+ *   If it's a map, the object_type will be index 4 otherwise we just have a string.
+ * @param string $status
+ *   Whether to return all objects or only enabled.
+ * @return mixed
+ *   One object or an array of objects.
+ */
+function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
+
+  static $run = FALSE;
+  static $objects = array();
+  $object_type = is_array($map) ? $map[5] : $map;
+
+  if (!$run) {
+
+    if ($objects_cache = cache_get('sweaver')) {
+      $objects = $objects_cache->data;
+    }
+    else {
+      ctools_include('export');
+      $objects = new stdClass;
+      $all_objects = ctools_export_load_object('sweaver_selector');
+      $all_objects += ctools_export_load_object('sweaver_property');
+      $all_objects += ctools_export_load_object('sweaver_type');
+      foreach ($all_objects as $key => $object) {
+        $object_type_key = str_replace('sweaver_', '', $object->table);
+        if (!isset($object->disabled) || (isset($object->disabled) && $object->disabled == FALSE)) {
+          $objects->{$object_type_key}->enabled[$key] = $object;
+        }
+        $objects->{$object_type_key}->all[$key] = $object;
+      }
+      cache_set('sweaver', $objects);
+    }
+    $run = TRUE;
+  }
+
+  if ($name) {
+    return isset($objects->{$object_type}->all[$name]) ? $objects->{$object_type}->all[$name] : FALSE;
+  }
+  else {
+    return isset($objects->{$object_type}->{$status}) ? $objects->{$object_type}->{$status} : array();
+  }
+}
+
+/**
+ * Get all plugins or a plugin handler.
+ *
+ * @param string $plugin_name
+ *   The name of the plugin.
+ * @return mixed
+ *   Either a list of plugins or a loaded plugin class.
+ */
+function sweaver_get_plugin($plugin_name = NULL) {
+  static $cache = array();
+  static $cached_plugins = array();
+
+  if (empty($cached_plugins)) {
+    ctools_include('plugins');
+    $plugins = ctools_get_plugins('sweaver', 'plugins');
+    $cached_plugins = $plugins;
+  }
+
+  if ($plugin_name == NULL) {
+    return $cached_plugins;
+  }
+  else {
+    if (!isset($cache[$plugin_name])) {
+
+      if ($class = ctools_plugin_get_class($cached_plugins[$plugin_name], 'handler')) {
+        $cache[$plugin_name] = new $class($cached_plugins[$plugin_name]);
+      }
+    }
+    return isset($cache[$plugin_name]) ? $cache[$plugin_name] : FALSE;
+  }
+}
+
+/**
+ * Implementation of hook_init().
+ */
+function sweaver_init() {
+  if (sweaver_show_editor()) {
+    $inline_js_settings = array('sweaver' => array('invokes' => array()));
+
+    foreach (sweaver_get_plugin() as $plugin) {
+      $plugin_name = $plugin['name'];
+      $object = sweaver_get_plugin($plugin_name);
+      if ($object->sweaver_enabled($plugin_name)) {
+        // Fire init.
+        $object->sweaver_init();
+        // CSS and JS.
+        $object->sweaver_form_css_js($inline_js_settings);
+      }
+    }
+
+    // JS inline settings.
+    drupal_add_js($inline_js_settings, 'setting');
+  }
+}
+
+/**
+ * Implementation of hook_preprocess_page().
+ */
+function sweaver_preprocess_page(&$vars) {
+  if (variable_get('sweaver_load_style_when_editor_inactive', TRUE) || sweaver_show_editor()) {
+    // Load css for this theme.
+    global $theme_key;
+    $sweaver = sweaver_get_plugin('sweaver_plugin');
+    $current_style = $sweaver->sweaver_get_current_style($theme_key);
+    if (isset($current_style->css)) {
+      $css = $vars['css'];
+      $css_path = file_directory_path() .'/sweaver/sweaver_' . $theme_key . '_'. $current_style->thid .'.css';
+      drupal_add_css($css_path, 'theme');
+      $vars['css']['all']['theme'][$css_path] = TRUE;
+      $vars['styles'] = drupal_get_css();
+    }
+  }
+}
+
+/**
+ * Implementation of hook_footer().
+ */
+function sweaver_footer($main = 0) {
+  // We return the complete form in the footer.
+  if (sweaver_show_editor()) {
+    return drupal_get_form('sweaver_frontend') . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>';
   }
 }
 
@@ -259,60 +333,7 @@ function sweaver_show_editor() {
 }
 
 /**
- * Implementation of hook_init().
- */
-function sweaver_init() {
-  if (sweaver_show_editor()) {
-    $inline_js_settings = array('sweaver' => array('invokes' => array()));
-
-    ctools_include('plugins');
-    $plugins = ctools_get_plugins('sweaver', 'plugins');
-    foreach ($plugins as $plugin) {
-      $plugin_name = $plugin['name'];
-      $object = sweaver_get_plugin($plugins, $plugin_name);
-      if ($object->is_enabled($plugin_name)) {
-        // Fire init.
-        $object->init();
-        // CSS and JS.
-        $object->frontend_css_js($inline_js_settings);
-      }
-    }
-
-    // JS inline settings.
-    drupal_add_js($inline_js_settings, 'setting');
-  }
-}
-
-/**
- * Implementation of hook_preprocess_page().
- */
-function sweaver_preprocess_page(&$vars) {
-  if (variable_get('sweaver_load_style_when_editor_inactive', TRUE) || sweaver_show_editor()) {
-    // Load css for this theme.
-    global $theme_key;
-    $current_style = sweaver_get_current_style($theme_key);
-    if (isset($current_style->css)) {
-      $css = $vars['css'];
-      $css_path = file_directory_path() .'/sweaver/sweaver_' . $theme_key . '_'. $current_style->thid .'.css';
-      drupal_add_css($css_path, 'theme');
-      $vars['css']['all']['theme'][$css_path] = TRUE;
-      $vars['styles'] = drupal_get_css();
-    }
-  }
-}
-
-/**
- * Implementation of hook_footer().
- */
-function sweaver_footer($main = 0) {
-  // We return the complete form in the footer.
-  if (sweaver_show_editor()) {
-    return drupal_get_form('sweaver_frontend') . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>';
-  }
-}
-
-/**
- * Rock 'n' roll: the frontend editor.
+ * Rock 'n' roll: the sweaver editor.
  */
 function sweaver_frontend(&$form_state) {
   $form = array();
@@ -323,45 +344,42 @@ function sweaver_frontend(&$form_state) {
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
   $plugins_order = variable_get('sweaver_plugins_weight', array());
 
-  ctools_include('plugins');
-  $plugins = ctools_get_plugins('sweaver', 'plugins');
-
-  foreach ($plugins as $plugin) {
+  foreach (sweaver_get_plugin() as $plugin) {
     $plugin_name = $plugin['name'];
 
-    $object = sweaver_get_plugin($plugins, $plugin_name);
+    $object = sweaver_get_plugin($plugin_name);
 
-    if ($object->is_enabled($plugin_name)) {
+    if ($object->sweaver_enabled($plugin_name)) {
 
       // Calculate weight.
       $default_weight = in_array($plugin_name, $plugins_order) ? array_search($plugin_name, $plugins_order) : $weight++;
       $form['#plugins'][$default_weight] = $plugin;
 
       // Form.
-      $plugin_form = $object->frontend_form();
+      $plugin_form = $object->sweaver_form();
       if (!empty($plugin_form)) {
         $form[$plugin['name']]['form'] = $plugin_form;
         if (isset($plugin['handler']['tab'])) {
-          $form[$plugin['name']]['#tab_name'] = isset($plugin['handler']['tab']) ? $plugin['handler']['tab'] : ucfirst($plugin_name);
+          $form[$plugin['name']]['#tab_name'] = isset($plugin['handler']['tab']) ? $plugin['handler']['tab'] : drupal_ucfirst($plugin_name);
           $form[$plugin['name']]['#tab_description'] = isset($plugin['handler']['tab_description']) ? $plugin['handler']['tab_description'] : '';
         }
       }
     }
   }
 
-  $messages = '';
-  if (!empty($_SESSION['sweaver_editor_messages'])) {
-    foreach ($_SESSION['sweaver_editor_messages'] as $key => $value) {
-      $messages .= $_SESSION['sweaver_editor_messages'][$key] ."\n";
-    }
-  }
+  // Editor messages.
+  $messages = $object->sweaver_session();
+  $object->sweaver_session(NULL, 'sweaver_editor_messages', TRUE);
   $form['sweaver-editor-messages'] = array(
     '#type' => 'hidden',
     '#value' => trim($messages),
   );
-  $_SESSION['sweaver_editor_messages'] = array();
 
   $form['#current_theme'] = $theme_key;
+  $form['destination'] = array(
+    '#type' => 'hidden',
+    '#value' => $_GET['q'],
+  );
 
   return $form;
 }
@@ -370,68 +388,87 @@ function sweaver_frontend(&$form_state) {
  * Sweaver frontend submit.
  */
 function sweaver_frontend_submit($form, &$form_state) {
-  ctools_include('plugins');
-  $plugins = ctools_get_plugins('sweaver', 'plugins');
 
-  foreach ($plugins as $plugin) {
+  foreach (sweaver_get_plugin() as $plugin) {
     $plugin_name = $plugin['name'];
 
-    $object = sweaver_get_plugin($plugins, $plugin_name);
-    if ($object->is_enabled($plugin_name)) {
+    $object = sweaver_get_plugin($plugin_name);
+    if ($object->sweaver_enabled($plugin_name)) {
       // In the first version, we'll let everyone who has submit methods
       // simply do their stuff with the submitted values.
-      $object->frontend_form_submit($form, $form_state);
+      $object->sweaver_form_submit($form, $form_state);
     }
+  }
+
+  // Redirect to same path. We issue this function so things like
+  // session, current style and possible others are properly set.
+  drupal_goto();
+}
+
+/**
+ * Sweaver menu callback.
+ *
+ * @param array $settings
+ *   A collection of page arguments from the menu callback.
+ * @return string $output
+ *   The rendered page - can be form or anything else.
+ */
+function sweaver_menu_callback($settings) {
+  $plugin_name = $settings['plugin'];
+  $callback_method = (isset($settings['callback_method'])) ? $settings['callback_method']: 'menu_callback';
+  $return_method = (isset($settings['return_method'])) ? $settings['return_method'] : 'drupal_get_form';
+
+  $object = sweaver_get_plugin($plugin_name);
+  if ($object->sweaver_enabled($plugin_name)) {
+    $output = $object->$callback_method();
+    if (!empty($output)) {
+      if ($return_method == 'drupal_get_form') {
+        return drupal_get_form('sweaver_menu_callback_form', $output, $plugin_name, $callback_method);
+      }
+      elseif (!empty($return_method) && function_exists($return_method)) {
+        return $return_method($output);
+      }
+      else {
+        return $output;
+      }
+    }
+  }
+
+  return t('No page found or you do not have sufficient permission to access the page.');
+}
+
+/**
+ * Helper function to return the form passed by sweaver_menu_callback.
+ *
+ * @param string $plugin_name
+ *   Name of the plugin.
+ * @param string $callback_method
+ *   Name of the method to call.
+ * @return string $form
+ *   The rendered form.
+ */
+function sweaver_menu_callback_form($form_state, $form, $plugin_name, $callback_method) {
+  $form['#plugin_name'] = $plugin_name;
+  $form['#callback_method'] = $callback_method;
+  return $form;
+}
+
+/**
+ * Sweaver menu callback validate.
+ */
+function sweaver_menu_callback_form_validate($form, &$form_state) {
+  $object = sweaver_get_plugin($form['#plugin_name']);
+  $callback_validate_function = $form['#callback_method'] .'_validate';
+  if (method_exists($object, $callback_validate_function)) {
+    $object->$callback_validate_function($form, $form_state);
   }
 }
 
 /**
- * Sweaver editor containers.
+ * Sweaver menu callback form submit.
  */
-function sweaver_containers() {
-  return array(
-    'one' => t('Font'),
-    'two' => t('Background'),
-    'three' => t('Spacing'),
-    'four' => t('Empty'),
-  );
-}
-
-/**
- * Check if we have active style for this theme.
- *
- * @param string $theme The machine name of the theme.
- *
- * // TODO use ctools_static here.
- *
- */
-function sweaver_get_current_style($theme, $reset = FALSE) {
-  static $css = NULL;
-  static $run = FALSE;
-
-  if (!$run || $reset) {
-    $run = TRUE;
-    if (isset($_SESSION['sweaver']['draft_mode']) && $_SESSION['sweaver']['draft_mode']) {
-      $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where thid = %d AND theme = '%s'", $_SESSION['sweaver']['loaded_style'], $theme));
-    }
-    else {
-      $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where theme = '%s' and active = 1", $theme));
-    }
-    if ($css) {
-      return $css;
-    }
-  }
-  return $css;
-}
-
-/**
- * Get theme info.
- *
- * @param string $theme_key The machine name for the theme.
- */
-
-function sweaver_get_theme_info($theme) {
-  $info = db_result(db_query("SELECT info FROM {system} WHERE name = '%s' AND type ='theme'", $theme));
-  $theme_info = unserialize($info);
-  return $theme_info;
+function sweaver_menu_callback_form_submit($form, &$form_state) {
+  $object = sweaver_get_plugin($form['#plugin_name']);
+  $callback_submit_function = $form['#callback_method'] .'_submit';
+  $object->$callback_submit_function($form, $form_state);
 }

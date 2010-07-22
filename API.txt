@@ -1,6 +1,22 @@
 /* $Id$ */
 
-Hook for ctools
+Table of contents
+------------------
+
+1. Hook for cTools.
+2. Hooks for registering selectors, properties and types.
+3. Plugins hook.
+4. Plugin class example.
+5. sweaver_get_plugin().
+6. Images handler.
+7. Session handling
+8. Sweaver popups.
+9. General methods.
+10. General JS functions.
+11. General CSS styles.
+
+------------------------------------------------------
+1. Hook for cTools
 ------------------------------------------------------
 
 /**
@@ -12,8 +28,9 @@ function hook_ctools_plugin_api($owner, $api) {
   }
 }
 
-Hooks for registering selectors, properties and types
-------------------------------------------------------
+---------------------------------------------------------
+2. Hooks for registering selectors, properties and types
+---------------------------------------------------------
 
 /**
  * Implementation of hook_default_sweaver_selector().
@@ -90,8 +107,9 @@ function sweaver_default_sweaver_type() {
 }
 
 
-Hooks and plugin example class for a new plugin
------------------------------------------------
+---------------------------------------------------------
+3. Plugins hook.
+---------------------------------------------------------
 
 /**
  * Implementation of hook_sweaver_plugins().
@@ -113,6 +131,10 @@ function hook_sweaver_plugins() {
   return $plugins;
 }
 
+---------------------------------------------------------
+4. Plugin class example.
+---------------------------------------------------------
+
 /**
  * Your plugin
  *
@@ -123,56 +145,189 @@ class pluginname extends sweaver_plugin {
   /**
    * Status of plugin.
    */
-  function is_enabled($plugin_name) {
+  function sweaver_enabled($plugin_name) {
     return variable_get('sweaver_plugin_status_'. $plugin_name, TRUE);
   }
 
   /**
    * Menu registry.
    */
-  function menu_registry(&$weight) {
+  function sweaver_menu(&$weight, $page_arguments, $base) {
+    // $page_arguments = array('plugin' => 'name_of_your_plugin'); 
+    //  $base = array(
+    //    'access arguments' => array('configure sweaver'),
+    //    'page callback' => 'sweaver_menu_callback',
+    //  );
+    // You can use these to add to your menu items.
+    // Other stuff you can return in page arguments:
+    // callback_method: defaults to menu_callback - optional.
+    // return_method : default to drupal_get_form - optional
     // Return menu items for Drupal.
   }
 
   /**
    * Theme registry.
    */
-  function theme_registry() {
+  function sweaver_theme() {
     // Return theming functions for Drupal.
   }
 
   /**
    * Init function.
    */
-  function init() {
+  function sweaver_init() {
     // Do stuff during hook_init() of Drupal.
   }
 
   /**
-   * Frontend form.
+   * Sweaver form.
    */
-  function frontend_form() {
+  function sweaver_form() {
     return array();
   }
 
   /**
-   * Frontend form render.
+   * Sweaver form render.
    */
-  function frontend_form_render(&$vars, &$form, $plugin) {
+  function sweaver_form_render(&$vars, &$form, $plugin) {
     // Do some extra rendering on the form.
   }
 
   /**
    * Frontend css and js.
    */
-  function frontend_css_js(&$inline_settings) {
+  function sweaver_form_css_js(&$inline_settings) {
     // Add css, js and manipulate the inline settings of sweaver.
   }
 
   /**
    * Frontend form submit.
    */
-  function frontend_form_submit($form, &$form_state) {
+  function sweaver_form_submit($form, &$form_state) {
+    // Do something with the submitted values.
+  }
+  
+  /**
+   * Menu callback.
+   */
+  function menu_callback() {
+    // Return a form or simply some other output.
+    // Must return a form array() by default. This
+    // is the default method you need to implement.
+    // This makes is possible to have menu callbacks in your
+    // class without having to create a new file.
+    // All plugins - except for editor.admin.inc' use this
+    // technique. See sweaver_menu_callback() for options.
+  }
+
+  /**
+   * Menu callback validate.
+   */
+  function menu_callback_validate($form, &$form_state) {
+    // Validate the submission.
+  }
+
+  /**
+   * Menu callback submit
+   */
+  function menu_callback_submit($form, &$form_state) {
     // Do something with the submitted values.
   }
 }
+
+------------------------------------------------------
+5. sweaver_get_plugin().
+------------------------------------------------------
+
+.You can use sweaver_get_plugin to get an object. This function will
+load the plugin and return the class if found.
+
+$object = sweaver_get_plugin('plugin_name');
+$object->do_some_method();
+
+------------------------------------------------------
+6. Images handler.
+------------------------------------------------------
+
+The editor searches for a class which implements a method called sweaver_images_handler.
+By default, the images plugin which comes in the sweaver module provides extra images.
+You can change this by setting the variable 'sweaver_plugin_handle_images' to the name
+of the plugin you want. The plugin itself must implement following method:
+
+myclass extends sweaver_plugin {
+  function sweaver_images_handler(&$images) {
+    $images['file_path_1'] = 'Real name 1'; 
+    $images['file_path_2'] = 'Real name 2'; 
+  }
+}
+
+------------------------------------------------------
+7. Session handling
+------------------------------------------------------
+
+sweaver_session($value = NULL, $session_key = 'sweaver_editor_messages', $remove = FALSE, $return = 'string')
+
+Set or return session variables which you can easily use througout the plugin system.
+Much easier than using $_SESSION variables. This function does it all for you.
+Use it as much as you can.
+
+------------------------------------------------------
+8. Sweaver popups.
+------------------------------------------------------
+
+You can put forms in a sweaver popup, which we do for example in the themesettings plugin.
+Following things in the sweaver_form method will make sure this happens:
+
+    $form['#popups'] = array(); // Initialize the popups array.
+    $form['#popups'][] = $key; // Put a FAPI key in the popups array.
+    // Link class: popup-link This will trigger the popup.
+    // The link needs an id with at least 'link' in the name. The form
+    // it has to show needs the same id, but with 'link' replaced as 'data'.
+    
+For inspiration, take a look at plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.inc.
+
+------------------------------------------------------
+9. General methods.
+------------------------------------------------------
+
+- sweaver_get_current_style($theme, $reset = FALSE) {}
+  Returns the css for the theme.
+- sweaver_get_theme_info($theme) {}
+  Returns the theme info for the theme.
+
+------------------------------------------------------
+10. General JS functions.
+------------------------------------------------------
+
+There are a couple of JS functions you can use in your plugins.
+
+- HOOK_updateCss() {} 
+  Must a return CSS definitions to write for the editor.
+  Implemented in editor and custom css plugin. You must add the plugin
+  in the sweaver_form_css_js method in the inline_settings variable in 
+  key 'invokes'. See plugins/sweaver_custom_css/sweaver_custom_css.inc.
+- Drupal.Sweaver.switchTab(remove_tab, show_tab) {}
+  Switch to a tab in the editor
+- Drupal.Sweaver.setMessage(messages) {}
+  Sets a message above the editor. Times out after 5 seconds.
+- Drupal.Sweaver.showPopup(message) {}
+  Shows a popup screen with any content you like. 
+  Gets a close button.
+- Drupal.Sweaver.hidePopup() {}
+  Closes the popup screen.
+
+------------------------------------------------------
+11. General CSS styles.
+------------------------------------------------------
+
+There are several css classes which you can use which will do all kinds of stuff
+
+- display-none: hides an element
+- popup-link: put this on a link and this will trigger a sweaver popup
+- sweaver-text-float: lets links float in a box
+- container: lets a div float
+- container-1 to container-4: determines the width (from 25% to 100%)
+- float-left: floats to left
+- form-floater: makes form items and submits float
+- 
+display-none, popups, switch to style etc

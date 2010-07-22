@@ -47,9 +47,15 @@ function sweaver_plugin_editor_updateCss() {
 
   for (var key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
-    for(var prop in target) {
+    for (var prop in target) {
       if (Drupal.Sweaver.properties[prop]) {
-        cssContent += prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
+    	// Special case for transparent.
+    	if (target[prop] == 'transparent') {
+          cssContent += '  '+ prop + ': ' + target[prop] + ';\n';
+    	}
+    	else {
+          cssContent += '  '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';    		
+    	}
       }
     }
     if (cssContent != '') {
@@ -172,6 +178,23 @@ Drupal.Sweaver.addColorPicker = function() {
     var property = object.parent().attr('id');
     object.ColorPicker({
       color: '#ffffff',
+      // Determine the current color and send it to colorpicker.
+      onBeforeShow: function () {
+    	var current_color_object = {};
+    	var current_color_value = ($('div', this).css('background-color')).replace('rgb(', '').replace(')', '').split(',');
+    	if (current_color_value[0] != 'transparent') {
+      	  current_color_object.r = current_color_value[0];
+    	  current_color_object.g = current_color_value[1];
+    	  current_color_object.b = current_color_value[2];
+  		  $(this).ColorPickerSetColor(current_color_object);
+    	}
+    	else {
+    	  current_color_object.r = '255';
+    	  current_color_object.g = '255';
+    	  current_color_object.b = '255';
+		  $(this).ColorPickerSetColor(current_color_object);
+    	}
+  	  },
       onShow: function (colpkr) {
         $(colpkr).fadeIn(500);
         if (object.parents('.sweaver-group-content').length == 0) {
@@ -185,7 +208,11 @@ Drupal.Sweaver.addColorPicker = function() {
         return false;
       },
       onChange: function (hsb, hex, rgb) {
-        $('div', object).css('backgroundColor', '#' + hex);
+    	var preview = hex;
+    	if (hex != 'transparent') {
+    	  preview = '#'+ hex;
+    	}
+        $('div', object).css('backgroundColor', preview);
         if (Drupal.Sweaver.updateMode) {
           Drupal.Sweaver.setValue(property, hex);
         }
@@ -303,7 +330,7 @@ Drupal.Sweaver.bindClicks = function() {
 		  toggler.css({'left' : '0px'});
       $(this).toggleClass('open').html(Drupal.t('Hide changes'));
 		} else {
-      toggler.css({'left' : '-1000px'});
+      toggler.css({'left' : '-9000px'});
       $(this).toggleClass('open').html(Drupal.t('Show changes'));
 		}
 	});
@@ -429,7 +456,7 @@ Drupal.Sweaver.addToFullPath = function(object, index, active) {
  * Print the full path.
  */
 Drupal.Sweaver.printActivePath = function(i, item) {
-  // Reset the previous path and add the nex item to pathIndexes.
+  // Reset the previous path and add the next item to pathIndexes.
   $("#selected-path").html('');
 
   // Do not add the item when selected or remove it from Active path.
@@ -467,6 +494,27 @@ Drupal.Sweaver.printActivePath = function(i, item) {
 }
 
 /**
+ * Fill the activeElement and update the Form and ActivePath.
+ * Other plugins can use this function to set values on the
+ * style tab. To switch tabs, you can use the Drupal.Sweaver.switchTab 
+ * function.
+ */
+Drupal.Sweaver.updateStyleTab = function(class_name, class_object) {
+
+  Drupal.Sweaver.activeElement.id = '';
+  Drupal.Sweaver.activeElement.class = new Array(class_name);
+  Drupal.Sweaver.activeElement.tag = 'div';
+  Drupal.Sweaver.activeElement.type = 'block';
+  Drupal.Sweaver.activeElement.object = class_object;
+
+  $('#sweaver_plugin_editor .sweaver-header').html('<div id="selected-path" class="clear-block"></div>');
+  Drupal.Sweaver.path[0] = new Object({'id' : Drupal.Sweaver.activeElement.id, 'class' : Drupal.Sweaver.activeElement.class, 'tag' : Drupal.Sweaver.activeElement.tag,  'type' : Drupal.Sweaver.activeElement.type, 'object' : Drupal.Sweaver.activeElement.object});
+  Drupal.Sweaver.addToFullPath(class_object, 0, true);
+  Drupal.Sweaver.printActivePath(0, class_object);
+  Drupal.Sweaver.updateForm();
+}
+
+/**
  * Store new value and update inline css.
  */
 Drupal.Sweaver.setValue = function(property, value) {
@@ -484,11 +532,17 @@ Drupal.Sweaver.writeChanges = function() {
   $('#editor-changes').html('');
   for (key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
-		for (prop in target) {
+	for (prop in target) {
       if (Drupal.Sweaver.properties[prop]) {
-			  $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
-			}
-		}
+    	// Special case for transparent.
+    	if (target[prop] == 'transparent') {
+   	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));    		
+    	}
+    	else {
+ 	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
+    	}
+	  }
+	}
   }
 }
 
@@ -574,7 +628,7 @@ Drupal.Sweaver.hideOverlays = function() {
 }
 
 Drupal.Sweaver.hideChanges = function() {
-  $('#editor-changes').css({'left' : '-1000px'});
+  $('#editor-changes').css({'left' : '-9000px'});
   $('#changes-toggler').removeClass('open').html(Drupal.t('Show changes'));
 }
 

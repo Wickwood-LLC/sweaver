@@ -7,7 +7,7 @@
  */
 
 /**
- * Editor form.
+ * Editor frontend.
  */
 function template_preprocess_sweaver_plugin(&$vars) {
   $form = &$vars['form'];
@@ -18,9 +18,7 @@ function template_preprocess_sweaver_plugin(&$vars) {
   $vars['tabs_data'] = array();
   $vars['sweaver_popup'] = '';
 
-  ctools_include('plugins');
   ksort($form['#plugins']);
-  $plugins = ctools_get_plugins('sweaver', 'plugins');
 
   $i = 0;
   foreach ($form['#plugins'] as $key => $plugin) {
@@ -28,8 +26,8 @@ function template_preprocess_sweaver_plugin(&$vars) {
       $active_tab = $plugin['name'];
       $i++;
     }
-    $object = sweaver_get_plugin($plugins, $plugin['name']);
-    $object->frontend_form_render($vars, $form, $plugin);
+    $object = sweaver_get_plugin($plugin['name']);
+    $object->sweaver_form_render($vars, $form, $plugin);
   }
 
   // Active tab.
@@ -52,4 +50,27 @@ function template_preprocess_sweaver_plugin(&$vars) {
 
   // Rest of the form.
   $vars['rest_of_form'] = drupal_render($form);
+}
+
+/**
+ * Plugins drag and drop configuration screen.
+ */
+function template_preprocess_sweaver_plugin_config_plugins(&$vars) {
+  $form = &$vars['form'];
+  $rows = array();
+
+  ksort($form['#plugins']);
+  foreach ($form['#plugins'] as $key => $plugin) {
+    $row = new stdClass;
+    $row->name = drupal_render($form[$plugin]['name']);
+    $row->status = drupal_render($form[$plugin]['status']);
+    $row->weight = drupal_render($form[$plugin]['weight']);
+    $rows[] = $row;
+  }
+
+  drupal_add_js('misc/tableheader.js');
+  drupal_add_tabledrag('plugins-configuration', 'order', 'sibling', 'plugin-weight', NULL, NULL, TRUE);
+
+  $vars['rows'] = $rows;
+  $vars['submit'] = drupal_render($form);
 }

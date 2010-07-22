@@ -2,6 +2,7 @@
 // $Id$
 
 /**
+ * @file
  * Properties editor class.
  */
 class sweaver_plugin_editor extends sweaver_plugin {
@@ -9,7 +10,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Menu registry.
    */
-  function menu_registry(&$weight) {
+  function sweaver_menu(&$weight, $page_arguments, $base) {
     $items = array();
 
     $base = array(
@@ -28,7 +29,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
       'file' => 'plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.inc',
     );
     $items['admin/settings/sweaver/settings'] = array(
-      'title' => 'Settings',
+      'title' => 'General',
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => $weight++,
     );
@@ -41,6 +42,23 @@ class sweaver_plugin_editor extends sweaver_plugin {
       'weight' => $weight++,
     );
     $items['admin/settings/sweaver/plugins']['type'] = MENU_LOCAL_TASK;
+
+
+    // Editor form configuration.
+    $items['admin/settings/sweaver/editor'] = $base + array(
+      'title' => 'Editor',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('sweaver_plugin_editor_config_editor'),
+      'weight' => $weight++,
+    );
+    $items['admin/settings/sweaver/editor']['type'] = MENU_LOCAL_TASK;
+    $items['admin/settings/sweaver/editor/form'] = $base + array(
+      'title' => 'Form',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('sweaver_plugin_editor_config_editor'),
+      'weight' => $weight++,
+    );
+    $items['admin/settings/sweaver/editor/form']['type'] = MENU_DEFAULT_LOCAL_TASK;
 
     $menu_items = array(
       'selectors' => array(
@@ -65,7 +83,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     foreach ($menu_items as $key => $item) {
 
-      $items['admin/settings/sweaver/'. $item['ctools_collection']] = array(
+      $items['admin/settings/sweaver/editor/'. $item['ctools_collection']] = array(
         'title' => $item['title'],
         'page callback' => 'sweaver_objects_list',
         'page arguments' => array($item['ctools_object']),
@@ -74,51 +92,42 @@ class sweaver_plugin_editor extends sweaver_plugin {
         'type' => MENU_LOCAL_TASK,
         'weight' => $weight++,
       );
-      $items['admin/settings/sweaver/add/'. $item['ctools_object']] = $base + array(
+      $items['admin/settings/sweaver/editor/add/'. $item['ctools_object']] = $base + array(
         'title' => 'Add new '. $item['ctools_object'],
         'page callback' => 'drupal_get_form',
         'page arguments' => array('sweaver_object_form', $item['ctools_object']),
       );
-      $items['admin/settings/sweaver/edit/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
+      $items['admin/settings/sweaver/editor/edit/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Edit '. $item['ctools_object'],
         'page callback' => 'drupal_get_form',
-        'page arguments' => array('sweaver_object_form', $item['ctools_object'], 5),
+        'page arguments' => array('sweaver_object_form', $item['ctools_object'], 6),
       );
-      $items['admin/settings/sweaver/delete/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
+      $items['admin/settings/sweaver/editor/delete/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Delete '. $item['ctools_object'],
         'page callback' => 'drupal_get_form',
-        'page arguments' => array('sweaver_object_delete', $item['ctools_collection'], $item['ctools_object'], 5, 'delete', 'deleted'),
+        'page arguments' => array('sweaver_object_delete', $item['ctools_collection'], $item['ctools_object'], 6, 'delete', 'deleted'),
       );
-      $items['admin/settings/sweaver/revert/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
+      $items['admin/settings/sweaver/editor/revert/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Revert '. $item['ctools_object'],
         'page callback' => 'drupal_get_form',
-        'page arguments' => array('sweaver_object_delete', $item['ctools_collection'], $item['ctools_object'], 5, 'revert', 'reverted'),
+        'page arguments' => array('sweaver_object_delete', $item['ctools_collection'], $item['ctools_object'], 6, 'revert', 'reverted'),
       );
-      $items['admin/settings/sweaver/enable/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
+      $items['admin/settings/sweaver/editor/enable/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Enable '. $item['ctools_object'],
         'page callback' => 'sweaver_object_status',
-        'page arguments' => array($item['ctools_collection'], 5, FALSE),
+        'page arguments' => array($item['ctools_collection'], 6, FALSE),
       );
-      $items['admin/settings/sweaver/disable/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
+      $items['admin/settings/sweaver/editor/disable/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Disable '. $item['ctools_object'],
         'page callback' => 'sweaver_object_status',
-        'page arguments' => array($item['ctools_collection'], 5, TRUE),
+        'page arguments' => array($item['ctools_collection'], 6, TRUE),
       );
-      $items['admin/settings/sweaver/export/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
+      $items['admin/settings/sweaver/editor/export/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Export '. $item['ctools_object'],
         'page callback' => 'sweaver_object_export',
-        'page arguments' => array($item['ctools_object'], 5),
+        'page arguments' => array($item['ctools_object'], 6),
       );
     }
-
-    // Editor form configuration.
-    $items['admin/settings/sweaver/editor'] = $base + array(
-      'title' => 'Editor',
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('sweaver_plugin_editor_config_editor'),
-      'weight' => $weight++,
-    );
-    $items['admin/settings/sweaver/editor']['type'] = MENU_LOCAL_TASK;
 
     return $items;
   }
@@ -126,7 +135,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Theme registry.
    */
-  function theme_registry() {
+  function sweaver_theme() {
     $theme_functions = array();
 
     $editor_plugin_path = drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor';
@@ -151,12 +160,12 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Frontend form.
    */
-  function frontend_form() {
+  function sweaver_form() {
     $form = array();
     $form['#editor_containers'] = array();
     global $theme_key;
 
-    $current_style = sweaver_get_current_style($theme_key);
+    $current_style = $this->sweaver_get_current_style($theme_key);
     $form['css'] = array(
       '#type' => 'hidden',
       '#default_value' => isset($current_style->css) ? $current_style->css : '',
@@ -167,10 +176,9 @@ class sweaver_plugin_editor extends sweaver_plugin {
     );
 
     $properties = sweaver_object_load(NULL, 'property');
-    $sweaver_editor_form_configuration = variable_get('sweaver_editor_form_configuration',array());
+    $sweaver_editor_form_configuration = variable_get('sweaver_editor_form_configuration', array());
 
     // Switcher.
-//    $tab_switcher = '<div class="editor-switcher"><span class="swichter-link"><a href="javascript:;">'. t('Style') .'</a></span><span class="swichter-link"><a href="javascript:;">'. t('History') .'</a></span></div>';
     $tab_switcher = '<div id="changes-toggler">'. t('Show changes') .'</div>';
     $form['editor_switcher'] = array(
       '#type' => 'markup',
@@ -178,21 +186,12 @@ class sweaver_plugin_editor extends sweaver_plugin {
     );
 
     // Images.
-    $imagecache_presets = array();
-    if (variable_get('sweaver_plugin_status_sweaver_plugin_imagecache', TRUE) && variable_get('sweaver_plugin_imagecache_alter_images', FALSE) && function_exists('imagecache_presets')) {
-      $imagecache_presets = imagecache_presets();
-    }
-
     $images = array('' => t('Select image'));
-    $query = 'SELECT ti.fid, ti.description, f.filepath FROM {sweaver_image} ti
-              INNER JOIN {files} f on f.fid = ti.fid order by description ASC';
-    $result = db_query($query);
-    while ($image = db_fetch_object($result)) {
-      $images[base_path() . $image->filepath] = $image->description;
-
-      // Imagecache presets.
-      foreach ($imagecache_presets as $preset_key => $preset) {
-        $images[base_path() . file_directory_path() .'/imagecache/'. $preset_key .'/'. $image->filepath] = $image->description .' ('. $preset['presetname'] .')';
+    $image_handler_plugin = variable_get('sweaver_plugin_handle_images', '');
+    if (!empty($image_handler_plugin)) {
+      $image_handler = sweaver_get_plugin($image_handler_plugin);
+      if (is_object($image_handler) && method_exists($image_handler, 'sweaver_images_handler')) {
+        $image_handler->sweaver_images_handler($images);
       }
     }
 
@@ -235,7 +234,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Frontend form render.
    */
-  function frontend_form_render(&$vars, &$form, $plugin) {
+  function sweaver_form_render(&$vars, &$form, $plugin) {
 
     $name = $plugin['name'];
     $vars['tabs'][$name]['#tab_name'] = $form[$name]['#tab_name'];
@@ -272,7 +271,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Frontend css and js.
    */
-  function frontend_css_js(&$inline_settings) {
+  function sweaver_form_css_js(&$inline_settings) {
 
     drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.css', 'module');
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.js', 'module');
@@ -352,7 +351,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
    * @param stdClass $property The property.
    * @param array $images A collection of images to use for the image type.
    */
-  function sweaver_property_element($property, $images) {
+  protected function sweaver_property_element($property, $images) {
     switch ($property->property_type) {
 
       case 'slider':

@@ -2,6 +2,7 @@
 // $Id$
 
 /**
+ * @file
  * Theme settings plugin.
  */
 class sweaver_plugin_themesettings extends sweaver_plugin {
@@ -9,7 +10,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
   /**
    * Frontend form.
    */
-  function frontend_form() {
+  function sweaver_form() {
     $form = array();
     $form['#popups'] = array();
     global $theme_key;
@@ -31,17 +32,17 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
 
         $form['item_'. $i] = array(
           '#type' => 'markup',
-          '#value' => '<div class="sweaver-settings-popup"><a href="#" id="theme-settings-link-'. $i .'">'. check_plain($title) .'</a></div>',
+          '#value' => '<div class="popup-link"><a href="#" id="theme-settings-link-'. $i .'">'. check_plain($title) .'</a></div>',
           '#weight' => $weight++,
         );
 
-        $form[$key]['#prefix'] = '<div class="sweaver-themesettings-wrapper" id="theme-settings-data-'. $i .'">';
+        $form[$key]['#prefix'] = '<div class="display-none" id="theme-settings-data-'. $i .'">';
         $form[$key]['#suffix'] = '</div>';
         unset($form[$key]['#collapsible']);
         unset($form[$key]['#collapsed']);
         unset($form[$key]['#attributes']);
 
-        // Add to popup
+        // Add to popups.
         $form['#popups'][] = $key;
 
         $i++;
@@ -58,18 +59,17 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
   /**
    * Frontend form submit.
    */
-  function frontend_form_submit($form, &$form_state) {
-    $_SESSION['sweaver_editor_messages']['theme_save'] = '';
+  function sweaver_form_submit($form, &$form_state) {
 
     $values = $form_state['values'];
     $key = $values['var'];
 
-   if ($values['op'] == t('Reset to defaults')) {
-      $_SESSION['sweaver_editor_messages']['theme_save'] = t('Your theme settings have been reverted.');
+    if ($values['op'] == t('Reset to defaults')) {
+      $this->sweaver_session(t('Your theme settings have been reverted.'));
       variable_del($key);
     }
     if ($values['op'] == t('Save configuration')) {
-      $_SESSION['sweaver_editor_messages']['theme_save'] = t('Your theme settings have been saved.');
+      $this->sweaver_session(t('Your theme settings have been saved.'));
 
       // General theme settings.
       $theme_values = array();
@@ -109,10 +109,8 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
   /**
    * Frontend css and js.
    */
-  function frontend_css_js(&$inline_settings) {
+  function sweaver_form_css_js(&$inline_settings) {
     drupal_add_js('misc/collapse.js');
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.js', 'module');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.css', 'theme');
   }
 
   /**

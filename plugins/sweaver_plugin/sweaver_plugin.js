@@ -40,20 +40,19 @@ $(document).ready(function() {
   // open/close bar
   $('#sweaver-tabs .close a').click(function(){
     if (Drupal.Sweaver.open == 'false') {
-      $('#sweaver').css("height", 'auto');
+      $('#sweaver').css('height', 'auto');
       $(this).parent().removeClass('active-tab');
       $('#' + Drupal.Sweaver.activeTab).addClass('active-tab');
       Drupal.Sweaver.open = 'true';
-      Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
     }
     else {
       $('#sweaver').css("height", 0);
       Drupal.Sweaver.activeTab =  $('#sweaver-tabs .active-tab').attr('id');
       $(this).parent().addClass('active-tab');
       Drupal.Sweaver.open = 'false';
-      Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
       Drupal.Sweaver.cookie('sweaver_active_tab', Drupal.Sweaver.activeTab);
     }
+    Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
   });
 
   // toggle tabs
@@ -61,23 +60,24 @@ $(document).ready(function() {
   $('#sweaver-tabs .tab a').click(function(){
     var container = $(this).parent().attr('id').replace('tab-', '');
     if (container != Drupal.Sweaver.container) {
-	    if (Drupal.Sweaver.open == 'false') {
-        $('#sweaver').css("height", 'auto');
-        Drupal.Sweaver.open = 'true';
-      }
-		  $(this).parent().siblings().removeClass('active-tab');
-		  $(this).parent().toggleClass('active-tab');
-		  $('#'+ container + ' > div').show();
-		  $('#'+ Drupal.Sweaver.container + ' > div').hide();
-		  Drupal.Sweaver.container = container;
-		} else {
+      if (Drupal.Sweaver.open == 'false') {
+          $('#sweaver').css("height", 'auto');
+          Drupal.Sweaver.open = 'true';
+	  }
+  	  $(this).parent().siblings().removeClass('active-tab');
+	  $(this).parent().toggleClass('active-tab');
+	  $('#'+ container + ' > div').show();
+	  $('#'+ Drupal.Sweaver.container + ' > div').hide();
+	  Drupal.Sweaver.container = container;
+	} 
+    else {
       if (Drupal.Sweaver.open == 'false') {
         $(this).parent().siblings().removeClass('active-tab');
         $(this).parent().toggleClass('active-tab');
         $('#sweaver').css("height", 'auto');
         Drupal.Sweaver.open = 'true';
       }
-		}
+	}
     Drupal.Sweaver.activeTab =  $(this).parent().attr('id');
     Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
     Drupal.Sweaver.cookie('sweaver_active_tab', Drupal.Sweaver.activeTab);
@@ -93,7 +93,34 @@ $(document).ready(function() {
     $('#sweaver-messages').hide();
     clearTimeout(Drupal.Sweaver.messageTimer);
   });
+  
+  // Move editor - this works, but is probably not THAT interesting :)
+  /*$('.tab-move a').mousedown(function() {
+	  var height = $('#sweaver').outerHeight();
+	  console.log(Drupal.Sweaver.cookie('sweaver_height'));
+    $('#sweaver').addClass('draggable');
+	$('#sweaver').draggable();
+	$('#sweaver').css('height', ''+ height +'px');
+  });*/
 });
+
+/**
+ * Separate switch tab function. Takes the tab as arguments and the ID's
+ * of the containers will be derived from the tabs.
+ */
+Drupal.Sweaver.switchTab = function (remove_tab, show_tab) {
+  var container_remove = remove_tab.replace('tab-', '');
+  var container_show = show_tab.replace('tab-', '');		
+
+  $('#'+ remove_tab).removeClass('active-tab');
+  $('#'+ show_tab).toggleClass('active-tab');
+  $('#'+ container_remove + ' > div').hide();
+  $('#'+ container_show + ' > div').show();
+  Drupal.Sweaver.container = container_show;
+	
+  Drupal.Sweaver.activeTab = show_tab;
+  Drupal.Sweaver.cookie('sweaver_active_tab', show_tab);
+}
 
 /**
  * Display Sweaver messages.
@@ -109,7 +136,14 @@ Drupal.Sweaver.setMessage = function(message) {
 /**
  * Display a fullscreen popup.
  */
+Drupal.Sweaver.popup = '';
 Drupal.Sweaver.showPopup = function(message) {
+  // Close the previous message - if any.
+  if (Drupal.Sweaver.popup != '') {
+    $(Drupal.Sweaver.popup).hide();
+  }
+  
+  // Create popup.
   popup = $('#sweaver-popup');
   popupBorder = 7;
   popupTop = $(window).scrollTop() + popupBorder;
@@ -117,6 +151,7 @@ Drupal.Sweaver.showPopup = function(message) {
   popupHeight = $(window).height() - $('#sweaver').outerHeight() - $('#sweaver-tabs').outerHeight() - (popupBorder * 2) - parseInt(popup.css('padding-top')) - parseInt(popup.css('padding-bottom'));
   $('.content', popup).css({'height' : popupHeight, 'width' : popupWidth});
   $(message).show();
+  Drupal.Sweaver.popup = message;
   popup.css({'left' : popupBorder, 'top' : popupTop}).fadeIn('fast');
   $('.close', popup).click(function(){
     $(message).hide();
@@ -129,8 +164,38 @@ Drupal.Sweaver.showPopup = function(message) {
  */
 Drupal.Sweaver.hidePopup = function() {
   popup = $('#sweaver-popup');
-	popup.hide();
+  popup.hide();
 }
+
+/**
+ * Set behaviors on link which will open the popup.
+ */
+Drupal.behaviors.sweaverOpenPopup = function (context) {
+  $('#sweaver .popup-link a', context).each(function() {
+
+    $(this).click(function() {
+
+      var wrapper = $(this).attr('id').replace('link', 'data');
+      
+      popup = $('#sweaver-popup');
+      if (popup.is(':visible') && $(this).hasClass('open-tab')) {
+        Drupal.Sweaver.hidePopup();
+        $(this).removeClass('open-tab');
+      }
+      else {
+        $('#sweaver .open-tab').removeClass('open-tab');
+        $(this).addClass('open-tab');
+        Drupal.Sweaver.showPopup($('#'+ wrapper));
+      }
+      return false;
+    });
+  });
+
+  $('#sweaver .form-submit').click(function() {
+    Drupal.Sweaver.hidePopup();
+  })
+};
+	
 
 /**
  * Cookie plugin

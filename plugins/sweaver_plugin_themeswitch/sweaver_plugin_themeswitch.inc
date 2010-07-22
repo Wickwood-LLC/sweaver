@@ -2,6 +2,7 @@
 // $Id$
 
 /**
+ * @file
  * Themeswitch plugin.
  */
 class sweaver_plugin_themeswitch extends sweaver_plugin {
@@ -9,20 +10,16 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
   /**
    * Menu registry.
    */
-  function menu_registry(&$weight) {
+  function sweaver_menu(&$weight, $page_arguments, $base) {
 
     $items = array();
-    $base = array(
-      'load arguments' => array('%map'),
-      'access arguments' => array('use editor'),
-      'file' => 'plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.admin.inc',
-      'type' => MENU_CALLBACK,
-    );
 
-    // Switch theme.
+    // Theme classes groups administration.
+    $base['access arguments'] = array('use editor');
     $items['sweaver_themeswitch'] = $base + array(
-      'title' => 'themeswitch',
-      'page callback' => 'sweaver_plugin_themeswitch_switch',
+      'title' => 'Styles',
+      'page arguments' => array($page_arguments),
+      'type' => MENU_CALLBACK,
       'weight' => $weight++,
     );
 
@@ -32,18 +29,18 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
   /**
    * Init
    */
-  function init() {
+  function sweaver_init() {
     global $custom_theme, $theme_key;
-    if (isset($_SESSION['sweaver_plugin_switch_theme'])) {
-      $custom_theme = $_SESSION['sweaver_plugin_switch_theme'];
-      $theme_key = $_SESSION['sweaver_plugin_switch_theme'];
+    if ($theme_switch = $this->sweaver_session(NULL, 'sweaver_plugin_switch_theme')) {
+      $custom_theme = $theme_switch;
+      $theme_key = $theme_switch;
     }
   }
 
   /**
    * Frontend form.
    */
-  function frontend_form() {
+  function sweaver_form() {
     $form = array();
     $content = '';
     global $theme_key;
@@ -63,13 +60,13 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
         if ($theme_key != $key) {
           $switch_description = t('Switch to @theme', array('@theme' => $theme->info['name']));
           $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
-          $image = l($image, 'sweaver_themeswitch/'. $key, array('html' => TRUE));
-          $content .= '<div class="theme">'. $image;
+          $image = l($image, 'sweaver_themeswitch/'. $key, array('html' => TRUE, 'query' => drupal_get_destination()));
+          $content .= '<div class="selected-image">'. $image;
         }
         else {
           $switch_description = t('This theme is currently selected');
           $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
-          $content .= '<div class="theme default-theme">'. $image;
+          $content .= '<div class="selected-image selected-image-default">'. $image;
         }
 
         $content .= '<br />'. check_plain($theme->info['name']);
@@ -89,7 +86,7 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
   /**
    * Frontend form submit handler.
    */
-  function frontend_form_submit($form, &$form_state) {
+  function sweaver_form_submit($form, &$form_state) {
     if ($form_state['clicked_button']['#value'] == t('Save style') && isset($form_state['saved_style_status']) && $form_state['saved_style_status'] == TRUE) {
       $theme_key = $form['#current_theme'];
       variable_set('theme_default', $theme_key);
@@ -97,10 +94,28 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
   }
 
   /**
-   * Frontend css and js.
+   * Frontend themeswitch.
    */
-  function frontend_css_js(&$inline_settings) {
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.css', 'module');
-  }
+  function menu_callback() {
+    $theme = arg(1);
+    $theme_default = variable_get('theme_default', 'garland');
 
+    $all_themes = system_theme_data();
+    if (isset($all_themes[$theme]) && $all_themes[$theme]->status == 1) {
+
+      if ($theme != $theme_default) {
+        $this->sweaver_session(NULL, 'sweaver_plugin_switch_theme', TRUE);
+        $this->sweaver_session($theme, 'sweaver_plugin_switch_theme');
+      }
+      else {
+        // Reset session variable because it's the default.
+        $this->sweaver_session(NULL, 'sweaver_plugin_switch_theme', TRUE);
+      }
+
+      $this->sweaver_session(t('You have switched to @switched_theme', array('@switched_theme' => $all_themes[$theme]->info['name'])));
+    }
+
+    // Go back to previous page.
+    drupal_goto();
+  }
 }

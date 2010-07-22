@@ -21,21 +21,23 @@
     <?php
     $i++;
     endforeach; ?>
+    <!--   <div class="tab-move"><?php print '<a href="javascript:;">Move</a>'; ?></div> -->
   </div>
 
   <div id="sweaver-middle" class="clear-block">
-     <?php
-     foreach ($tabs_data as $key => $tab_data):
-     ?>
-     <!-- <?php print $key; ?> -->
+    <?php
+    foreach ($tabs_data as $key => $tab_data):
+    ?>
+      <!-- <?php print $key; ?> -->
       <div id="<?php print $key;?>">
-       <div class="sweaver-header" <?php ($active_tab != $key) ? print 'style="display:none"' : '' ?>><?php print $tab_data['#tab_description']; ?></div>
-       <div class="sweaver-content" style="<?php ($active_tab != $key) ? print 'display:none;' : '' ?><?php print ($sweaver_height == null) ? '' : 'height:'. $sweaver_height .'px;'; ?>"><?php print $tab_data['content']; ?></div>
+        <div class="sweaver-header" <?php ($active_tab != $key) ? print 'style="display:none"' : '' ?>><?php print $tab_data['#tab_description']; ?></div>
+         <div class="sweaver-content" style="<?php if ($active_tab != $key) print 'display:none;'; ?><?php print ($sweaver_height == NULL) ? '' : 'height:'. $sweaver_height .'px;'; ?>"><?php print $tab_data['content']; ?></div>
       </div>
     <?php
       endforeach;
     ?>
   </div>
+
 
   <?php print $rest_of_form; ?>
 </div>

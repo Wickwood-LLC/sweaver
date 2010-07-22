@@ -2,34 +2,30 @@
 // $Id$
 
 /**
- * Base class for a sweaver plugin.
+ * @file
+ * Theme classes plugin.
  */
+define('SWEAVER_PLUGIN_THEMECLASSES_DEFAULT', 'skinr');
 
 class sweaver_plugin_themeclasses extends sweaver_plugin {
 
-  function is_enabled($plugin_name) {
+  function sweaver_enabled($plugin_name) {
     return variable_get('sweaver_plugin_status_'. $plugin_name, TRUE);
   }
 
   /**
    * Menu registry.
    */
-  function menu_registry(&$weight) {
+  function sweaver_menu(&$weight, $page_arguments, $base) {
 
     $items = array();
-    $base = array(
-      'load arguments' => array('%map'),
-      'access arguments' => array('configure sweaver'),
-      'file' => 'plugins/sweaver_plugin_themeclasses/sweaver_plugin_themeclasses.admin.inc',
-    );
 
-    // Theme classes list.
+    // Theme classes groups administration.
     $items['admin/settings/sweaver/themeclasses'] = $base + array(
       'title' => 'Theme classes',
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('sweaver_themeclasses_list'),
+      'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
-      'weight' => $weight,
+      'weight' => $weight++,
     );
 
     return $items;
@@ -38,16 +34,16 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
   /**
    * Frontend form.
    */
-  function frontend_form() {
+  function sweaver_form() {
     $form = array();
 
-    $class_groups = trim(variable_get('sweaver_themeclasses_list', 'skinr'));
+    $class_groups = trim(variable_get('sweaver_themeclasses_groups', SWEAVER_PLUGIN_THEMECLASSES_DEFAULT));
     if (empty($class_groups)) {
       return $form;
     }
 
     global $theme_key;
-    $theme_info = sweaver_get_theme_info($theme_key);
+    $theme_info = $this->sweaver_get_theme_info($theme_key);
     if (empty($theme_info)) {
       return $form;
     }
@@ -90,9 +86,37 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
   /**
    * Frontend css and js.
    */
-  function frontend_css_js(&$inline_settings) {
+  function sweaver_form_css_js(&$inline_settings) {
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeclasses/sweaver_plugin_themeclasses.js', 'module');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeclasses/sweaver_plugin_themeclasses.css', 'theme');
+  }
+
+  /**
+   * Menu callback.
+   */
+  function menu_callback() {
+    $form = array();
+
+    $form['sweaver_themeclasses_groups'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Theme groups'),
+      '#description' => t('Enter a group which is available in your theme(s) info file. This plugin will try to fetch all classes from it and make them available in a separate tab. Enter one group per line. This is inspired by the skinr way of theming, so we need to find a key called \'class\' to get a list of styles. If you have added new classes and the editor does not pick them up yet, click on submit button to reset the cache.'),
+      '#default_value' => variable_get('sweaver_themeclasses_groups', SWEAVER_PLUGIN_THEMECLASSES_DEFAULT),
+    );
+
+    $form['sweaver_themeclasses_submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save classes'),
+    );
+
+    return $form;
+  }
+
+  /**
+   * Menu callback submit.
+   */
+  function menu_callback_submit($form, &$form_state) {
+    db_query("DELETE FROM {variable} where name LIKE '%s%%'", 'sweaver_plugin_themeclasses_');
+    variable_set('sweaver_themeclasses_groups', $form_state['values']['sweaver_themeclasses_groups']);
   }
 
   /**
@@ -102,7 +126,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
     foreach ($theme_info as $key => $value) {
       if (is_array($value) && isset($value['class'])) {
         $label = isset($value['label']) ? $value['label'] : $value['class'];
-        $styles[] = '<div class="sweaver-plugin-themeclasses" id="spt-'. $value['class'] .'"><a href="javascript:Drupal.Sweaver.ThemeClasses(\'spt-'. $value['class'] .'\')">'. strip_tags($value['label']) .'</a></div>';
+        $styles[] = '<div class="sweaver-text-float" id="spt-'. $value['class'] .'"><a href="javascript:Drupal.Sweaver.ThemeClasses(\'spt-'. $value['class'] .'\')">'. strip_tags($value['label']) .'</a></div>';
       }
       if (is_array($value)) {
         $this->get_styles($theme_info[$key], $styles);

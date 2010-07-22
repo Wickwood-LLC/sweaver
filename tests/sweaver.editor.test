@@ -28,12 +28,22 @@ class sweaverEditor extends DrupalWebTestCase {
   }
 
   /**
+   * Debug helper function. Writes values away to a text file in the files directory.
+   */
+  function _debugHelper($value, $writetype = 'a+') {
+    $debug = fopen($this->originalFileDirectory .'/simpletestdebug.txt', 'a+');
+    fwrite($debug, print_r($value, TRUE) ."\n");
+    fclose($debug);
+  }
+
+  /**
    * Test frontend editor
    */
   function testFrontendEditor() {
     $admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver'));
     $this->drupalLogin($admin_user);
     $editor_tests = t('Editor testing');
+    $sweaver = sweaver_get_plugin('sweaver_plugin');
 
     // Enable minelli.
     db_query("UPDATE {system} set status = 1 where type = 'theme' AND name = 'minnelli'");
@@ -46,7 +56,6 @@ class sweaverEditor extends DrupalWebTestCase {
     $edit = array(
       'sweaver_plugin_customcss[status]' => 1,
       'sweaver_plugin_themeswitch[status]' => 1,
-      'sweaver_plugin_themesettings[status]' => 1
     );
     $this->drupalPost('admin/settings/sweaver/plugins', $edit, t('Save'));
     $this->drupalGet('user');
@@ -68,14 +77,13 @@ class sweaverEditor extends DrupalWebTestCase {
       'css_rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
       'sweaver_plugin_custom_css' => '#header { background-color: blue; }',
       'save_style_name' => 'Garland 1',
-      'save_active' => 1,
     );
 
     // Save style and assert it's saved. We'll look for the message, the entry
     // into the database and the css file in the sweaver directory.
     $this->drupalPost('user', $edit, t('Save style'));
     $this->assertRaw(t('The style Garland 1 has been saved'), t('Style has been saved'), $editor_tests);
-    $css = sweaver_get_current_style('garland');
+    $css = $sweaver->sweaver_get_current_style('garland', TRUE);
     $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
     $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
     $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
@@ -95,7 +103,7 @@ class sweaverEditor extends DrupalWebTestCase {
     // into the database and the css file in the sweaver directory.
     $this->drupalPost('user', $edit, t('Save style'));
     $this->assertRaw(t('The style Garland 2 has been saved'), t('Style has been saved'), $editor_tests);
-    $css = sweaver_get_current_style('garland', TRUE);
+    $css = $sweaver->sweaver_get_current_style('garland', TRUE);
     $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
     $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
     $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
@@ -115,17 +123,5 @@ class sweaverEditor extends DrupalWebTestCase {
     );
     $this->drupalPost('user', $edit, t('Load style'));
     $this->assertRaw(t('The style Garland 2 has been loaded and set active.'), t('Active style'), $editor_tests);
-
-    // Test themesettings.
-    $edit = array(
-      'toggle_logo' => 0,
-    );
-    $this->drupalPost('user', $edit, t('Save configuration'));
-    $this->assertNoRaw('id="logo"', t('No logo found'), $editor_tests);
-    $edit = array(
-      'toggle_logo' => TRUE,
-    );
-    $this->drupalPost('user', $edit, t('Save configuration'));
-    $this->assertRaw('id="logo"', t('Logo found'), $editor_tests);
   }
 }

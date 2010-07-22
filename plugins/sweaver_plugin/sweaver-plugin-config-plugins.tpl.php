@@ -6,7 +6,7 @@
  * Template file for the plugins configuration form.
  */
 
- $count = 0;
+  $count = 0;
 ?>
 
 <p><?php print t('You can enable or disable plugins on this screen and select the order of them on the frontend.'); ?></p>
