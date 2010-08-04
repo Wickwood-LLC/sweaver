@@ -206,6 +206,16 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
         }
         $objects->{$object_type_key}->all[$key] = $object;
       }
+
+      // Let sweaver plugins alter objects.
+      foreach (sweaver_get_plugin() as $plugin) {
+        $plugin_name = $plugin['name'];
+        $object = sweaver_get_plugin($plugin_name);
+        if ($object->sweaver_enabled($plugin_name)) {
+          $object->sweaver_objects_alter($objects);
+        }
+      }
+
       cache_set('sweaver', $objects);
     }
     $run = TRUE;

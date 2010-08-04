@@ -54,7 +54,7 @@ function sweaver_plugin_editor_updateCss() {
           cssContent += '  '+ prop + ': ' + target[prop] + ';\n';
     	}
     	else {
-          cssContent += '  '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';    		
+          cssContent += '  '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
     	}
       }
     }
@@ -180,20 +180,21 @@ Drupal.Sweaver.addColorPicker = function() {
       color: '#ffffff',
       // Determine the current color and send it to colorpicker.
       onBeforeShow: function () {
-    	var current_color_object = {};
-    	var current_color_value = ($('div', this).css('background-color')).replace('rgb(', '').replace(')', '').split(',');
-    	if (current_color_value[0] != 'transparent') {
+    	  var current_color_object = {};
+        console.log($('div', this).css('background-color'));
+    	  var current_color_value = ($('div', this).css('background-color')).replace('rgb(', '').replace(')', '').split(',');
+    	  if (current_color_value[0] != 'transparent') {
       	  current_color_object.r = current_color_value[0];
-    	  current_color_object.g = current_color_value[1];
-    	  current_color_object.b = current_color_value[2];
-  		  $(this).ColorPickerSetColor(current_color_object);
-    	}
-    	else {
-    	  current_color_object.r = '255';
-    	  current_color_object.g = '255';
-    	  current_color_object.b = '255';
-		  $(this).ColorPickerSetColor(current_color_object);
-    	}
+    	    current_color_object.g = current_color_value[1];
+    	    current_color_object.b = current_color_value[2];
+  		    $(this).ColorPickerSetColor(current_color_object);
+    	  }
+    	  else {
+    	    current_color_object.r = '255';
+    	    current_color_object.g = '255';
+    	    current_color_object.b = '255';
+		      $(this).ColorPickerSetColor(current_color_object);
+    	  }
   	  },
       onShow: function (colpkr) {
         $(colpkr).fadeIn(500);
@@ -496,7 +497,7 @@ Drupal.Sweaver.printActivePath = function(i, item) {
 /**
  * Fill the activeElement and update the Form and ActivePath.
  * Other plugins can use this function to set values on the
- * style tab. To switch tabs, you can use the Drupal.Sweaver.switchTab 
+ * style tab. To switch tabs, you can use the Drupal.Sweaver.switchTab
  * function.
  */
 Drupal.Sweaver.updateStyleTab = function(class_name, class_object) {
@@ -536,7 +537,7 @@ Drupal.Sweaver.writeChanges = function() {
       if (Drupal.Sweaver.properties[prop]) {
     	// Special case for transparent.
     	if (target[prop] == 'transparent') {
-   	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));    		
+   	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
     	}
     	else {
  	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));

@@ -7,9 +7,25 @@
  */
 class sweaver_plugin {
 
+  /**
+   * Sweaver enabled.
+   */
   function sweaver_enabled($plugin_name) {
     return variable_get('sweaver_plugin_status_'. $plugin_name, TRUE);
   }
+
+  /**
+   * Sweaver dependencies.
+   */
+  function sweaver_dependencies() {
+    return array();
+  }
+
+  /**
+   * Sweaver objects alter.
+   */
+  function sweaver_objects_alter(&$objects) {}
+
 
   /**
    * Menu registry.
@@ -60,7 +76,7 @@ class sweaver_plugin {
   function sweaver_init() {}
 
   /**
-   * Sweaver.
+   * Sweaver form.
    */
   function sweaver_form() {}
 
@@ -152,7 +168,7 @@ class sweaver_plugin {
         $values = $_SESSION[$session_key];
         if (count($values) > 1) {
           foreach ($values as $key => $value) {
-            $return .= $editor_messages[$key] ."\n";
+            $return .= $value ."\n";
           }
         }
         elseif (isset($values[0])) {
@@ -222,6 +238,7 @@ class sweaver_plugin {
     $form['#plugins'] = array();
     $form['#theme'] = 'sweaver_plugin_config_plugins';
     $plugins_order = variable_get('sweaver_plugins_weight', array());
+    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.css');
 
     foreach (sweaver_get_plugin() as $plugin) {
       $plugin_name = $plugin['name'];
@@ -245,10 +262,26 @@ class sweaver_plugin {
         );
       }
       else {
+        $missing = array();
+        $can_be_enabled = TRUE;
+        $dependencies = $object->sweaver_dependencies();
+        if (!empty($dependencies)) {
+          foreach ($dependencies as $module) {
+            if (!module_exists($module)) {
+              $can_be_enabled = FALSE;
+              $missing[] = $module;
+            }
+          }
+        }
         $form[$plugin_name]['status'] = array(
           '#type' => 'checkbox',
           '#default_value' => $status,
         );
+        if (!$can_be_enabled) {
+          $form[$plugin_name]['status']['#disabled'] = TRUE;
+          $form[$plugin_name]['status']['#value'] = 0;
+          $form[$plugin_name]['status']['#description'] = t('Following modules are missing: @module', array('@module' => implode(', ', $missing)));
+        }
       }
 
       // Markup.

@@ -405,3 +405,13 @@ body.sweaver {
   margin-top: 0;
   padding: 15px;
 }
+
+/* Plugins configuration */
+
+#plugins-configuration-form .form-checkbox {
+  float: left;
+}
+#plugins-configuration-form .description {
+  float: left;
+  margin-top: 3px;
+}

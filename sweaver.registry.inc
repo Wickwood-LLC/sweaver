@@ -131,6 +131,15 @@ function _sweaver_sweaver_plugins() {
       'parent' => 'sweaver_plugin',
     ),
   );
+  $plugins['sweaver_plugin_fontface'] = array(
+    'handler' => array(
+      'tab' => t('Font face'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_fontface',
+      'file' => 'sweaver_plugin_fontface.inc',
+      'class' => 'sweaver_plugin_fontface',
+      'parent' => 'sweaver_plugin',
+    ),
+  );
   return $plugins;
 }
 

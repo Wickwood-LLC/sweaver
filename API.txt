@@ -150,6 +150,13 @@ class pluginname extends sweaver_plugin {
   }
 
   /**
+   * Return module dependencies.
+   */
+  function sweaver_dependencies() {
+    return array('module');
+  }
+
+  /**
    * Menu registry.
    */
   function sweaver_menu(&$weight, $page_arguments, $base) {
@@ -178,6 +185,11 @@ class pluginname extends sweaver_plugin {
   function sweaver_init() {
     // Do stuff during hook_init() of Drupal.
   }
+
+  /**
+   * Sweaver objects alter.
+   */
+  function sweaver_objects_alter(&$objects) {}
 
   /**
    * Sweaver form.
