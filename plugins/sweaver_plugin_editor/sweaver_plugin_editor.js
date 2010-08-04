@@ -181,7 +181,6 @@ Drupal.Sweaver.addColorPicker = function() {
       // Determine the current color and send it to colorpicker.
       onBeforeShow: function () {
     	  var current_color_object = {};
-        console.log($('div', this).css('background-color'));
     	  var current_color_value = ($('div', this).css('background-color')).replace('rgb(', '').replace(')', '').split(',');
     	  if (current_color_value[0] != 'transparent') {
       	  current_color_object.r = current_color_value[0];
