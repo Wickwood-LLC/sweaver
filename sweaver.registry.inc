@@ -212,6 +212,42 @@ function _sweaver_default_sweaver_selector() {
   $selector->selector_highlight = FALSE;
   $selectors['li'] = $selector;
 
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'h1';
+  $selector->description = 'Heading 1';
+  $selector->selector_selector = 'h1';
+  $selector->selector_highlight = FALSE;
+  $selectors['h1'] = $selector;
+
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'h2';
+  $selector->description = 'Heading 2';
+  $selector->selector_selector = 'h2';
+  $selector->selector_highlight = FALSE;
+  $selectors['h2'] = $selector;
+
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'h3';
+  $selector->description = 'Heading 3';
+  $selector->selector_selector = 'h3';
+  $selector->selector_highlight = FALSE;
+  $selectors['h3'] = $selector;
+
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'p';
+  $selector->description = 'a paragraph';
+  $selector->selector_selector = 'p';
+  $selector->selector_highlight = FALSE;
+  $selectors['p'] = $selector;
+
   return $selectors;
 }
 
@@ -235,9 +271,19 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = '';
   $property->property_options = array(
         '' => 'Theme default',
-        'Helvetica, Arial' => 'Helvetica, Arial',
-        'Verdana' => 'Verdana',
-        'Sans-Serif' => 'Verdana, Sans-Serif',
+        'Arial, Helvetica, Sans-Serif' => 'Arial',
+        '\'Arial Black\', Sans-Serif' => 'Arial Black',
+        '\'Comic Sans MS\', Cursive' => 'Comic Sans MS',
+        '\'Courier New\', Courier, Monospace' => 'Courier',
+        'Georgia, Serif' => 'Georgia',
+        'Helvetica, Arial, Sans-Serif' => 'Helvetica',
+        'Impact, Charcoal, Sans-Serif' => 'Impact',
+        '\'Lucida Sans\', \'Lucida Grande\', Sans-Serif' => 'Lucida',
+        '\'Palatino Linotype\', Palatino, Serif' => 'Palatino',
+        'Tahoma, Geneva, Sans-Serif' => 'Tahoma',
+        '\'Times New Roman\', Times, Serif' => 'Times New Roman',
+        'Trebuchet, Helvetica, Sans-Serif' => 'Trebuchet',
+        'Verdana, Geneva, Sans-Serif' => 'Verdana',
       );
   $propertys['font-family'] = $property;
 
