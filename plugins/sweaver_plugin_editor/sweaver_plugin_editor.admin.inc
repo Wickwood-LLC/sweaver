@@ -26,7 +26,7 @@ function sweaver_settings($form_state) {
     '#description' => t('Exclude the editor on some pages, usually administration pages. Enter one page per line as Drupal paths. The \'*\' character is a wildcard. &lt;front&gt; is the front page.'),
   );
 
-  $form['sweaver_ignore_ids'] = array(
+  $form['sweaver_selectors_exclude'] = array(
     '#type' => 'textarea',
     '#title' => t('Exclude selectors'),
     '#default_value' => variable_get('sweaver_selectors_exclude', SWEAVER_SELECTORS_EXCLUDE),

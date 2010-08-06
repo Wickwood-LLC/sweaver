@@ -282,7 +282,7 @@ function _sweaver_default_sweaver_property() {
         '\'Palatino Linotype\', Palatino, Serif' => 'Palatino',
         'Tahoma, Geneva, Sans-Serif' => 'Tahoma',
         '\'Times New Roman\', Times, Serif' => 'Times New Roman',
-        'Trebuchet, Helvetica, Sans-Serif' => 'Trebuchet',
+        '\'Trebuchet MS\', Helvetica, Sans-Serif' => 'Trebuchet',
         'Verdana, Geneva, Sans-Serif' => 'Verdana',
       );
   $propertys['font-family'] = $property;
