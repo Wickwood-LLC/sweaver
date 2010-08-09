@@ -50,13 +50,13 @@ function sweaver_plugin_editor_updateCss() {
     var target = Drupal.Sweaver.css[key];
     for (var prop in target) {
       if (Drupal.Sweaver.properties[prop]) {
-      // Special case for transparent.
-      if (target[prop] == 'transparent') {
+    	// Special case for transparent.
+    	if (target[prop] == 'transparent') {
           cssContent += '  '+ prop + ': ' + target[prop] + ';\n';
-      }
-      else {
+    	}
+    	else {
           cssContent += '  '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
-      }
+    	}
       }
     }
     if (cssContent != '') {
@@ -153,18 +153,21 @@ Drupal.Sweaver.initForm = function() {
 
   Drupal.Sweaver.hideOverlays();
 
+  // First hide all form elements
+  $('#sweaver #sweaver_plugin_editor .form-item, #sweaver #sweaver_plugin_editor .slider-wrapper, #sweaver #sweaver_plugin_editor h2, #sweaver #sweaver_plugin_editor .sweaver-group').each(function (i) {
+    $(this).hide();
+  });
+
   if (!isEmpty(Drupal.Sweaver.activeElement)) {
     var type = Drupal.Sweaver.activeElement.type;
-
-    // First hide all form elements
-    $('#sweaver #sweaver_plugin_editor .form-item, #sweaver #sweaver_plugin_editor .slider-wrapper').each(function (i) {
-      $(this).hide();
-    });
 
     // Show only the fields defined in the options array
     if (type && Drupal.Sweaver.types[type]) {
       $.each(Drupal.Sweaver.types[type], function (index, object){
-        $('#sweaver #edit-' + object + '-wrapper').show();
+        $('#sweaver #edit-' + object + '-wrapper').show('fast', function() {
+          $(this).parents('.sweaver-group').show();
+          $(this).parents('.container-inner').children('h2').show();
+        });
       });
     }
   }
@@ -181,21 +184,21 @@ Drupal.Sweaver.addColorPicker = function() {
       color: '#ffffff',
       // Determine the current color and send it to colorpicker.
       onBeforeShow: function () {
-        var current_color_object = {};
-        var current_color_value = ($('div', this).css('background-color')).replace('rgb(', '').replace(')', '').split(',');
-        if (current_color_value[0] != 'transparent') {
-          current_color_object.r = current_color_value[0];
-          current_color_object.g = current_color_value[1];
-          current_color_object.b = current_color_value[2];
-          $(this).ColorPickerSetColor(current_color_object);
-        }
-        else {
-          current_color_object.r = '255';
-          current_color_object.g = '255';
-          current_color_object.b = '255';
-          $(this).ColorPickerSetColor(current_color_object);
-        }
-      },
+    	  var current_color_object = {};
+    	  var current_color_value = ($('div', this).css('background-color')).replace('rgb(', '').replace(')', '').split(',');
+    	  if (current_color_value[0] != 'transparent') {
+      	  current_color_object.r = current_color_value[0];
+    	    current_color_object.g = current_color_value[1];
+    	    current_color_object.b = current_color_value[2];
+  		    $(this).ColorPickerSetColor(current_color_object);
+    	  }
+    	  else {
+    	    current_color_object.r = '255';
+    	    current_color_object.g = '255';
+    	    current_color_object.b = '255';
+		      $(this).ColorPickerSetColor(current_color_object);
+    	  }
+  	  },
       onShow: function (colpkr) {
         $(colpkr).fadeIn(500);
         if (object.parents('.sweaver-group-content').length == 0) {
@@ -209,10 +212,10 @@ Drupal.Sweaver.addColorPicker = function() {
         return false;
       },
       onChange: function (hsb, hex, rgb) {
-      var preview = hex;
-      if (hex != 'transparent') {
-        preview = '#'+ hex;
-      }
+    	var preview = hex;
+    	if (hex != 'transparent') {
+    	  preview = '#'+ hex;
+    	}
         $('div', object).css('backgroundColor', preview);
         if (Drupal.Sweaver.updateMode) {
           Drupal.Sweaver.setValue(property, hex);
@@ -236,29 +239,29 @@ Drupal.Sweaver.addSliders = function() {
 
   $("#sweaver .slider").each(function() {
     minSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_min;
-    if (minSlider == null) {
-      minSlider = 0;
-    }
+	  if (minSlider == null) {
+	    minSlider = 0;
+	  }
     maxSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_max;
     if (maxSlider == null) {
       maxSlider = 2000;
     }
-    $(this).slider({
-      min: minSlider,
-      max: maxSlider,
-      slide: function(event, ui) {
-        if (ui.value > 1) {
-          $('#edit-' + $(this).attr("id").replace('-slider','')).val(ui.value);
-          // TODO: can I trigger onchange event here?
-          if (Drupal.Sweaver.updateMode) {
-            Drupal.Sweaver.setValue($(this).attr("id").replace('-slider',''), ui.value);
-          }
-        } else {
-          $('#' + $(this).attr("id").replace('-slider','')).val('default');
-        }
-      }
-    });
-  });
+	  $(this).slider({
+	    min: minSlider,
+	    max: maxSlider,
+	    slide: function(event, ui) {
+	      if (ui.value > 1) {
+	        $('#edit-' + $(this).attr("id").replace('-slider','')).val(ui.value);
+	        // TODO: can I trigger onchange event here?
+	        if (Drupal.Sweaver.updateMode) {
+	          Drupal.Sweaver.setValue($(this).attr("id").replace('-slider',''), ui.value);
+	        }
+	      } else {
+	        $('#' + $(this).attr("id").replace('-slider','')).val('default');
+	      }
+	    }
+	  });
+	});
 }
 
 /*
@@ -292,49 +295,56 @@ Drupal.Sweaver.bindClicks = function() {
 
   // Catch click on a selector.
   $.each(Drupal.Sweaver.selectors, function (index, object) {
-    $(object.selector).filter(':parents(' + excludes + '):not(' + excludes + ')').click(function(event) {
+    var selectors = $(object.selector).filter(':parents(' + excludes + '):not(' + excludes + ')');
+    selectors.click(function(event) {
       event.stopPropagation();
       // Only do something when the content area is visible.
       if (Drupal.Sweaver.open && $('#sweaver_plugin_editor .sweaver-content').is(':visible')) {
         $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clear-block"></div><div id="selected-path" class="clear-block"></div>');
+        
+        var element = $(this);
+        
+        // Add an outline
+        $(Drupal.Sweaver.activeElement.object).removeClass('sweaver-selected');
+        element.addClass('sweaver-selected');
 
-        // handle clicking on a link.
-        $('#follow-link').hide();
-        if(object.selector == 'a' && $(this).attr('id') != 'follow-link') {
-          var position = $(this).offset();
-          $('#follow-link').attr('href', $(this).attr('href')).css({'top' : position.top + $(this).outerHeight() + 5, 'left': position.left}).fadeIn();
-          event.preventDefault();
-        }
+	      // handle clicking on a link.
+	      $('#follow-link').hide();
+	      if(object.selector == 'a' && element.attr('id') != 'follow-link') {
+	        var position = element.offset();
+	        $('#follow-link').attr('href', element.attr('href')).css({'top' : position.top + element.outerHeight() + 5, 'left': position.left}).fadeIn();
+	        event.preventDefault();
+	      }
+	      
+	      if (element.attr('id') != 'follow-link') {
+	        // Reset some values.
+	        Drupal.Sweaver.path.length = 0;
+	        Drupal.Sweaver.pathIndexes.length = 0;
+	        $("#selected-path").html('');
+	        $("#full-path").html('');
 
-        if ($(this).attr('id') != 'follow-link') {
-          // Reset some values.
-          Drupal.Sweaver.path.length = 0;
-          Drupal.Sweaver.pathIndexes.length = 0;
-          $("#selected-path").html('');
-          $("#full-path").html('');
+	        // Build path with parents.
+	        Drupal.Sweaver.buildPath(this);
 
-          // Build path with parents.
-          Drupal.Sweaver.buildPath(this);
-
-          Drupal.Sweaver.updateForm();
-        }
+	        Drupal.Sweaver.updateForm();
+	      }
       }
     });
   });
 
-  // Toggle changes area.
-  $('#changes-toggler').click(function(event){
-    event.stopPropagation();
-    toggler = $('#editor-changes');
-    if (parseInt(toggler.css('left')) < 0) {
-      Drupal.Sweaver.writeChanges();
-      toggler.css({'left' : '0px'});
+	// Toggle changes area.
+	$('#changes-toggler').click(function(event){
+	  event.stopPropagation();
+	  toggler = $('#editor-changes');
+	  if (parseInt(toggler.css('left')) < 0) {
+		  Drupal.Sweaver.writeChanges();
+		  toggler.css({'left' : '0px'});
       $(this).toggleClass('open').html(Drupal.t('Hide changes'));
-    } else {
+		} else {
       toggler.css({'left' : '-9000px'});
       $(this).toggleClass('open').html(Drupal.t('Show changes'));
-    }
-  });
+		}
+	});
 
   // Hide sliders and close groups when clicking outside of them.
   $("#sweaver").click(function() {
@@ -359,13 +369,13 @@ Drupal.Sweaver.bindClicks = function() {
       slider.css({'visibility' : 'hidden'});
     }
     else {
-      // Hide all other sliders.
-      $('#sweaver_plugin_editor .slider-wrapper').css({'visibility' : 'hidden'});
+	    // Hide all other sliders.
+	    $('#sweaver_plugin_editor .slider-wrapper').css({'visibility' : 'hidden'});
 
-      var left = slider.siblings('label').width() - 10;
-      var top = slider.siblings('.slider-value').outerHeight() + parseInt(slider.parent().css('padding-top')) + 5;
-      slider.css({'left' : left, 'top' : top}).css({'visibility' : 'visible'});
-    }
+	    var left = slider.siblings('label').width() - 10;
+	    var top = slider.siblings('.slider-value').outerHeight() + parseInt(slider.parent().css('padding-top')) + 5;
+	    slider.css({'left' : left, 'top' : top}).css({'visibility' : 'visible'});
+	  }
   });
 }
 
@@ -395,29 +405,29 @@ Drupal.Sweaver.buildPath = function(object) {
   $(object).parents().each(function() {
     active = false;
 
-    id = $(this).attr('id');
-    class = $(this).attr('class').split(' ');
-    tag = $(this).get(0).tagName.toLowerCase();
+	  id = $(this).attr('id');
+	  class = $(this).attr('class').split(' ');
+	  tag = $(this).get(0).tagName.toLowerCase();
     type = $(this).css('display');
-    item = this;
+	  item = this;
 
     if (id in Drupal.Sweaver.selectors || class in Drupal.Sweaver.selectors || tag in Drupal.Sweaver.selectors) {
       Drupal.Sweaver.path[i] = new Object({'id' : id, 'class' : class, 'tag' : tag, 'type' : type, 'object' : item});
-      
-      // If selector is tagged as 'highlight', automatically select it.
-      $.each(Drupal.Sweaver.selectors, function (index, selector) {
-        if (selector.highlight == '1' && (selector.selector == '#' + id || selector.selector == '.' + class || selector.selector == tag)) {
-          active = true;
-          Drupal.Sweaver.printActivePath(i, item);
-        }
-      });
-  
-      // Add all items to the full path except for the html tag.
-      if (tag != 'html') {
-        Drupal.Sweaver.addToFullPath(item, i, active);
-      }
-  
-      i++;
+	    
+	    // If selector is tagged as 'highlight', automatically select it.
+	    $.each(Drupal.Sweaver.selectors, function (index, selector) {
+	      if (selector.highlight == '1' && (selector.selector == '#' + id || selector.selector == '.' + class || selector.selector == tag)) {
+	        active = true;
+	        Drupal.Sweaver.printActivePath(i, item);
+	      }
+	    });
+	
+	    // Add all items to the full path except for the html tag.
+	    if (tag != 'html') {
+	      Drupal.Sweaver.addToFullPath(item, i, active);
+	    }
+	
+	    i++;
     }
   });
 
@@ -446,10 +456,10 @@ Drupal.Sweaver.addToFullPath = function(object, index, active) {
     $(this).toggleClass('active');
     Drupal.Sweaver.printActivePath(index, $(object));
 
-    // Reset the active element as it might have changed.
-    Drupal.Sweaver.pathIndexes.sort(function(a,b){return a - b});
-    Drupal.Sweaver.activeElement = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]];
-    Drupal.Sweaver.updateForm();
+	  // Reset the active element as it might have changed.
+	  Drupal.Sweaver.pathIndexes.sort(function(a,b){return a - b});
+	  Drupal.Sweaver.activeElement = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]];
+	  Drupal.Sweaver.updateForm();
 
     // Stop the link from doing anything.
     return false;
@@ -536,17 +546,17 @@ Drupal.Sweaver.writeChanges = function() {
   $('#editor-changes').html('');
   for (key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
-  for (prop in target) {
+	for (prop in target) {
       if (Drupal.Sweaver.properties[prop]) {
-      // Special case for transparent.
-      if (target[prop] == 'transparent') {
-          $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
-      }
-      else {
-        $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
-      }
-    }
-  }
+    	// Special case for transparent.
+    	if (target[prop] == 'transparent') {
+   	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
+    	}
+    	else {
+ 	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
+    	}
+	  }
+	}
   }
 }
 
@@ -577,32 +587,32 @@ Drupal.Sweaver.objectToReadable = function(object) {
   if (object.tag == 'body') {
     translation = Drupal.Sweaver.selectors.body.description;
   } else {
-    if (object.id) {
-      if (Drupal.Sweaver.selectors[object.id]){
-        translation = Drupal.Sweaver.selectors[object.id].description;
-      }
-      else {
-        translation = 'the ' + object.id + ' region';
-      }
-    }
-    else if (object.class[0] && !Drupal.Sweaver.ignoredClasses.find(object.class[0])) {
-      if (Drupal.Sweaver.selectors[object.class]){
-        translation = Drupal.Sweaver.selectors[object.class].description;
-      }
-      else {
-        translation = 'all ' + object.class[0];
-      }
-    }
-    else if (object.tag) {
-      $.each(Drupal.Sweaver.selectors, function() {
-        if (this.selector == object.tag) {
-          translation = this.description;
-        }
-      });
-      if (translation == '') {
-        translation = object.tag;
-      }
-    }
+	  if (object.id) {
+	    if (Drupal.Sweaver.selectors[object.id]){
+	      translation = Drupal.Sweaver.selectors[object.id].description;
+	    }
+	    else {
+	      translation = 'the ' + object.id + ' region';
+	    }
+	  }
+	  else if (object.class[0] && !Drupal.Sweaver.ignoredClasses.find(object.class[0])) {
+	    if (Drupal.Sweaver.selectors[object.class]){
+	      translation = Drupal.Sweaver.selectors[object.class].description;
+	    }
+	    else {
+	      translation = 'all ' + object.class[0];
+	    }
+	  }
+	  else if (object.tag) {
+		  $.each(Drupal.Sweaver.selectors, function() {
+		    if (this.selector == object.tag) {
+		      translation = this.description;
+		    }
+		  });
+		  if (translation == '') {
+		    translation = object.tag;
+		  }
+	  }
   }
   return translation;
 }
@@ -683,11 +693,11 @@ function isEmpty(obj) {
  * Helper function to check if a string is in an array.
  */
 Array.prototype.find = function (element) {
-  for (var keys in this) {
-    if (this[keys] == element) {
-      return keys;
-      break;
-    }  
-  }
-  return -1;
+	for (var keys in this) {
+	  if (this[keys] == element) {
+	    return keys;
+	    break;
+	  }  
+	}
+	return -1;
 };

@@ -88,6 +88,8 @@
 
 #sweaver_plugin_editor .colorSelector-wrapper {
   height:36px;
+  width: 36px;
+  background: transparent url(colorpicker/images/transparent.gif) no-repeat 3px 3px;
   position:relative;
   float: left;
 }
