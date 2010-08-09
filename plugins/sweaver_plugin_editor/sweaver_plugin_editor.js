@@ -304,10 +304,6 @@ Drupal.Sweaver.bindClicks = function() {
         
         var element = $(this);
         
-        // Add an outline
-        $(Drupal.Sweaver.activeElement.object).removeClass('sweaver-selected');
-        element.addClass('sweaver-selected');
-
 	      // handle clicking on a link.
 	      $('#follow-link').hide();
 	      if(object.selector == 'a' && element.attr('id') != 'follow-link') {
