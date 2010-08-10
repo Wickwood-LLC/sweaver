@@ -37,4 +37,3 @@ Stuff we want to get in - not tied to a release
 - sweaver base theme
 - documentation about plugins
 - Display suite plugin
-- Classes to ignore
