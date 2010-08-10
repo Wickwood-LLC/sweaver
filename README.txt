@@ -33,6 +33,7 @@ Stuff we want to get in - not tied to a release
 - Multiple classes dropdown
 - Weights on selectors - this makes sure the previous one can work fine too
 - Menu callback to enable sweaver
+- style scheduler
 - sweaver base theme
 - documentation about plugins
 - Display suite plugin
