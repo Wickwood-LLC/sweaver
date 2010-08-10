@@ -6,17 +6,16 @@
 
 Drupal.Sweaver = Drupal.Sweaver || {};
 
-Drupal.Sweaver.types = new Array(); // A type groups different properties
-Drupal.Sweaver.properties = new Array(); // The actual css properties
-Drupal.Sweaver.selectors = new Array(); // The list of defined selector objects
-Drupal.Sweaver.selectorsSelectors = new Array(); // An array containing all defined selectors
-Drupal.Sweaver.css = new Object(); // Object with all targets and their properties
-Drupal.Sweaver.path = new Array(); // Full path to the root of the document
-Drupal.Sweaver.pathIndexes = new Array(); // An array with the indexes of all selected items
-Drupal.Sweaver.activePath = ''; // Currently active path
-Drupal.Sweaver.activeElement = new Object(); // Currently active element
+Drupal.Sweaver.types = new Array(); // A type groups different properties.
+Drupal.Sweaver.properties = new Array(); // The actual css properties.
+Drupal.Sweaver.selectors = new Array(); // The list of defined selector objects.
+Drupal.Sweaver.selectorsSelectors = new Array(); // An array containing all defined selectors.
+Drupal.Sweaver.css = new Object(); // Object with all targets and their properties.
+Drupal.Sweaver.path = new Array(); // Full path to the root of the document.
+Drupal.Sweaver.pathIndexes = new Array(); // An array with the indexes of all selected items.
+Drupal.Sweaver.activePath = ''; // Currently active path.
+Drupal.Sweaver.activeElement = new Object(); // Currently active element.
 Drupal.Sweaver.updateMode = true; // should the form updates be saved in css?
-Drupal.Sweaver.ignoredClasses = new Array('clearfix', 'clear-block');
 
 /**
  * Hook onload behavior
@@ -109,6 +108,9 @@ Drupal.Sweaver.init = function() {
   // Sweaver properties.
   Drupal.Sweaver.properties = Drupal.settings.sweaver['properties'];
 
+  // Classes that will never be used in the paths or generated css.
+  Drupal.Sweaver.excludeClasses = Drupal.settings.sweaver['exclude_classes']
+  
   // Add div to store inline css and fill it up
   $('body > div:first').before('<div id="sweaver-css"></div>');
 
@@ -596,6 +598,7 @@ Drupal.Sweaver.objectToReadable = function(object) {
   $.each(Drupal.Sweaver.selectors, function() {
     if (this.selector == '#' + object.id || this.selector == '.' + object.class[0] || this.selector == object.tag) {  
       translation = this.description;
+      return false;
     }
   });
   
@@ -608,7 +611,7 @@ Drupal.Sweaver.objectToReadable = function(object) {
 		  if (object.id) {
 	      translation = 'the ' + object.id + ' region';
 		  }
-		  else if (object.class[0] && !Drupal.Sweaver.ignoredClasses.find(object.class[0])) {
+		  else if (object.class[0] && !Drupal.Sweaver.excludeClasses.find(object.class[0])) {
 	      translation = 'all ' + object.class[0];
 		  }
 		  else if (object.tag) {
@@ -623,15 +626,30 @@ Drupal.Sweaver.objectToReadable = function(object) {
  * Translate an parent item in a css name.
  */
 Drupal.Sweaver.objectToCss = function(object) {
-  if (object.id) {
-    return '#' + object.id;
+  
+  var css = '';
+  
+  // First handle selectors defined in the backend.
+  $.each(Drupal.Sweaver.selectors, function() {
+    if (this.selector == '#' + object.id || this.selector == '.' + object.class[0] || this.selector == object.tag) {
+      css = this.selector;
+      return false;
+    }
+  });
+  
+  // Else build a generic translation.  
+  if (css == '') {  
+	  if (object.id) {
+	    css = '#' + object.id;
+	  }
+	  else if (object.class[0] && !Drupal.Sweaver.excludeClasses.find(object.class[0])) {
+	    css = '.' + object.class[0];
+	  }
+	  else if (object.tag) {
+	    css = object.tag;
+	  }
   }
-  else if (object.class[0]) {
-    return '.' + object.class[0];
-  }
-  else if (object.tag) {
-    return object.tag;
-  }
+  return css;
 }
 
 Drupal.Sweaver.hideOverlays = function() {

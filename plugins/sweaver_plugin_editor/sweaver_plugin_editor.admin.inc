@@ -30,14 +30,14 @@ function sweaver_settings($form_state) {
     '#type' => 'textarea',
     '#title' => t('Exclude selectors'),
     '#default_value' => variable_get('sweaver_selectors_exclude', SWEAVER_SELECTORS_EXCLUDE),
-    '#description' => t('Exclude selectors from being picked by the editor. Enter one selecter per line.'),
+    '#description' => t('Define on which items the style editor should not be applicable. Enter one selector per line.'),
   );
 
   $form['sweaver_classes_exclude'] = array(
     '#type' => 'textarea',
     '#title' => t('Exclude classes'),
     '#default_value' => variable_get('sweaver_classes_exclude', SWEAVER_CLASSES_EXCLUDE),
-    '#description' => t('Exclude classes from being picked by the editor. Enter one selecter per line.'),
+    '#description' => t('Define which classes should never be displayed in the css path. Enter one selector per line.'),
   );
 
   return system_settings_form($form);
