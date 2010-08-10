@@ -308,7 +308,7 @@ Drupal.Sweaver.bindClicks = function() {
     selectors.click(function(event) {
       event.stopPropagation();
       // Only do something when the content area is visible.
-      if (Drupal.Sweaver.open && $('#sweaver_plugin_editor .sweaver-content').is(':visible')) {
+      if (Drupal.Sweaver.open == 'true' && $('#sweaver_plugin_editor .sweaver-content').is(':visible')) {
         $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clear-block"></div><div id="selected-path" class="clear-block"></div>');
         
         var element = $(this);

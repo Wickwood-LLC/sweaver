@@ -61,23 +61,23 @@ $(document).ready(function() {
     var container = $(this).parent().attr('id').replace('tab-', '');
     if (container != Drupal.Sweaver.container) {
       if (Drupal.Sweaver.open == 'false') {
-          $('#sweaver').css("height", 'auto');
-          Drupal.Sweaver.open = 'true';
-	  }
-  	  $(this).parent().siblings().removeClass('active-tab');
-	  $(this).parent().toggleClass('active-tab');
-	  $('#'+ container + ' > div').show();
-	  $('#'+ Drupal.Sweaver.container + ' > div').hide();
-	  Drupal.Sweaver.container = container;
-	} 
+        $('#sweaver').css("height", 'auto');
+        Drupal.Sweaver.open = 'true';
+	    }
+			$(this).parent().siblings().removeClass('active-tab');
+			$(this).parent().toggleClass('active-tab');
+			$('#'+ container + ' > div').show();
+			$('#'+ Drupal.Sweaver.container + ' > div').hide();
+			Drupal.Sweaver.container = container;
+		} 
     else {
       if (Drupal.Sweaver.open == 'false') {
         $(this).parent().siblings().removeClass('active-tab');
-        $(this).parent().toggleClass('active-tab');
+        //$(this).parent().toggleClass('active-tab');
         $('#sweaver').css("height", 'auto');
         Drupal.Sweaver.open = 'true';
       }
-	}
+	  }
     Drupal.Sweaver.activeTab =  $(this).parent().attr('id');
     Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
     Drupal.Sweaver.cookie('sweaver_active_tab', Drupal.Sweaver.activeTab);
