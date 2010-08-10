@@ -8,7 +8,8 @@ Drupal.Sweaver = Drupal.Sweaver || {};
 
 Drupal.Sweaver.types = new Array(); // A type groups different properties
 Drupal.Sweaver.properties = new Array(); // The actual css properties
-Drupal.Sweaver.selectors = new Array(); // The list of defined selectors
+Drupal.Sweaver.selectors = new Array(); // The list of defined selector objects
+Drupal.Sweaver.selectorsSelectors = new Array(); // An array containing all defined selectors
 Drupal.Sweaver.css = new Object(); // Object with all targets and their properties
 Drupal.Sweaver.path = new Array(); // Full path to the root of the document
 Drupal.Sweaver.pathIndexes = new Array(); // An array with the indexes of all selected items
@@ -96,6 +97,11 @@ Drupal.Sweaver.init = function() {
 
   // Sweaver selectors.
   Drupal.Sweaver.selectors = Drupal.settings.sweaver['selectors'];
+  
+  // A string containing all selectors, used to avoid looping later on in the code.
+  $.each(Drupal.Sweaver.selectors, function (index, selector) {
+    Drupal.Sweaver.selectorsSelectors.push(selector.selector);
+  });
 
   // Sweaver types.
   Drupal.Sweaver.types = Drupal.settings.sweaver['types'];
@@ -128,17 +134,19 @@ Drupal.Sweaver.updateForm = function() {
     var target = '';
     if (!isEmpty(Drupal.Sweaver.activeElement)) {
       var type = Drupal.Sweaver.activeElement.type;
-      $.each(Drupal.Sweaver.types[type], function (index, object){
-        var value = $(Drupal.Sweaver.activePath).css(object);
-        if(!isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'color') {
-          $('#' + object + ' .colorSelector div').css('backgroundColor', value);
-        }
-        else {
-          if (value) {
-            $("#sweaver_plugin_editor #edit-" + object).val(value.replace('px', ''));
-          }
-        }
-      });
+      if (Drupal.Sweaver.types[type]) {
+	      $.each(Drupal.Sweaver.types[type], function (index, object){
+	        var value = $(Drupal.Sweaver.activePath).css(object);
+	        if(!isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'color') {
+	          $('#' + object + ' .colorSelector div').css('backgroundColor', value);
+	        }
+	        else {
+	          if (value) {
+	            $("#sweaver_plugin_editor #edit-" + object).val(value.replace('px', ''));
+	          }
+	        }
+	      });
+      }
     }
     Drupal.Sweaver.updateSliders();
   }
@@ -153,23 +161,28 @@ Drupal.Sweaver.initForm = function() {
 
   Drupal.Sweaver.hideOverlays();
 
-  // First hide all form elements
-  $('#sweaver #sweaver_plugin_editor .form-item, #sweaver #sweaver_plugin_editor .slider-wrapper, #sweaver #sweaver_plugin_editor h2, #sweaver #sweaver_plugin_editor .sweaver-group').each(function (i) {
+  // First hide titles and groups
+  $('#sweaver #sweaver_plugin_editor h2, #sweaver #sweaver_plugin_editor .sweaver-group').each(function (i) {
     $(this).hide();
   });
 
   if (!isEmpty(Drupal.Sweaver.activeElement)) {
+    // Decide which items should be shown or hidden. 	  
     var type = Drupal.Sweaver.activeElement.type;
-
-    // Show only the fields defined in the options array
-    if (type && Drupal.Sweaver.types[type]) {
-      $.each(Drupal.Sweaver.types[type], function (index, object){
-        $('#sweaver #edit-' + object + '-wrapper').show('fast', function() {
-          $(this).parents('.sweaver-group').show();
-          $(this).parents('.container-inner').children('h2').show();
-        });
-      });
-    }
+	  $.each(Drupal.Sweaver.properties, function(index, object){
+	    if(object.name in Drupal.Sweaver.types[type]) {
+	      $('#sweaver #edit-' + object.name + '-wrapper').show();
+        $('#sweaver #edit-' + object.name + '-wrapper').parents('.sweaver-group').show();	   
+        $('#sweaver #edit-' + object.name + '-wrapper').parents('.container-inner').children('h2').show();           
+	    } else {
+	      $('#sweaver #edit-' + object.name + '-wrapper').hide();    
+	    }
+	  });
+  } 
+  else {
+    $.each(Drupal.Sweaver.properties, function(index, object){
+      $('#sweaver #edit-' + object.name + '-wrapper').hide(); 
+    });
   }
 }
 
@@ -393,7 +406,7 @@ Drupal.Sweaver.buildPath = function(object) {
 
   // Show the currenty active path and the full path.
   Drupal.Sweaver.addToFullPath(object, index, true);
-  Drupal.Sweaver.printActivePath(0, object);
+  Drupal.Sweaver.addToActivePath(0, object);
 
   // Traverse all parents and save them in the path array.
   var i = 1;
@@ -407,14 +420,14 @@ Drupal.Sweaver.buildPath = function(object) {
     type = $(this).css('display');
 	  item = this;
 
-    if (id in Drupal.Sweaver.selectors || class in Drupal.Sweaver.selectors || tag in Drupal.Sweaver.selectors) {
+    if (Drupal.Sweaver.selectorsSelectors.find('#' + id) || Drupal.Sweaver.selectorsSelectors.find('.' + class[0]) || Drupal.Sweaver.selectorsSelectors.find(tag)) {
       Drupal.Sweaver.path[i] = new Object({'id' : id, 'class' : class, 'tag' : tag, 'type' : type, 'object' : item});
-	    
+
 	    // If selector is tagged as 'highlight', automatically select it.
 	    $.each(Drupal.Sweaver.selectors, function (index, selector) {
 	      if (selector.highlight == '1' && (selector.selector == '#' + id || selector.selector == '.' + class || selector.selector == tag)) {
 	        active = true;
-	        Drupal.Sweaver.printActivePath(i, item);
+	        Drupal.Sweaver.addToActivePath(i, item);
 	      }
 	    });
 	
@@ -422,16 +435,15 @@ Drupal.Sweaver.buildPath = function(object) {
 	    if (tag != 'html') {
 	      Drupal.Sweaver.addToFullPath(item, i, active);
 	    }
-	
 	    i++;
     }
   });
-
+  Drupal.Sweaver.printActivePath();
   $("#full-path").prepend('<span class="label">' + Drupal.t('Full path: ') + '</span>');
 }
 
 /**
- * Print active path.
+ * Print the full path.
  */
 Drupal.Sweaver.addToFullPath = function(object, index, active) {
   var path_separator = ' > ';
@@ -450,11 +462,11 @@ Drupal.Sweaver.addToFullPath = function(object, index, active) {
   // Populate path with clickable links.
   $("#full-path").prepend($('<span id="thid-' + index + '" '+ active_class +'><a href="#">' + Drupal.Sweaver.objectToReadable(Drupal.Sweaver.path[index]) + '</a> '+ path_separator +' </span>').click(function() {
     $(this).toggleClass('active');
-    Drupal.Sweaver.printActivePath(index, $(object));
-
+    Drupal.Sweaver.addToActivePath(index, $(object));
+    Drupal.Sweaver.printActivePath();
 	  // Reset the active element as it might have changed.
 	  Drupal.Sweaver.pathIndexes.sort(function(a,b){return a - b});
-	  Drupal.Sweaver.activeElement = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]];
+	  Drupal.Sweaver.activeElement = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]] ? Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]] : {} ;
 	  Drupal.Sweaver.updateForm();
 
     // Stop the link from doing anything.
@@ -463,12 +475,9 @@ Drupal.Sweaver.addToFullPath = function(object, index, active) {
 }
 
 /**
- * Print the full path.
+ * Add an item to the active path.
  */
-Drupal.Sweaver.printActivePath = function(i, item) {
-  // Reset the previous path and add the next item to pathIndexes.
-  $("#selected-path").html('');
-
+Drupal.Sweaver.addToActivePath = function(i, item) {
   // Do not add the item when selected or remove it from Active path.
   var position = $.inArray(i, Drupal.Sweaver.pathIndexes);
   if (position < 0) {
@@ -482,6 +491,14 @@ Drupal.Sweaver.printActivePath = function(i, item) {
       }
     }
   }
+}
+
+/**
+ * Print the active path.
+ */
+Drupal.Sweaver.printActivePath = function() {
+  // Reset the previous path and add the next item to pathIndexes.
+  $("#selected-path").html('');
 
   // Sort pathIndexes.
   Drupal.Sweaver.pathIndexes.sort(function(a,b){return a - b});
@@ -579,37 +596,30 @@ Drupal.Sweaver.objectToReadable = function(object) {
 
   var translation = '';
 
-  // special cases
-  if (object.tag == 'body') {
-    translation = Drupal.Sweaver.selectors.body.description;
-  } else {
-	  if (object.id) {
-	    if (Drupal.Sweaver.selectors[object.id]){
-	      translation = Drupal.Sweaver.selectors[object.id].description;
-	    }
-	    else {
+  // First handle selectors defined in the backend.
+  $.each(Drupal.Sweaver.selectors, function() {
+    if (this.selector == '#' + object.id || this.selector == '.' + object.class[0] || this.selector == object.tag) {  
+      translation = this.description;
+    }
+  });
+  
+  // Else build a generic translation.
+  if (translation == '') {
+	  if (object.tag == 'body') {
+	    translation = Drupal.Sweaver.selectors.body.description;
+	  } 
+	  else {
+		  if (object.id) {
 	      translation = 'the ' + object.id + ' region';
-	    }
-	  }
-	  else if (object.class[0] && !Drupal.Sweaver.ignoredClasses.find(object.class[0])) {
-	    if (Drupal.Sweaver.selectors[object.class]){
-	      translation = Drupal.Sweaver.selectors[object.class].description;
-	    }
-	    else {
+		  }
+		  else if (object.class[0] && !Drupal.Sweaver.ignoredClasses.find(object.class[0])) {
 	      translation = 'all ' + object.class[0];
-	    }
-	  }
-	  else if (object.tag) {
-		  $.each(Drupal.Sweaver.selectors, function() {
-		    if (this.selector == object.tag) {
-		      translation = this.description;
-		    }
-		  });
-		  if (translation == '') {
+		  }
+		  else if (object.tag) {
 		    translation = object.tag;
 		  }
 	  }
-  }
+	}
   return translation;
 }
 
@@ -691,9 +701,9 @@ function isEmpty(obj) {
 Array.prototype.find = function (element) {
 	for (var keys in this) {
 	  if (this[keys] == element) {
-	    return keys;
+	    return true;
 	    break;
 	  }  
 	}
-	return -1;
+	return false;
 };
