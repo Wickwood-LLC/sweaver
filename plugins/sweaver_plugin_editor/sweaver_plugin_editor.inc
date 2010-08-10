@@ -338,10 +338,22 @@ class sweaver_plugin_editor extends sweaver_plugin {
       }
     }
 
+    // Excluded classes.
+    $js_excluded_classes = array();
+    $exclude_classes = variable_get('sweaver_classes_exclude', SWEAVER_CLASSES_EXCLUDE);
+    $exploded = explode("\n", $exclude_classes);
+    foreach ($exploded as $key => $class) {
+      $trimmed = trim($class);
+      if (!empty($trimmed)) {
+        $js_excluded_classes[$trimmed] = $trimmed;
+      }
+    }
+
     $inline_settings['sweaver']['selectors'] = $js_selectors;
     $inline_settings['sweaver']['types'] = $js_types;
     $inline_settings['sweaver']['properties'] = $js_properties;
     $inline_settings['sweaver']['exclude_selectors'] = $js_excluded_selectors;
+    $inline_settings['sweaver']['exclude_classes'] = $js_excluded_classes;
     $inline_settings['sweaver']['invokes'][] = 'sweaver_plugin_editor';
   }
 

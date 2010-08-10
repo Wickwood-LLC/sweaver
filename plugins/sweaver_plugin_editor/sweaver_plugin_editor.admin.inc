@@ -22,7 +22,7 @@ function sweaver_settings($form_state) {
   $form['sweaver_paths'] = array(
     '#type' => 'textarea',
     '#title' => t('Exclude paths'),
-    '#default_value' => variable_get('sweaver_paths', SWEAVER_PATHS_DEFAULT),
+    '#default_value' => variable_get('sweaver_paths', SWEAVER_PATHS_EXCLUDE),
     '#description' => t('Exclude the editor on some pages, usually administration pages. Enter one page per line as Drupal paths. The \'*\' character is a wildcard. &lt;front&gt; is the front page.'),
   );
 
@@ -31,6 +31,13 @@ function sweaver_settings($form_state) {
     '#title' => t('Exclude selectors'),
     '#default_value' => variable_get('sweaver_selectors_exclude', SWEAVER_SELECTORS_EXCLUDE),
     '#description' => t('Exclude selectors from being picked by the editor. Enter one selecter per line.'),
+  );
+
+  $form['sweaver_classes_exclude'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Exclude classes'),
+    '#default_value' => variable_get('sweaver_classes_exclude', SWEAVER_CLASSES_EXCLUDE),
+    '#description' => t('Exclude classes from being picked by the editor. Enter one selecter per line.'),
   );
 
   return system_settings_form($form);
