@@ -19,14 +19,24 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     module_load_include('inc', 'system', 'system.admin');
     $form = system_theme_settings($form_state, $theme_key);
 
+    // Add extra property for theme settings which need to be saved also.
+    // Form alters on the theme settings form must be put those keys in this array.
+    $form['#sweaver_other_themesettings'] = array();
+
     // Let other modules alter the form.
     drupal_prepare_form('system_theme_settings', $form, $form_state);
 
-    // Convert all fieldsets to something completely new!
+    // Convert all fieldsets to buttons. The content of those fieldsets
+    // will be moved into the Sweaver popup.
     $i = 1;
     $weight = -100;
     foreach (element_children($form) as $key) {
       if (isset($form[$key]['#type']) && $form[$key]['#type'] == 'fieldset') {
+
+        // Skip fieldsets which the user doesn't have access to.
+        if (isset($form[$key]['#access']) && $form[$key]['#access'] === FALSE) {
+          continue;
+        }
 
         $title = $form[$key]['#title'];
 
@@ -92,7 +102,11 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         $theme_form_keys = array_merge($theme_form_keys, $theme_specific_keys);
       }
 
-      // Only save necessary theme values.
+      // Other variables which are set by other form alters.
+      // All keys must be put in a $form['#sweaver_other_themesettings'];
+      $theme_form_keys = array_merge($theme_form_keys, $form['sweaver_plugin_themesettings']['form']['#sweaver_other_themesettings']);
+
+      // Only save the necessary theme values.
       foreach ($values as $fkey => $fvalue) {
         if (in_array($fkey, $theme_form_keys)) {
           $theme_values[$fkey] = $fvalue;
@@ -102,7 +116,13 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       // And finally save.
       variable_set($key, $theme_values);
 
-      // TODO Fire other submit functions on the theme settings form.
+      // Fire other submit functions on the theme settings form.
+      $submit_handlers = $form['sweaver_plugin_themesettings']['form']['#submit'];
+      foreach ($submit_handlers as $key => $function) {
+        if ($function != 'system_theme_settings_submit' && function_exists($function)) {
+          $function($form['sweaver_plugin_themesettings']['form'], $form_state);
+        }
+      }
     }
   }
 

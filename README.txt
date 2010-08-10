@@ -30,7 +30,6 @@ Stuff we want to get in - not tied to a release
 - #873162
 - Revise the flow of all tabs on frontend, especially tied with first issue at top
 - Select image dropdown should also be able to remove existing background image
-- Make sure extra submit handlers on theme settings form also save
 - Multiple classes dropdown
 - Weights on selectors - this makes sure the previous one can work fine too
 - Menu callback to enable sweaver
