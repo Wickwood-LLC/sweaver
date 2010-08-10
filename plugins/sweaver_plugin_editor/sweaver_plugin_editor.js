@@ -263,15 +263,11 @@ Drupal.Sweaver.addSliders = function() {
 	    min: minSlider,
 	    max: maxSlider,
 	    slide: function(event, ui) {
-	      if (ui.value > 1) {
-	        $('#edit-' + $(this).attr("id").replace('-slider','')).val(ui.value);
-	        // TODO: can I trigger onchange event here?
-	        if (Drupal.Sweaver.updateMode) {
-	          Drupal.Sweaver.setValue($(this).attr("id").replace('-slider',''), ui.value);
-	        }
-	      } else {
-	        $('#' + $(this).attr("id").replace('-slider','')).val('default');
-	      }
+        $('#edit-' + $(this).attr("id").replace('-slider','')).val(ui.value);
+        // TODO: can I trigger onchange event here?
+        if (Drupal.Sweaver.updateMode) {
+          Drupal.Sweaver.setValue($(this).attr("id").replace('-slider',''), ui.value);
+        }
 	    }
 	  });
 	});
