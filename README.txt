@@ -33,8 +33,6 @@ Stuff we want to get in - not tied to a release
 - popup & message positioning
 - scroller on switch themes
 - Weights on selectors - this makes sure the previous one can work fine too
-- Menu callback to enable sweaver
 - style scheduler
 - sweaver base theme
 - documentation about plugins
-- Display suite plugin

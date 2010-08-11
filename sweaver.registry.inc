@@ -140,6 +140,15 @@ function _sweaver_sweaver_plugins() {
       'parent' => 'sweaver_plugin',
     ),
   );
+  $plugins['sweaver_plugin_ds'] = array(
+    'handler' => array(
+      'tab' => t('Display Suite'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_ds',
+      'file' => 'sweaver_plugin_ds.inc',
+      'class' => 'sweaver_plugin_ds',
+      'parent' => 'sweaver_plugin',
+    ),
+  );
   return $plugins;
 }
 

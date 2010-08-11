@@ -105,10 +105,9 @@ function sweaver_install() {
   variable_set('sweaver_editor_form_configuration', $editor_form_configuration);
 
   // Do not enable all plugins by default.
-  variable_set('sweaver_plugin_status_sweaver_plugin_customcss', FALSE);
-  variable_set('sweaver_plugin_status_sweaver_plugin_themesettings', FALSE);
-  variable_set('sweaver_plugin_status_sweaver_plugin_themeswitch', FALSE);
   variable_set('sweaver_plugin_status_sweaver_plugin_themeclasses', FALSE);
+  variable_set('sweaver_plugin_status_sweaver_plugin_fontface', FALSE);
+  variable_set('sweaver_plugin_status_sweaver_plugin_ds', FALSE);
 
   // Let images be handled by the images plugin.
   variable_set('sweaver_plugin_handle_images', 'sweaver_plugin_images');

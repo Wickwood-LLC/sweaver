@@ -232,6 +232,9 @@ class sweaver_plugin {
    * Plugins form.
    */
   function sweaver_plugin_config_plugins() {
+
+    cache_clear_all('plugins:sweaver:plugins', 'cache');
+
     $form = array();
     $weight = 100;
     $form['#tree'] = TRUE;
