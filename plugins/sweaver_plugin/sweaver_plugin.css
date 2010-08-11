@@ -139,6 +139,25 @@ body.sweaver {
   text-decoration: underline !important;
 }
 
+#sweaver-popup legend {
+	font-size: 16px !important;
+	line-height:19px !important;	
+	margin:0 0 10px !important;
+}
+
+#sweaver-popup fieldset fieldset legend {
+  font-size: 12px !important;
+  line-height: 13px !important;
+  background: transparent url(images/close.png) no-repeat left center !important;
+  padding-left: 25px !important;
+  height: 16px !important;
+  margin: 0 !important;
+}
+
+#sweaver-popup fieldset fieldset .fieldset-wrapper {
+	margin: 0px 0 10px 25px;
+}
+
 #sweaver-popup fieldset {
   background: transparent none !important;
   padding: 0 !important;
@@ -147,15 +166,34 @@ body.sweaver {
 }
 
 #sweaver-popup fieldset .description {
-  color: #eee !important;
-  margin-left: 10px !important;
+  border-radius: 5px 5px 5px 5px !important;
+	-moz-border-radius: 5px 5px 5px 5px !important;
+  -webkit-border-radius: 5px 5px 5px 5px !important;		
+	background: none repeat scroll 0 0 #666666 !important;
+	color: #EEEEEE !important;
+	padding: 10px !important;
+}
+
+#sweaver-popup fieldset fieldset .description {
+	margin-top: 10px;
+}
+
+#sweaver-popup fieldset .form-item .description {
+	background: transparent none !important;
+	padding: 0 !important;
+	font-size: 0.9em !important;
+}
+
+#sweaver-popup fieldset .form-item {
+	padding: 15px 0 !important;
+	margin: 0 !important;
+	border-bottom: 1px solid #777 !important;
 }
 
 #sweaver-popup fieldset fieldset {
   background: transparent none !important;
-  padding: 5px !important;
-  margin: 5px !important;
-  border: 0 none !important;
+  padding: 5px 0 !important;
+  margin: 0px !important;
 }
 
 #sweaver .popup-link {

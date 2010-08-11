@@ -46,8 +46,20 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
           '#weight' => $weight++,
         );
 
-        $form[$key]['#prefix'] = '<div class="display-none" id="theme-settings-data-'. $i .'">';
-        $form[$key]['#suffix'] = '</div>';
+        if (isset($form[$key]['#prefix'])) {
+          $form[$key]['#prefix'] .= '<div class="display-none" id="theme-settings-data-'. $i .'">';
+        }
+        else {
+          $form[$key]['#prefix'] = '<div class="display-none" id="theme-settings-data-'. $i .'">';
+        }
+
+        if (isset($form[$key]['#suffix'])) {
+          $form[$key]['#suffix'] = '</div>'. $form[$key]['#suffix'];
+        }
+        else {
+          $form[$key]['#suffix'] = '</div>';
+        }
+
         unset($form[$key]['#collapsible']);
         unset($form[$key]['#collapsed']);
         unset($form[$key]['#attributes']);
