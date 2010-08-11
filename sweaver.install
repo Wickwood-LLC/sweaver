@@ -120,6 +120,7 @@ function sweaver_install() {
 function sweaver_uninstall() {
   drupal_uninstall_schema('sweaver');
   cache_clear_all('sweaver', 'cache');
+  cache_clear_all('plugins:sweaver:plugins', 'cache');
   db_query("DELETE FROM {variable} WHERE name LIKE 'sweaver_%%'");
 }
 
