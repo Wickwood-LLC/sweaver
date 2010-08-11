@@ -49,11 +49,15 @@ function sweaver_plugin_editor_updateCss() {
   for (var key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
     for (var prop in target) {
-      if (Drupal.Sweaver.properties[prop] && target[prop] != '') {
+      if (Drupal.Sweaver.properties[prop]) {
 	    	// Special case for transparent.
 	    	if (prop == 'background-color' && target[prop] == 'transparent') {
 	          cssContent += '  '+ prop + ': ' + target[prop] + ';\n';
 	    	}
+        // Special case for background image.
+        else if (prop == 'background-image' && target[prop] == '') {
+            cssContent = '';
+        }        
 	    	else {
 	          cssContent += '  '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
 	    	}
