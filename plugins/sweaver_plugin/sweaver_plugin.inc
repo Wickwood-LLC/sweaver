@@ -283,7 +283,7 @@ class sweaver_plugin {
         if (!$can_be_enabled) {
           $form[$plugin_name]['status']['#disabled'] = TRUE;
           $form[$plugin_name]['status']['#value'] = 0;
-          $form[$plugin_name]['status']['#description'] = t('Following modules are missing: @module', array('@module' => implode(', ', $missing)));
+          $form[$plugin_name]['status']['#description'] = t('Following modules are missing or disabled: @module', array('@module' => implode(', ', $missing)));
         }
       }
 
