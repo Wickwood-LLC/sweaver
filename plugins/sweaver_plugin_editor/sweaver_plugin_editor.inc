@@ -186,7 +186,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
     );
 
     // Images.
-    $images = array('' => t('Select image'));
+    $images = array('' => t('Theme default'), 'none' => t('No image'));
     $image_handler_plugin = variable_get('sweaver_plugin_handle_images', '');
     if (!empty($image_handler_plugin)) {
       $image_handler = sweaver_get_plugin($image_handler_plugin);
@@ -334,9 +334,10 @@ class sweaver_plugin_editor extends sweaver_plugin {
     foreach ($exploded as $key => $selector) {
       $trimmed = trim($selector);
       if (!empty($trimmed)) {
-        $js_excluded_selectors[$trimmed] = $trimmed;
+        $js_excluded_selectors[] = $trimmed;
       }
     }
+    $js_excluded_selectors = implode(',', $js_excluded_selectors);
 
     // Excluded classes.
     $js_excluded_classes = array();
@@ -345,7 +346,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
     foreach ($exploded as $key => $class) {
       $trimmed = trim($class);
       if (!empty($trimmed)) {
-        $js_excluded_classes[$trimmed] = $trimmed;
+        $js_excluded_classes[] = $trimmed;
       }
     }
 

@@ -71,7 +71,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
       $content = t('<h2>Styles</h2>!styles', array('!styles' => implode(' ', $styles)));
     }
     else {
-      $content = t('<h2>No styles found</h2>');
+      $content = t('<p>No styles found</p>');
     }
 
     $form['sweaver_plugin_themeclasses'] = array(
@@ -126,7 +126,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
     foreach ($theme_info as $key => $value) {
       if (is_array($value) && isset($value['class'])) {
         $label = isset($value['label']) ? $value['label'] : $value['class'];
-        $styles[] = '<div class="sweaver-text-float" id="spt-'. $value['class'] .'"><a href="javascript:Drupal.Sweaver.ThemeClasses(\'spt-'. $value['class'] .'\')">'. strip_tags($value['label']) .'</a></div>';
+        $styles[] = '<div class="sweaver-switch-to-style " id="spt-'. $value['class'] .'"><a href="javascript:Drupal.Sweaver.ThemeClasses(\'spt-'. $value['class'] .'\')">'. strip_tags($value['label']) .'</a></div>';
       }
       if (is_array($value)) {
         $this->get_styles($theme_info[$key], $styles);

@@ -336,7 +336,7 @@ There are several css classes which you can use which will do all kinds of stuff
 
 - display-none: hides an element
 - popup-link: put this on a link and this will trigger a sweaver popup
-- sweaver-text-float: lets links float in a box
+- sweaver-switch-to-style: adds a brush icon
 - container: lets a div float
 - container-1 to container-4: determines the width (from 25% to 100%)
 - float-left: floats to left

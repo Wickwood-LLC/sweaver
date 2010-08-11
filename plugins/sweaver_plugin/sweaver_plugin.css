@@ -161,18 +161,18 @@ body.sweaver {
 #sweaver .popup-link {
   border: 0px;
   float: left;
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 #sweaver .popup-link a {
-  background-image: none !important;
-  display: block !important;
+  background: #999 url(images/popup.png) no-repeat 4px center !important;
   color: #fff !important;
   font-weight: bold !important;
-  padding: 10px !important;
-  background: #333 none !important;
+  padding: 5px 5px 5px 25px !important;
   display: block !important;
-  float: left !important;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;      
 }
 
 /* header region */
@@ -374,16 +374,21 @@ body.sweaver {
   width: 400px !important;
 }
 
-#sweaver .sweaver-text-float {
-  float: left !important;
-  background-color: #333 !important;
-  margin-right: 3px !important;
-  margin-bottom: 3px !important;
-  padding: 3px !important;
+#sweaver .sweaver-switch-to-style {
+  border: 0px;
+  float: left;
+  margin-right: 10px;
 }
 
-#sweaver .sweaver-text-float a {
+#sweaver .sweaver-switch-to-style a {
+  background: #999 url(images/style.png) no-repeat 4px center !important;
   color: #fff !important;
+  font-weight: bold !important;
+  padding: 5px 5px 5px 25px !important;
+  display: block !important;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px; 
 }
 
 /* Images and selected images */

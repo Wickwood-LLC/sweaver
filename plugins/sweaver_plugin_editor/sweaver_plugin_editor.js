@@ -49,14 +49,14 @@ function sweaver_plugin_editor_updateCss() {
   for (var key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
     for (var prop in target) {
-      if (Drupal.Sweaver.properties[prop]) {
-    	// Special case for transparent.
-    	if (target[prop] == 'transparent') {
-          cssContent += '  '+ prop + ': ' + target[prop] + ';\n';
-    	}
-    	else {
-          cssContent += '  '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
-    	}
+      if (Drupal.Sweaver.properties[prop] && target[prop] != '') {
+	    	// Special case for transparent.
+	    	if (prop == 'background-color' && target[prop] == 'transparent') {
+	          cssContent += '  '+ prop + ': ' + target[prop] + ';\n';
+	    	}
+	    	else {
+	          cssContent += '  '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
+	    	}
       }
     }
     if (cssContent != '') {
@@ -109,7 +109,7 @@ Drupal.Sweaver.init = function() {
   Drupal.Sweaver.properties = Drupal.settings.sweaver['properties'];
 
   // Classes that will never be used in the paths or generated css.
-  Drupal.Sweaver.excludeClasses = Drupal.settings.sweaver['exclude_classes']
+  Drupal.Sweaver.excludeClasses = Drupal.settings.sweaver['exclude_classes'];
   
   // Add div to store inline css and fill it up
   $('body > div:first').before('<div id="sweaver-css"></div>');
@@ -292,12 +292,8 @@ Drupal.Sweaver.updateSliders = function() {
  */
 Drupal.Sweaver.bindClicks = function() {
 
-  // Build a list of selectors to exclude.
-  var excludesArray = new Array();
-  $.each(Drupal.settings.sweaver['exclude_selectors'], function(index, object) {
-    excludesArray.push(object);
-  });
-  var excludes = excludesArray.join(', ');
+  // Get a list of selectors to exclude.
+  var excludes = Drupal.settings.sweaver['exclude_selectors'];
 
   // Never select the editor form as themeable.
   $(excludes).click(function(event) {
@@ -535,7 +531,10 @@ Drupal.Sweaver.updateStyleTab = function(class_name, class_object) {
   $('#sweaver_plugin_editor .sweaver-header').html('<div id="selected-path" class="clear-block"></div>');
   Drupal.Sweaver.path[0] = new Object({'id' : Drupal.Sweaver.activeElement.id, 'class' : Drupal.Sweaver.activeElement.class, 'tag' : Drupal.Sweaver.activeElement.tag,  'type' : Drupal.Sweaver.activeElement.type, 'object' : Drupal.Sweaver.activeElement.object});
   Drupal.Sweaver.addToFullPath(class_object, 0, true);
-  Drupal.Sweaver.printActivePath(0, class_object);
+  Drupal.Sweaver.activePath = '';
+  Drupal.Sweaver.pathIndexes = new Array();  
+  Drupal.Sweaver.addToActivePath(0, class_object);
+  Drupal.Sweaver.printActivePath();
   Drupal.Sweaver.updateForm();
 }
 
@@ -560,7 +559,7 @@ Drupal.Sweaver.writeChanges = function() {
 	for (prop in target) {
       if (Drupal.Sweaver.properties[prop]) {
     	// Special case for transparent.
-    	if (target[prop] == 'transparent') {
+    	if (prop == 'background-color' && target[prop] == 'transparent') {
    	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
     	}
     	else {

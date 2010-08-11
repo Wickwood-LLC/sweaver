@@ -4,7 +4,7 @@
  * See if the classes are found on the page.
  */
 $(document).ready(function() {
-  $('#sweaver_plugin_themeclasses .sweaver-text-float').each(function() {
+  $('#sweaver_plugin_themeclasses .sweaver-switch-to-style').each(function() {
     var class = $(this).attr('id').replace('spt-', '');
     if ($('.'+ class).length == 0) {
       $(this).hide();
