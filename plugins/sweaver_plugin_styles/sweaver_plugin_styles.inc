@@ -83,19 +83,13 @@ class sweaver_plugin_styles extends sweaver_plugin {
       '#title' => t('Style name'),
       '#size' => 50,
     );
-    if (!$existing_styles) {
-      $form['save_active'] = array(
-        '#type' => 'value',
-        '#value' => 1,
-      );
-    }
-    else {
-      $form['save_active'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Set as active style'),
-        '#default_value' => isset($current_style->active) ? $current_style->active : 0,
-      );
-    }
+
+    $form['save_active'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Set as active style'),
+      '#default_value' => isset($current_style->active) ? $current_style->active : 0,
+    );
+
     $form['save_submit'] = array(
       '#type' => 'submit',
       '#value' => t('Save style'),
