@@ -29,8 +29,9 @@ Stuff we want to get in - not tied to a release
 - #852726
 - #873162
 - Revise the flow of all tabs on frontend, especially tied with first issue at top
-- Select image dropdown should also be able to remove existing background image
 - Multiple classes dropdown
+- popup & message positioning
+- scroller on switch themes
 - Weights on selectors - this makes sure the previous one can work fine too
 - Menu callback to enable sweaver
 - style scheduler
