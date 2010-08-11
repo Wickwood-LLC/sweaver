@@ -194,7 +194,7 @@ function sweaver_export_check_serialized_keys($object) {
 function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
 
   static $run = FALSE;
-  static $objects = array();
+  static $objects = NULL;
   $object_type = is_array($map) ? $map[5] : $map;
 
   if (!$run) {
@@ -205,15 +205,15 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
     else {
       ctools_include('export');
       $objects = new stdClass;
-      $all_objects = ctools_export_load_object('sweaver_selector');
-      $all_objects += ctools_export_load_object('sweaver_property');
-      $all_objects += ctools_export_load_object('sweaver_type');
-      foreach ($all_objects as $key => $object) {
-        $object_type_key = str_replace('sweaver_', '', $object->table);
-        if (!isset($object->disabled) || (isset($object->disabled) && $object->disabled == FALSE)) {
-          $objects->{$object_type_key}->enabled[$key] = $object;
+      foreach (array('sweaver_selector', 'sweaver_property', 'sweaver_type') as $object_to_load) {
+        $loaded_objects = ctools_export_load_object($object_to_load);
+        foreach ($loaded_objects as $key => $object) {
+          $object_type_key = str_replace('sweaver_', '', $object->table);
+          if (!isset($object->disabled) || (isset($object->disabled) && $object->disabled == FALSE)) {
+            $objects->{$object_type_key}->enabled[$key] = $object;
+          }
+          $objects->{$object_type_key}->all[$key] = $object;
         }
-        $objects->{$object_type_key}->all[$key] = $object;
       }
 
       // Let sweaver plugins alter objects.
