@@ -418,7 +418,7 @@ Drupal.Sweaver.buildPath = function(object) {
     type = $(this).css('display');
 	  item = this;
 
-    if (Drupal.Sweaver.selectorsSelectors.find('#' + id) || Drupal.Sweaver.selectorsSelectors.find('.' + class[0]) || Drupal.Sweaver.selectorsSelectors.find(tag)) {
+    if ($.inArray('#' + id, Drupal.Sweaver.selectorsSelectors) > -1 || $.inArray('.' + class[0], Drupal.Sweaver.selectorsSelectors) > -1 || $.inArray(tag, Drupal.Sweaver.selectorsSelectors) > -1) {
       Drupal.Sweaver.path[i] = new Object({'id' : id, 'class' : class, 'tag' : tag, 'type' : type, 'object' : item});
 
 	    // If selector is tagged as 'highlight', automatically select it.
@@ -614,7 +614,7 @@ Drupal.Sweaver.objectToReadable = function(object) {
 		  if (object.id) {
 	      translation = 'the ' + object.id + ' region';
 		  }
-		  else if (object.class[0] && !Drupal.Sweaver.excludeClasses.find(object.class[0])) {
+		  else if (object.class[0] && $.inArray(object.class[0], Drupal.Sweaver.excludeClasses) < 0) {
 	      translation = 'all ' + object.class[0];
 		  }
 		  else if (object.tag) {
@@ -645,7 +645,7 @@ Drupal.Sweaver.objectToCss = function(object) {
 	  if (object.id) {
 	    css = '#' + object.id;
 	  }
-	  else if (object.class[0] && !Drupal.Sweaver.excludeClasses.find(object.class[0])) {
+	  else if (object.class[0] && $.inArray(object.class[0], Drupal.Sweaver.excludeClasses) < 0) {
 	    css = '.' + object.class[0];
 	  }
 	  else if (object.tag) {
@@ -711,16 +711,3 @@ function isEmpty(obj) {
   }
   return true;
 }
-
-/**
- * Helper function to check if a string is in an array.
- */
-Array.prototype.find = function (element) {
-	for (var keys in this) {
-	  if (this[keys] == element) {
-	    return true;
-	    break;
-	  }  
-	}
-	return false;
-};
