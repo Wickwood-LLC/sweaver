@@ -30,9 +30,9 @@ Stuff we want to get in - not tied to a release
 - #873162
 - Revise the flow of all tabs on frontend, especially tied with first issue at top
 - Multiple classes dropdown
-- popup & message positioning
-- scroller on switch themes
-- Weights on selectors - this makes sure the previous one can work fine too
+- Add weights on selectors - this makes sure the previous one can work fine too
+- popup & message positioning on window resize
+- add a scroller on switch themes
 - style scheduler
-- sweaver base theme
+- make a sweaver base theme
 - documentation about plugins
