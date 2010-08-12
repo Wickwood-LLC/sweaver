@@ -146,7 +146,7 @@ Drupal.Sweaver.showPopup = function(message) {
   // Create popup.
   popup = $('#sweaver-popup');
   popupBorder = 7;
-  popupTop = $(window).scrollTop() + popupBorder;
+  popupTop = popupBorder;
   popupWidth = $(window).width() - (popupBorder * 2) - parseInt(popup.css('padding-left')) - parseInt(popup.css('padding-right'));
   popupHeight = $(window).height() - $('#sweaver').outerHeight() - $('#sweaver-tabs').outerHeight() - (popupBorder * 2) - parseInt(popup.css('padding-top')) - parseInt(popup.css('padding-bottom'));
   $('.content', popup).css({'height' : popupHeight, 'width' : popupWidth});

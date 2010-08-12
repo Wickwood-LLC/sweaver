@@ -95,7 +95,7 @@ body.sweaver {
   color: #fff !important;
   display: none;
   padding: 15px !important;
-  position: absolute !important;
+  position: fixed !important;
   font-size: 11px !important;
   z-index: 1100 !important;
   text-decoration: none !important;
