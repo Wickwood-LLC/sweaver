@@ -70,7 +70,7 @@ function sweaver_install() {
         0 => 'font-family',
         1 => 'font-style',
         2 => 'font-weight',
-        3 => 'font-size',
+        3 => 'font-size-wrapper',
         4 => 'text-align',
         5 => 'color'
       ),
@@ -105,9 +105,10 @@ function sweaver_install() {
   variable_set('sweaver_editor_form_configuration', $editor_form_configuration);
 
   // Do not enable all plugins by default.
+  variable_set('sweaver_plugin_status_sweaver_plugin_customcss', FALSE);
+  variable_set('sweaver_plugin_status_sweaver_plugin_themesettings', FALSE);
+  variable_set('sweaver_plugin_status_sweaver_plugin_themeswitch', FALSE);
   variable_set('sweaver_plugin_status_sweaver_plugin_themeclasses', FALSE);
-  variable_set('sweaver_plugin_status_sweaver_plugin_fontface', FALSE);
-  variable_set('sweaver_plugin_status_sweaver_plugin_ds', FALSE);
 
   // Let images be handled by the images plugin.
   variable_set('sweaver_plugin_handle_images', 'sweaver_plugin_images');
@@ -119,7 +120,6 @@ function sweaver_install() {
 function sweaver_uninstall() {
   drupal_uninstall_schema('sweaver');
   cache_clear_all('sweaver', 'cache');
-  cache_clear_all('plugins:sweaver:plugins', 'cache');
   db_query("DELETE FROM {variable} WHERE name LIKE 'sweaver_%%'");
 }
 

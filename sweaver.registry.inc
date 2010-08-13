@@ -140,15 +140,6 @@ function _sweaver_sweaver_plugins() {
       'parent' => 'sweaver_plugin',
     ),
   );
-  $plugins['sweaver_plugin_ds'] = array(
-    'handler' => array(
-      'tab' => t('Display Suite'),
-      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_ds',
-      'file' => 'sweaver_plugin_ds.inc',
-      'class' => 'sweaver_plugin_ds',
-      'parent' => 'sweaver_plugin',
-    ),
-  );
   return $plugins;
 }
 
@@ -291,7 +282,7 @@ function _sweaver_default_sweaver_property() {
         '\'Palatino Linotype\', Palatino, Serif' => 'Palatino',
         'Tahoma, Geneva, Sans-Serif' => 'Tahoma',
         '\'Times New Roman\', Times, Serif' => 'Times New Roman',
-        '\'Trebuchet MS\', Helvetica, Sans-Serif' => 'Trebuchet',
+        '\'Trebuchet\', Helvetica, Sans-Serif' => 'Trebuchet',
         'Verdana, Geneva, Sans-Serif' => 'Verdana',
       );
   $propertys['font-family'] = $property;
@@ -332,13 +323,28 @@ function _sweaver_default_sweaver_property() {
       );
   $propertys['font-weight'] = $property;
 
+  // Font size group
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'font-size-wrapper';
+  $property->description = 'Font size';
+  $property->property_parent = '';
+  $property->property_type = 'parent';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array();
+  $propertys['font-size-wrapper'] = $property;
+
   // Font size
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'font-size';
-  $property->description = 'Font size';
-  $property->property_parent = '';
+  $property->description = 'size';
+  $property->property_parent = 'font-size-wrapper';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
@@ -346,6 +352,21 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = 200;
   $property->property_options = array();
   $propertys['font-size'] = $property;
+
+  // Line height
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'line-height';
+  $property->description = 'line height';
+  $property->property_parent = 'font-size-wrapper';
+  $property->property_type = 'slider';
+  $property->property_prefix = '';
+  $property->property_suffix = 'px';
+  $property->property_slider_min = 1;
+  $property->property_slider_max = 200;
+  $property->property_options = array();
+  $propertys['line-height'] = $property;
 
   // Text alignment.
   $property = new stdClass;
@@ -605,30 +626,6 @@ function _sweaver_default_sweaver_property() {
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
-  $property->name = 'border-top-style';
-  $property->description = 'Style';
-  $property->property_parent = 'border-top';
-  $property->property_type = 'select';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array(
-        'none' => 'None',
-        'dashed' => 'Dashed',
-        'dotted' => 'Dotted',
-        'solid' => 'Solid',
-        'double' => 'Double',
-        'groove' => 'Groove',
-        'inset' => 'Inset',
-        'outset' => 'Outset',
-        'ridge' => 'Ridge',
-  );
-  $propertys['border-top-style'] = $property;
-
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
   $property->name = 'border-top-width';
   $property->description = 'Width';
   $property->property_parent = 'border-top';
@@ -656,28 +653,12 @@ function _sweaver_default_sweaver_property() {
   $property->property_options = array();
   $propertys['border-top-color'] = $property;
 
-  // Left border.
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
-  $property->name = 'border-left';
-  $property->description = 'Border left';
-  $property->property_parent = '';
-  $property->property_type = 'parent';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array();
-  $propertys['border-left'] = $property;
-
-
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'border-left-style';
+  $property->name = 'border-top-style';
   $property->description = 'Style';
-  $property->property_parent = 'border-left';
+  $property->property_parent = 'border-top';
   $property->property_type = 'select';
   $property->property_prefix = '';
   $property->property_suffix = '';
@@ -694,7 +675,22 @@ function _sweaver_default_sweaver_property() {
         'outset' => 'Outset',
         'ridge' => 'Ridge',
   );
-  $propertys['border-left-style'] = $property;
+  $propertys['border-top-style'] = $property;
+
+  // Left border.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'border-left';
+  $property->description = 'Border left';
+  $property->property_parent = '';
+  $property->property_type = 'parent';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array();
+  $propertys['border-left'] = $property;
 
   $property = new stdClass;
   $property->api_version = 1;
@@ -724,27 +720,12 @@ function _sweaver_default_sweaver_property() {
   $property->property_options = array();
   $propertys['border-left-color'] = $property;
 
-  // Right border.
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
-  $property->name = 'border-right';
-  $property->description = 'Border right';
-  $property->property_parent = '';
-  $property->property_type = 'parent';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array();
-  $propertys['border-right'] = $property;
-
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'border-right-style';
+  $property->name = 'border-left-style';
   $property->description = 'Style';
-  $property->property_parent = 'border-right';
+  $property->property_parent = 'border-left';
   $property->property_type = 'select';
   $property->property_prefix = '';
   $property->property_suffix = '';
@@ -761,7 +742,22 @@ function _sweaver_default_sweaver_property() {
         'outset' => 'Outset',
         'ridge' => 'Ridge',
   );
-  $propertys['border-right-style'] = $property;
+  $propertys['border-left-style'] = $property;
+
+  // Right border.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'border-right';
+  $property->description = 'Border right';
+  $property->property_parent = '';
+  $property->property_type = 'parent';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array();
+  $propertys['border-right'] = $property;
 
   $property = new stdClass;
   $property->api_version = 1;
@@ -791,6 +787,30 @@ function _sweaver_default_sweaver_property() {
   $property->property_options = array();
   $propertys['border-right-color'] = $property;
 
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'border-right-style';
+  $property->description = 'Style';
+  $property->property_parent = 'border-right';
+  $property->property_type = 'select';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+        'none' => 'None',
+        'dashed' => 'Dashed',
+        'dotted' => 'Dotted',
+        'solid' => 'Solid',
+        'double' => 'Double',
+        'groove' => 'Groove',
+        'inset' => 'Inset',
+        'outset' => 'Outset',
+        'ridge' => 'Ridge',
+  );
+  $propertys['border-right-style'] = $property;
+
   // Bottom border.
   $property = new stdClass;
   $property->api_version = 1;
@@ -805,6 +825,34 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['border-bottom'] = $property;
+
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'border-bottom-width';
+  $property->description = 'Width';
+  $property->property_parent = 'border-bottom';
+  $property->property_type = 'slider';
+  $property->property_prefix = 'border-bottom-width';
+  $property->property_suffix = 'px';
+  $property->property_slider_min = 0;
+  $property->property_slider_max = 500;
+  $property->property_options = array();
+  $propertys['border-bottom-width'] = $property;
+
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'border-bottom-color';
+  $property->description = 'Color';
+  $property->property_parent = 'border-bottom';
+  $property->property_type = 'color';
+  $property->property_prefix = '#';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array();
+  $propertys['border-bottom-color'] = $property;
 
   $property = new stdClass;
   $property->api_version = 1;
@@ -830,34 +878,6 @@ function _sweaver_default_sweaver_property() {
   );
   $propertys['border-bottom-style'] = $property;
 
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'border-bottom-width';
-  $property->description = 'Width';
-  $property->property_parent = 'border-bottom';
-  $property->property_type = 'slider';
-  $property->property_prefix = '';
-  $property->property_suffix = 'px';
-  $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
-  $property->property_options = array();
-  $propertys['border-bottom-width'] = $property;
-
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'border-bottom-color';
-  $property->description = 'Color';
-  $property->property_parent = 'border-bottom';
-  $property->property_type = 'color';
-  $property->property_prefix = '#';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array();
-  $propertys['border-bottom-color'] = $property;
-
   // Width.
   $property = new stdClass;
   $property->api_version = 1;
@@ -873,6 +893,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_options = array();
   $propertys['width'] = $property;
 
+  // Height
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -906,6 +927,7 @@ function _sweaver_default_sweaver_type() {
     'font-style' => 'font-style',
     'font-weight' => 'font-weight',
     'font-size' => 'font-size',
+    'line-height' => 'line-height',
     'text-align' => 'text-align',
     'color' => 'color',
     'background-color' => 'background-color',
@@ -946,6 +968,7 @@ function _sweaver_default_sweaver_type() {
     'font-style' => 'font-style',
     'font-weight' => 'font-weight',
     'font-size' => 'font-size',
+    'line-height' => 'line-height',
     'color' => 'color',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
@@ -975,6 +998,7 @@ function _sweaver_default_sweaver_type() {
     'font-style' => 'font-style',
     'font-weight' => 'font-weight',
     'font-size' => 'font-size',
+    'line-height' => 'line-height',
     'text-align' => 'text-align',
     'color' => 'color',
     'background-color' => 'background-color',

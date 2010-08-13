@@ -313,18 +313,20 @@ class sweaver_plugin_editor extends sweaver_plugin {
     $properties = sweaver_object_load(NULL, 'property');
     foreach ($properties as $key => $property) {
       sweaver_export_check_serialized_keys($property);
-      $options = array(
-        'name' => $property->name,
-        'property' => $key,
-        'parent' => $property->property_parent,
-        'type' => $property->property_type,
-        'options' => $property->property_options,
-        'prefix' => $property->property_prefix,
-        'suffix' => $property->property_suffix,
-        'slider_min' => $property->property_slider_min,
-        'slider_max' => $property->property_slider_max,
-      );
+      if ($property->property_type != 'parent') {
+        $options = array(
+          'name' => $property->name,
+          'property' => $property->name,
+          'parent' => $property->property_parent,
+          'type' => $property->property_type,
+          'options' => $property->property_options,
+          'prefix' => $property->property_prefix,
+          'suffix' => $property->property_suffix,
+          'slider_min' => $property->property_slider_min,
+          'slider_max' => $property->property_slider_max,
+        );
       $js_properties[$key] = $options;
+      }
     }
 
     // Excluded selectors.
@@ -374,6 +376,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
           '#attributes' => array(
             'class' => 'slider-value',
             'title' => $property->description,
+            'autocomplete' => 'off',
           ),
         );
         break;
@@ -411,7 +414,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
       case 'parent':
         return array(
           '#type' => 'markup',
-          '#prefix' => '<div class="sweaver-group clear-block"><label>'. $property->description .'</label><div class="sweaver-group-content">',
+          '#prefix' => '<div class="sweaver-group clear-block"><label>'. $property->description .':</label><div class="sweaver-group-content">',
           '#suffix' => '</div></div>',
         );
         break;
