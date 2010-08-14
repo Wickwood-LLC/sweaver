@@ -9,7 +9,7 @@
 /**
  * Settings form.
  */
-function sweaver_settings($form_state) {
+function sweaver_settings($form, &$form_state) {
   $form = array();
 
   $form['sweaver_enabled'] = array(
@@ -48,7 +48,10 @@ function sweaver_settings($form_state) {
  */
 function sweaver_objects_list($object_type) {
 
-  $output = l(t('Add new @sweaver_object', array('@sweaver_object' => $object_type)), 'admin/settings/sweaver/editor/add/'. $object_type);
+  // Mimic MENU_LOCAL_ACTION.
+  $link = l(t('Add new @sweaver_object', array('@sweaver_object' => $object_type)), 'admin/config/user-interface/sweaver/editor/add/'. $object_type);
+  $output = '<ul class="action-links"><li>'. $link .'</li></ul>';
+
   drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/css/sweaver_plugin_editor.admin.css');
 
   $objects = sweaver_object_load(NULL, $object_type, 'all');
@@ -70,18 +73,18 @@ function sweaver_objects_list($object_type) {
 
       // Operations.
       $operations = array();
-      $operations['edit'] = l(t('Edit'), 'admin/settings/sweaver/editor/edit/'. $object_type .'/'. $object_name);
+      $operations['edit'] = l(t('Edit'), 'admin/config/user-interface/sweaver/editor/edit/'. $object_type .'/'. $object_name);
 
       if ($object_export_type != 2) {
-        $operations['export'] = l(t('Export'), 'admin/settings/sweaver/editor/export/'. $object_type .'/'. $object_name);
+        $operations['export'] = l(t('Export'), 'admin/config/user-interface/sweaver/editor/export/'. $object_type .'/'. $object_name);
       }
 
       // Delete - revert.
       if ($object_export_type == 1) {
-        $operations['delete'] = l(t('Delete'), 'admin/settings/sweaver/editor/delete/'. $object_type .'/'. $object_name);
+        $operations['delete'] = l(t('Delete'), 'admin/config/user-interface/sweaver/editor/delete/'. $object_type .'/'. $object_name);
       }
       elseif ($object_export_type == 3) {
-        $operations['delete'] = l(t('Revert'), 'admin/settings/sweaver/editor/revert/'. $object_type .'/'. $object_name);
+        $operations['delete'] = l(t('Revert'), 'admin/config/user-interface/sweaver/editor/revert/'. $object_type .'/'. $object_name);
       }
 
       // Disable - enable.
@@ -92,10 +95,10 @@ function sweaver_objects_list($object_type) {
           unset($operations['edit']);
           unset($operations['export']);
           unset($operations['delete']);
-          $operations['status'] = l(t('Enable'), 'admin/settings/sweaver/editor/enable/'. $object_type .'/'. $object_name);
+          $operations['status'] = l(t('Enable'), 'admin/config/user-interface/sweaver/editor/enable/'. $object_type .'/'. $object_name);
         }
         else {
-          $operations['status'] = l(t('Disable'), 'admin/settings/sweaver/editor/disable/'. $object_type .'/'. $object_name);
+          $operations['status'] = l(t('Disable'), 'admin/config/user-interface/sweaver/editor/disable/'. $object_type .'/'. $object_name);
         }
       }
       $row[] = implode(' - ', $operations);
@@ -124,7 +127,14 @@ function sweaver_objects_list($object_type) {
     }
 
     $rows = array_merge($rows_enabled, $rows_disabled);
-    $output .= theme('table', $header, $rows, array('id' => 'objects'));
+
+    // Theme the table.
+    $variables = array(
+      'header' => $header,
+      'rows' => $rows,
+      'attributes' => array('id' => 'objects'),
+    );
+    $output .= theme('table', $variables);
   }
   else {
     $output .= t('<p>No @object_type available.</p>', array('@object_type' => $object_type));
@@ -136,8 +146,7 @@ function sweaver_objects_list($object_type) {
 /**
  * Object form.
  */
-function sweaver_object_form($form_state, $object_type, $object = NULL) {
-  $form = array();
+function sweaver_object_form($form, &$form_state, $object_type, $object = NULL) {
   $function = 'sweaver_'. $object_type .'_form';
   return $function($form, $object);
 }
@@ -251,7 +260,7 @@ function sweaver_selector_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/settings/sweaver/editor/selectors';
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/selectors';
 }
 
 /**
@@ -420,7 +429,7 @@ function sweaver_property_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/settings/sweaver/editor/properties';
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/properties';
 }
 
 /**
@@ -516,7 +525,7 @@ function sweaver_type_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/settings/sweaver/editor/types';
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/types';
 }
 
 /**
@@ -537,10 +546,10 @@ function sweaver_object_delete(&$form_state, $redirect, $object_type, $object, $
     $form['#object_type'] = $object_type;
     $form['#object_redirect'] = $redirect;
     $form['#action_message'] = $action_message;
-    return confirm_form($form, t('Are you sure you want to @action @type %object?', array('@action' => $action, '@type' => $object_type , '%object' => $object->name)), 'admin/settings/sweaver/'. $redirect);
+    return confirm_form($form, t('Are you sure you want to @action @type %object?', array('@action' => $action, '@type' => $object_type , '%object' => $object->name)), 'admin/config/user-interface/sweaver/'. $redirect);
   }
   else {
-    drupal_goto('admin/settings/sweaver/editor/'. $redirect);
+    drupal_goto('admin/config/user-interface/sweaver/editor/'. $redirect);
   }
 }
 
@@ -555,7 +564,7 @@ function sweaver_object_delete_submit(&$form, &$form_state) {
   $action_message = $form['#action_message'];
   db_query("DELETE FROM {sweaver_%s} WHERE oid = %d", $object_type, $object->oid);
   drupal_set_message(t('Selector %selector has been @action_message.', array('@action_message' => $action_message, '%selector' => $object->name)));
-  $form_state['redirect'] = 'admin/settings/sweaver/editor/'. $redirect;
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/'. $redirect;
 }
 
 /**
@@ -565,7 +574,7 @@ function sweaver_object_status($redirect, $object, $status) {
   ctools_include('export');
   ctools_export_set_object_status($object, $status);
   cache_clear_all('sweaver', 'cache');
-  drupal_goto('admin/settings/sweaver/editor/'. $redirect);
+  drupal_goto('admin/config/user-interface/sweaver/editor/'. $redirect);
 }
 
 /**
@@ -588,7 +597,7 @@ function sweaver_plugin_editor_config_editor(&$form_state) {
       '#default_value' => $settings['title'],
       '#size' => 15,
       '#attributes' => array(
-        'class' => 'container-label-edit'
+        'class' => array('container-label-edit'),
       ),
     );
 
@@ -613,14 +622,13 @@ function sweaver_plugin_editor_config_editor(&$form_state) {
     $form['#properties_region'][$container][$weight] = $key;
 
     $form[$key]['name'] = array(
-      '#type' => 'markup',
-      '#value' => $property->description,
+      '#markup' => $property->description,
     );
     $form[$key]['weight'] = array(
       '#type' => 'weight',
       '#delta' => 50,
       '#attributes' => array(
-        'class' => 'property-weight property-weight-'. $container
+        'class' => array('property-weight', 'property-weight-'. $container),
       ),
       '#default_value' => $weight,
     );
@@ -628,7 +636,7 @@ function sweaver_plugin_editor_config_editor(&$form_state) {
       '#type' => 'select',
       '#options' => $sweaver->sweaver_containers(),
       '#attributes' => array(
-        'class' => 'property-container-select property-container-'. $container
+        'class' => array('property-container-select', 'property-container-'. $container),
       ),
       '#default_value' => $container,
     );

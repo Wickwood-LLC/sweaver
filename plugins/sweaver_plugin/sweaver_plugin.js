@@ -1,5 +1,7 @@
 /* $Id$ */
 
+(function ($) {
+
 Drupal.Sweaver = Drupal.Sweaver || {};
 
 Drupal.Sweaver.messageTimer = null;
@@ -293,3 +295,5 @@ Drupal.Sweaver.cookie = function(name, value, options) {
         return cookieValue;
     }
 };
+
+})(jQuery);

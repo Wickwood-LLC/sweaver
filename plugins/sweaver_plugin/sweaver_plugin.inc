@@ -35,7 +35,7 @@ class sweaver_plugin {
 
     // Enable or disable plugins.
     $page_arguments['callback_method'] = 'sweaver_plugin_config_plugins';
-    $items['admin/settings/sweaver/plugins'] = $base + array(
+    $items['admin/config/user-interface/sweaver/plugins'] = $base + array(
       'title' => 'Plugins',
       'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
@@ -57,13 +57,13 @@ class sweaver_plugin {
         'template' => 'sweaver-plugin',
         'file' => 'sweaver_plugin.theme.inc',
         'path' => $plugin_path,
-        'arguments' => array('form' => NULL),
+        'render element' => 'form',
       ),
       'sweaver_plugin_config_plugins' => array(
         'template' => 'sweaver-plugin-config-plugins',
         'file' => 'sweaver_plugin.theme.inc',
         'path' => $plugin_path,
-        'arguments' => array('form' => NULL),
+        'render element' => 'form',
       ),
     );
 
@@ -111,9 +111,9 @@ class sweaver_plugin {
    * Sweaver css and js.
    */
   function sweaver_form_css_js(&$inline_settings) {
-    jquery_ui_add('ui.draggable');
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.js', 'module');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.css', 'module');
+    //jquery_ui_add('ui.draggable');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.js');
+    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.css');
   }
 
   /**
@@ -197,14 +197,13 @@ class sweaver_plugin {
     static $run = FALSE;
 
     if (!$run || $reset) {
-      $sweaver = sweaver_get_plugin('sweaver_plugin');
 
       $run = TRUE;
-      if ($sweaver->sweaver_session(NULL, 'draft_mode')) {
-        $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where thid = %d AND theme = '%s'", $sweaver->sweaver_session(NULL, 'loaded_style'), $theme));
+      if ($this->sweaver_session(NULL, 'draft_mode')) {
+        $css = db_query("SELECT * FROM {sweaver_style} where thid = :thid AND theme = :theme", array(':thid' => $this->sweaver_session(NULL, 'loaded_style'), ':theme' => $theme))->fetchObject();
       }
       else {
-        $css = db_fetch_object(db_query("SELECT * FROM {sweaver_style} where theme = '%s' and active = 1", $theme));
+        $css = db_query("SELECT * FROM {sweaver_style} where theme = :theme and active = 1", array(':theme' => $theme))->fetchObject();
       }
       if (isset($css->thid)) {
         return $css;
@@ -221,9 +220,8 @@ class sweaver_plugin {
    * @return array $theme_info
    *   The info about a theme.
    */
-
   function sweaver_get_theme_info($theme) {
-    $info = db_result(db_query("SELECT info FROM {system} WHERE name = '%s' AND type ='theme'", $theme));
+    $info = db_query("SELECT info FROM {system} WHERE name = :theme AND type ='theme'", array(':theme' => $theme))->fetchField();
     $theme_info = unserialize($info);
     return $theme_info;
   }
@@ -241,7 +239,6 @@ class sweaver_plugin {
     $form['#plugins'] = array();
     $form['#theme'] = 'sweaver_plugin_config_plugins';
     $plugins_order = variable_get('sweaver_plugins_weight', array());
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.css');
 
     foreach (sweaver_get_plugin() as $plugin) {
       $plugin_name = $plugin['name'];
@@ -289,14 +286,13 @@ class sweaver_plugin {
 
       // Markup.
       $form[$plugin_name]['name'] = array(
-        '#type' => 'markup',
-        '#value' => isset($plugin['handler']['tab']) ? $plugin['handler']['tab'] : drupal_ucfirst($plugin_name),
+        '#markup' => isset($plugin['handler']['tab']) ? $plugin['handler']['tab'] : drupal_ucfirst($plugin_name),
       );
       $form[$plugin_name]['weight'] = array(
         '#type' => 'weight',
         '#delta' => 50,
         '#attributes' => array(
-          'class' => 'plugin-weight',
+          'class' => array('plugin-weight'),
         ),
         '#default_value' => $default_weight,
       );

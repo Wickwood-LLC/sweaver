@@ -21,7 +21,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
     $items = array();
 
     // Theme classes groups administration.
-    $items['admin/settings/sweaver/themeclasses'] = $base + array(
+    $items['admin/config/user-interface/sweaver/themeclasses'] = $base + array(
       'title' => 'Theme classes',
       'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
@@ -75,8 +75,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
     }
 
     $form['sweaver_plugin_themeclasses'] = array(
-      '#type' => 'markup',
-      '#value' => $content,
+      '#markup' => $content,
     );
 
     return $form;
@@ -115,6 +114,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
    * Menu callback submit.
    */
   function menu_callback_submit($form, &$form_state) {
+    drupal_set_message(t('The theme classes have been saved.'));
     db_query("DELETE FROM {variable} where name LIKE '%s%%'", 'sweaver_plugin_themeclasses_');
     variable_set('sweaver_themeclasses_groups', $form_state['values']['sweaver_themeclasses_groups']);
   }

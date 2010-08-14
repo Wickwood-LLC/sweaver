@@ -57,7 +57,7 @@ class sweaverEditor extends DrupalWebTestCase {
       'sweaver_plugin_customcss[status]' => 1,
       'sweaver_plugin_themeswitch[status]' => 1,
     );
-    $this->drupalPost('admin/settings/sweaver/plugins', $edit, t('Save'));
+    $this->drupalPost('admin/config/user-interface/sweaver/plugins', $edit, t('Save'));
     $this->drupalGet('user');
     $this->assertRaw('Custom css', t('Custom css tab found'), $editor_tests);
 

@@ -22,7 +22,7 @@ class sweaver_plugin_customcss extends sweaver_plugin {
       '#cols' => 80,
       '#resizable' => FALSE,
       '#attributes' => array(
-        'class' => 'sweaver-400',
+        'class' => array('sweaver-400'),
       ),
       '#default_value' => (isset($current_style->customcss)) ? $current_style->customcss : '',
       '#prefix' => '<div class="form-floater">',

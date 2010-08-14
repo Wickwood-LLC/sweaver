@@ -49,7 +49,7 @@ function template_preprocess_sweaver_plugin(&$vars) {
   $vars['sweaver_height'] = $sweaver_height;
 
   // Rest of the form.
-  $vars['rest_of_form'] = drupal_render($form);
+  $vars['rest_of_form'] = drupal_render_children($form);
 }
 
 /**
@@ -69,8 +69,9 @@ function template_preprocess_sweaver_plugin_config_plugins(&$vars) {
   }
 
   drupal_add_js('misc/tableheader.js');
+  drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.css');
   drupal_add_tabledrag('plugins-configuration', 'order', 'sibling', 'plugin-weight', NULL, NULL, TRUE);
 
   $vars['rows'] = $rows;
-  $vars['submit'] = drupal_render($form);
+  $vars['submit'] = drupal_render_children($form);
 }

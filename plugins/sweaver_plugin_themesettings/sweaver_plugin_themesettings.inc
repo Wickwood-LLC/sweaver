@@ -41,8 +41,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         $title = $form[$key]['#title'];
 
         $form['item_'. $i] = array(
-          '#type' => 'markup',
-          '#value' => '<div class="popup-link"><a href="#" id="theme-settings-link-'. $i .'">'. check_plain($title) .'</a></div>',
+          '#markup' => '<div class="popup-link"><a href="#" id="theme-settings-link-'. $i .'">'. check_plain($title) .'</a></div>',
           '#weight' => $weight++,
         );
 

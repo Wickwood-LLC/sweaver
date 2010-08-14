@@ -18,7 +18,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     );
 
     // Theme classes groups administration.
-    $items['admin/settings/sweaver/styles'] = $base + array(
+    $items['admin/config/user-interface/sweaver/styles'] = $base + array(
       'title' => 'Styles',
       'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
@@ -27,7 +27,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
 
     // Delete a style.
     $page_arguments['callback_method'] = 'style_confirm_form_delete';
-    $items['admin/settings/sweaver/styles/delete'] = array(
+    $items['admin/config/user-interface/sweaver/styles/delete'] = array(
       'title' => 'Delete style',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
@@ -50,9 +50,9 @@ class sweaver_plugin_styles extends sweaver_plugin {
     // Saved styles in database.
     $existing_styles = FALSE;
     $existing_styles_options = array(0 => t('Select'));
-    $results = db_query("SELECT thid, style FROM {sweaver_style} where theme = '%s'", $theme_key);
-    while ($data = db_fetch_array($results)) {
-      $existing_styles_options[$data['thid']] = $data['style'];
+    $results = db_query("SELECT thid, style FROM {sweaver_style} where theme = :theme", array(':theme' => $theme_key))->fetch();
+    foreach ($results as $data) {
+      $existing_styles_options[$data->thid] = $data->style;
     }
     if (count($existing_styles_options) > 1) {
       $existing_styles = TRUE;
@@ -293,8 +293,8 @@ class sweaver_plugin_styles extends sweaver_plugin {
 
     // Styles list.
     $rows = array();
-    $result = db_query("SELECT * FROM {sweaver_style} ORDER BY style ASC, theme ASC, active DESC");
-    while ($style = db_fetch_object($result)) {
+    $results = db_query("SELECT * FROM {sweaver_style} ORDER BY style ASC, theme ASC, active DESC")->fetch();
+    foreach ($results as $style) {
       $row = array();
       $row[] = check_plain($style->style);
       $row[] = check_plain($style->theme);
@@ -341,7 +341,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     }
     else {
       drupal_set_message(t('Style not found'));
-      drupal_goto('admin/settings/sweaver/styles');
+      drupal_goto('admin/config/user-interface/sweaver/styles');
     }
   }
 
@@ -351,6 +351,6 @@ class sweaver_plugin_styles extends sweaver_plugin {
   function style_confirm_form_delete_submit($form, &$form_state) {
     db_query("DELETE FROM {sweaver_style} WHERE thid = %d", $form['#style']->thid);
     drupal_set_message(t('Style %style has been removed', array('%style' => $form['#style']->style)));
-    $form_state['redirect'] = 'admin/settings/sweaver/styles';
+    $form_state['redirect'] = 'admin/config/user-interface/sweaver/styles';
   }
 }

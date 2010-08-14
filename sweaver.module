@@ -22,14 +22,21 @@ define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver\n#admin-menu\n.colorpicker\n#sweav
 define('SWEAVER_CLASSES_EXCLUDE', "clear\nclear-fix\nclear-block");
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  */
-function sweaver_perm() {
-  return array('configure sweaver', 'use editor');
+function sweaver_permission() {
+  return array(
+    'configure sweaver' => array(
+      'title' => t('Configure the editor, selectors, properties, types and other plugins.')
+    ),
+    'use editor' => array(
+      'title' => t('Use the front end editor.'),
+    ),
+  );
 }
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function sweaver_menu() {
   module_load_include('inc', 'sweaver', 'sweaver.registry');
@@ -37,7 +44,7 @@ function sweaver_menu() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function sweaver_theme() {
   module_load_include('inc', 'sweaver', 'sweaver.registry');
@@ -195,7 +202,7 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
 
   static $run = FALSE;
   static $objects = NULL;
-  $object_type = is_array($map) ? $map[5] : $map;
+  $object_type = is_array($map) ? $map[6] : $map;
 
   if (!$run) {
 
@@ -312,12 +319,14 @@ function sweaver_preprocess_page(&$vars) {
 }
 
 /**
- * Implementation of hook_footer().
+ * Implements hook_page_alter().
  */
-function sweaver_footer($main = 0) {
-  // We return the complete form in the footer.
+function sweaver_page_alter(&$page) {
+  // We return the complete form in the page_bottom.
   if (sweaver_show_editor()) {
-    return drupal_get_form('sweaver_frontend') . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>';
+    $page['page_bottom']['sweaver'] = array(
+      '#markup' => drupal_render(drupal_get_form('sweaver_frontend')) . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>',
+    );
   }
 }
 
@@ -353,8 +362,7 @@ function sweaver_show_editor() {
 /**
  * Rock 'n' roll: the sweaver editor.
  */
-function sweaver_frontend(&$form_state) {
-  $form = array();
+function sweaver_frontend($form, &$form_state) {
   $weight = 1;
   global $theme_key;
   $form['#plugins'] = array();
@@ -465,7 +473,8 @@ function sweaver_menu_callback($settings) {
  * @return string $form
  *   The rendered form.
  */
-function sweaver_menu_callback_form($form_state, $form, $plugin_name, $callback_method) {
+function sweaver_menu_callback_form($form, &$form_state, $current_form, $plugin_name, $callback_method) {
+  $form = $current_form;
   $form['#plugin_name'] = $plugin_name;
   $form['#callback_method'] = $callback_method;
   return $form;

@@ -35,7 +35,7 @@ function template_preprocess_sweaver_plugin_editor_config_editor(&$vars) {
   }
 
   $vars['rows'] = $rows;
-  $vars['submit'] = drupal_render($form);
+  $vars['submit'] = drupal_render_children($form);
 
   drupal_add_js('misc/tableheader.js');
   drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.css');

@@ -14,26 +14,26 @@ class sweaver_plugin_images extends sweaver_plugin {
 
     $items = array();
 
-    $items['admin/settings/sweaver/images'] = $base + array(
+    $items['admin/config/user-interface/sweaver/images'] = $base + array(
       'title' => 'Images',
       'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
       'weight' => $weight++,
     );
     $page_arguments['callback_method'] = 'images_backend_form';
-    $items['admin/settings/sweaver/images/add'] = $base + array(
+    $items['admin/config/user-interface/sweaver/images/add'] = $base + array(
       'title' => 'Add new image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
     );
     $page_arguments['callback_method'] = 'images_backend_form';
-    $items['admin/settings/sweaver/images/edit'] = $base + array(
+    $items['admin/config/user-interface/sweaver/images/edit'] = $base + array(
       'title' => 'Edit image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
     );
     $page_arguments['callback_method'] = 'images_confirm_form_delete';
-    $items['admin/settings/sweaver/images/delete'] = $base + array(
+    $items['admin/config/user-interface/sweaver/images/delete'] = $base + array(
       'title' => 'Add new image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
@@ -159,17 +159,17 @@ class sweaver_plugin_images extends sweaver_plugin {
 
     // Images list
     $rows = array();
-    $output = '<p>'. l(t('Add new image'), 'admin/settings/sweaver/images/add') .'</p>';
+    $output = '<p>'. l(t('Add new image'), 'admin/config/user-interface/sweaver/images/add') .'</p>';
 
-    $query = 'SELECT ti.fid, ti.description, f.filepath FROM {sweaver_image} ti
-              INNER JOIN {files} f on f.fid = ti.fid order by description ASC';
-    $result = db_query($query);
-    while ($image = db_fetch_object($result)) {
+    $query = 'SELECT ti.fid, ti.description, f.uri FROM {sweaver_image} ti
+              INNER JOIN {file_managed} f on f.fid = ti.fid order by description ASC';
+    $result = db_query($query)->fetch();
+    foreach ($result as $image) {
       $row = array();
       $row[] = check_plain($image->description);
-      $operations = l(t('View'), file_create_url($image->filepath)) .' - ';
-      $operations .= l(t('Edit'), 'admin/settings/sweaver/images/edit/'. $image->fid) .' - ';
-      $operations .= l(t('Delete'), 'admin/settings/sweaver/images/delete/'. $image->fid);
+      $operations = l(t('View'), file_create_url($image->uri)) .' - ';
+      $operations .= l(t('Edit'), 'admin/config/user-interface/sweaver/images/edit/'. $image->fid) .' - ';
+      $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/images/delete/'. $image->fid);
       $row[] = $operations;
       $rows[] = $row;
     }
@@ -291,7 +291,7 @@ class sweaver_plugin_images extends sweaver_plugin {
     drupal_write_record('sweaver_image', $image, $update);
 
     drupal_set_message(t('Image %description has been saved.', array('%description' => $image->description)));
-    $form_state['redirect'] = 'admin/settings/sweaver/images';
+    $form_state['redirect'] = 'admin/config/user-interface/sweaver/images';
   }
 
   /**
@@ -301,11 +301,11 @@ class sweaver_plugin_images extends sweaver_plugin {
     $image = $this->sweaver_get_image(arg(5));
     if ($image) {
       $form['#image'] = $image;
-      return confirm_form($form, t('Are you sure you want to delete image %description?', array('%description' => $image->description)), 'admin/settings/sweaver/images');
+      return confirm_form($form, t('Are you sure you want to delete image %description?', array('%description' => $image->description)), 'admin/config/user-interface/sweaver/images');
     }
     else {
       drupal_set_message(t('Image not found'));
-      drupal_goto('admin/settings/sweaver/images');
+      drupal_goto('admin/config/user-interface/sweaver/images');
     }
   }
 
@@ -315,10 +315,10 @@ class sweaver_plugin_images extends sweaver_plugin {
   function images_confirm_form_delete_submit(&$form, &$form_state) {
     $image = $form['#image'];
     file_delete($image->filepath);
-    db_query("DELETE FROM {files} where fid = %d", $image->fid);
+    db_query("DELETE FROM {file_managed} where fid = %d", $image->fid);
     db_query("DELETE FROM {sweaver_image} where fid = %d", $image->fid);
     drupal_set_message(t('Image %description has been deleted.', array('%description' => $image->description)));
-    $form_state['redirect'] = 'admin/settings/sweaver/images';
+    $form_state['redirect'] = 'admin/config/user-interface/sweaver/images';
   }
 
   /**
@@ -328,8 +328,8 @@ class sweaver_plugin_images extends sweaver_plugin {
   function sweaver_get_image($fid) {
     if (!empty($fid)) {
       $query = 'SELECT ti.fid, ti.description, f.filepath FROM {sweaver_image} ti
-                INNER JOIN {files} f on f.fid = ti.fid WHERE f.fid = %d';
-      $image = db_fetch_object(db_query($query, $fid));
+                INNER JOIN {file_managed} f on f.fid = ti.fid WHERE f.fid = %d';
+      $image = db_query($query, $fid)->fetch();
       if ($image->fid) {
         return $image;
       }

@@ -1,6 +1,11 @@
 ; $Id$
 name = Sweaver
 description = "Visual interface for tweaking or building Drupal themes."
-core = 6.x
+core = 7.x
 dependencies[] = ctools
-dependencies[] = jquery_ui
+files[] = sweaver.module
+files[] = sweaver.install
+files[] = sweaver.registry.inc
+files[] = tests/sweaver.admin.test
+files[] = tests/sweaver.editor.test
+configure = admin/config/user-interface/sweaver

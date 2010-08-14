@@ -46,7 +46,7 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
     global $theme_key;
     $no_image = drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/no_screenshot.png';
 
-    $themes = system_theme_data();
+    $themes = system_rebuild_theme_data();
     foreach ($themes as $key => $theme) {
       if ($theme->status) {
 
@@ -59,13 +59,13 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
 
         if ($theme_key != $key) {
           $switch_description = t('Switch to @theme', array('@theme' => $theme->info['name']));
-          $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
+          $image = theme('image', array('path' => $image_file, 'alt' => $switch_description, 'title' => $switch_description, 'attributes' => array('width' => '150', 'height' => '90')));
           $image = l($image, 'sweaver_themeswitch/'. $key, array('html' => TRUE, 'query' => drupal_get_destination()));
           $content .= '<div class="selected-image">'. $image;
         }
         else {
           $switch_description = t('This theme is currently selected');
-          $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
+          $image = theme('image', array('path' => $image_file, 'alt' => $switch_description, 'title' => $switch_description, 'attributes' => array('width' => '150', 'height' => '90')));
           $content .= '<div class="selected-image selected-image-default">'. $image;
         }
 
@@ -76,8 +76,7 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
     }
 
     $form['markup'] = array(
-      '#type' => 'markup',
-      '#value' => $content,
+      '#markup' => $content,
     );
 
     return $form;
