@@ -26,7 +26,7 @@ $(document).ready(function() {
 
   Drupal.Sweaver.init();
 
-  //Drupal.Sweaver.writeCss();
+  Drupal.Sweaver.writeCss();
 
   Drupal.Sweaver.addSliders();
 
@@ -43,7 +43,7 @@ $(document).ready(function() {
  *
  * Return editor css.
  */
-function sweaver_plugin_editor_updateCss() {
+sweaver_plugin_editor_updateCss = function() {
   var css = '';
   var fullCss = '';
   var cssContent = '';

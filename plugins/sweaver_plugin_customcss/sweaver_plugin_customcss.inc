@@ -50,7 +50,7 @@ class sweaver_plugin_customcss extends sweaver_plugin {
    * Frontend css and js.
    */
   function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_customcss/sweaver_plugin_customcss.js', 'module');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_customcss/sweaver_plugin_customcss.js');
     $inline_settings['sweaver']['invokes'][] = 'sweaver_plugin_customcss';
   }
 }

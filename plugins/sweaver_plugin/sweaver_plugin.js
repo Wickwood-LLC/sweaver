@@ -9,10 +9,15 @@ Drupal.Sweaver.messageTimer = null;
 Drupal.Sweaver.writeCss = function(context) {
 
   var fullCss = '';
+  //var window = $(self);
 
   $.each(Drupal.settings.sweaver['invokes'], function(index, module) {
-    var invoke_function = module +'_updateCss';
-    css = window[invoke_function].apply(this);
+    var invoke_function = module +'_updateCss()';
+    //console.log(invoke_function);
+    //css = window[invoke_function].apply(this);
+    // @todo using eval() for now, need to find
+    // out alternative in this jQuery version.
+    css = eval(invoke_function);
     if (css != '') {
       fullCss += css;
     }

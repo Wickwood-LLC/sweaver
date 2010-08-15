@@ -1,5 +1,8 @@
 /* $Id$ */
 
+(function ($) {
+
+
 /**
  * Implementation of HOOK_updateCss().
  * 
@@ -14,10 +17,14 @@ sweaver_plugin_customcss_updateCss = function() {
 /**
  * Preview button onclick behavior.
  */
-Drupal.behaviors.SweaverCustomCss = function(context) {
-  $('#edit-sweaver-plugin-custom-css-button').click(function(){
-    Drupal.Sweaver.writeCss();
-    Drupal.Sweaver.setMessage(Drupal.t('Your custom css has been succesfully applied.'));
-    return false;
-  });
+Drupal.behaviors.SweaverCustomCss = { 
+  attach: function(context, settings) {
+    $('#edit-sweaver-plugin-custom-css-button').click(function(){
+      Drupal.Sweaver.writeCss();
+      Drupal.Sweaver.setMessage(Drupal.t('Your custom css has been succesfully applied.'));
+      return false;
+    });
+  }
 }
+
+})(jQuery);
