@@ -46,9 +46,10 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
     global $theme_key;
     $no_image = drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/no_screenshot.png';
 
-    $themes = system_rebuild_theme_data();
-    foreach ($themes as $key => $theme) {
+    $themes = db_query("SELECT * FROM {system} WHERE type = 'theme' AND status = '1' ORDER BY name ASC")->fetchAll();
+    foreach ($themes as $theme) {
       if ($theme->status) {
+        $theme->info = unserialize($theme->info);
 
         if (isset($theme->info['screenshot']) && file_exists($theme->info['screenshot'])) {
           $image_file = $theme->info['screenshot'];
@@ -57,10 +58,10 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
           $image_file = $no_image;
         }
 
-        if ($theme_key != $key) {
+        if ($theme_key != $theme->name) {
           $switch_description = t('Switch to @theme', array('@theme' => $theme->info['name']));
           $image = theme('image', array('path' => $image_file, 'alt' => $switch_description, 'title' => $switch_description, 'attributes' => array('width' => '150', 'height' => '90')));
-          $image = l($image, 'sweaver_themeswitch/'. $key, array('html' => TRUE, 'query' => drupal_get_destination()));
+          $image = l($image, 'sweaver_themeswitch/'. $theme->name, array('html' => TRUE, 'query' => drupal_get_destination()));
           $content .= '<div class="selected-image">'. $image;
         }
         else {
