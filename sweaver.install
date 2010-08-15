@@ -7,7 +7,7 @@
  */
 
 /**
- * Implementation of hook_requirements().
+ * Implements hook_requirements().
  */
 function sweaver_requirements($phase) {
   $requirements = array();
@@ -15,8 +15,8 @@ function sweaver_requirements($phase) {
   $t = get_t();
 
   if ($phase == 'runtime' || $phase == 'install') {
-    $sweaver_directory = file_create_path() .'/sweaver';
-    if (!file_check_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+    $sweaver_directory = file_directory_path() .'/sweaver';
+    if (!file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
       if (!is_dir($sweaver_directory)) {
         $requirements['sweaver_directory'] = array(
           'title' => $t('sweaver directory'),
@@ -53,11 +53,9 @@ function sweaver_requirements($phase) {
 }
 
 /**
- * Implementation of hook_install().
+ * Implements hook_install().
  */
 function sweaver_install() {
-
-  drupal_install_schema('sweaver');
 
   // Alter the module weight to make sure we are the last one.
   db_query("UPDATE {system} SET weight = 99 WHERE name = 'sweaver'");
@@ -109,22 +107,24 @@ function sweaver_install() {
   variable_set('sweaver_plugin_status_sweaver_plugin_themesettings', FALSE);
   variable_set('sweaver_plugin_status_sweaver_plugin_themeswitch', FALSE);
   variable_set('sweaver_plugin_status_sweaver_plugin_themeclasses', FALSE);
+  variable_set('sweaver_plugin_status_sweaver_plugin_fontface', FALSE);
+  variable_set('sweaver_plugin_status_sweaver_plugin_ds', FALSE);
 
   // Let images be handled by the images plugin.
   variable_set('sweaver_plugin_handle_images', 'sweaver_plugin_images');
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function sweaver_uninstall() {
-  drupal_uninstall_schema('sweaver');
   cache_clear_all('sweaver', 'cache');
+  cache_clear_all('plugins:sweaver:plugins', 'cache');
   db_query("DELETE FROM {variable} WHERE name LIKE 'sweaver_%%'");
 }
 
 /**
- * Implementation of hook_schema().
+ * Implements hook_schema().
  */
 function sweaver_schema() {
 
