@@ -1,5 +1,7 @@
 // $Id$
 
+(function ($) {
+
 /**
  * Add the sweaver bar at the bottom of the theme
  */
@@ -24,7 +26,7 @@ $(document).ready(function() {
 
   Drupal.Sweaver.init();
 
-  Drupal.Sweaver.writeCss();
+  //Drupal.Sweaver.writeCss();
 
   Drupal.Sweaver.addSliders();
 
@@ -714,3 +716,5 @@ function isEmpty(obj) {
   }
   return true;
 }
+
+})(jQuery);

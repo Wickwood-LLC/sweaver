@@ -50,7 +50,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     // Saved styles in database.
     $existing_styles = FALSE;
     $existing_styles_options = array(0 => t('Select'));
-    $results = db_query("SELECT thid, style FROM {sweaver_style} where theme = :theme", array(':theme' => $theme_key))->fetch();
+    $results = db_query("SELECT thid, style FROM {sweaver_style} where theme = :theme", array(':theme' => $theme_key))->fetchAll();
     foreach ($results as $data) {
       $existing_styles_options[$data->thid] = $data->style;
     }

@@ -172,32 +172,34 @@ Drupal.Sweaver.hidePopup = function() {
 /**
  * Set behaviors on link which will open the popup.
  */
-Drupal.behaviors.sweaverOpenPopup = function (context) {
-  $('#sweaver .popup-link a', context).each(function() {
+Drupal.behaviors.sweaverOpenPopup = {
+  attach: function (context, settings) {
 
-    $(this).click(function() {
+    $('#sweaver .popup-link a', context).each(function() {
 
-      var wrapper = $(this).attr('id').replace('link', 'data');
+      $(this).click(function() {
+
+        var wrapper = $(this).attr('id').replace('link', 'data');
       
-      popup = $('#sweaver-popup');
-      if (popup.is(':visible') && $(this).hasClass('open-tab')) {
-        Drupal.Sweaver.hidePopup();
-        $(this).removeClass('open-tab');
-      }
-      else {
-        $('#sweaver .open-tab').removeClass('open-tab');
-        $(this).addClass('open-tab');
-        Drupal.Sweaver.showPopup($('#'+ wrapper));
-      }
-      return false;
+        popup = $('#sweaver-popup');
+        if (popup.is(':visible') && $(this).hasClass('open-tab')) {
+          Drupal.Sweaver.hidePopup();
+          $(this).removeClass('open-tab');
+        }
+        else {
+          $('#sweaver .open-tab').removeClass('open-tab');
+          $(this).addClass('open-tab');
+          Drupal.Sweaver.showPopup($('#'+ wrapper));
+        }
+        return false;
+      });
     });
-  });
 
-  $('#sweaver .form-submit').click(function() {
-    Drupal.Sweaver.hidePopup();
-  })
-};
-	
+    $('#sweaver .form-submit').click(function() {
+      Drupal.Sweaver.hidePopup();
+    })
+  }
+}	
 
 /**
  * Cookie plugin

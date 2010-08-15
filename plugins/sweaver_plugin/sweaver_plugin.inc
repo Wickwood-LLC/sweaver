@@ -111,7 +111,7 @@ class sweaver_plugin {
    * Sweaver css and js.
    */
   function sweaver_form_css_js(&$inline_settings) {
-    //jquery_ui_add('ui.draggable');
+    drupal_add_library('system', 'ui.draggable');
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.js');
     drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.css');
   }

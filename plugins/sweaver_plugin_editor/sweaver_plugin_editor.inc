@@ -271,20 +271,19 @@ class sweaver_plugin_editor extends sweaver_plugin {
    */
   function sweaver_form_css_js(&$inline_settings) {
 
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.css', 'module');
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.js', 'module');
+    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.css');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.js');
 
     // Serializer for database storage
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/jquery.json-2.2.js', 'module');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/jquery.json-2.2.js');
 
     // Slider
-    //jquery_ui_add('ui.slider');
-    // TODO: remove this when patch is added for automated inclusion of css
-    //drupal_add_css(drupal_get_path('module', 'jquery_ui') .'/jquery.ui/themes/default/ui.all.css', 'module');
+    drupal_add_library('system', 'ui.slider');
+    drupal_add_css('misc/ui/jquery.ui.theme.css');
 
     // colorpicker
     drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/colorpicker/css/colorpicker.css');
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/colorpicker/js/colorpicker.js', 'module');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/colorpicker/js/colorpicker.js');
 
     // Selectors.
     $js_selectors = array();
