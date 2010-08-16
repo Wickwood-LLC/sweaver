@@ -833,7 +833,7 @@ function _sweaver_default_sweaver_property() {
   $property->description = 'Width';
   $property->property_parent = 'border-bottom';
   $property->property_type = 'slider';
-  $property->property_prefix = 'border-bottom-width';
+  $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
