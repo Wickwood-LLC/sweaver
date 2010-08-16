@@ -110,11 +110,11 @@ class sweaver_plugin_images extends sweaver_plugin {
       $imagecache_presets = imagecache_presets();
     }
 
-    $query = 'SELECT ti.fid, ti.description, f.filepath FROM {sweaver_image} ti
-              INNER JOIN {files} f on f.fid = ti.fid order by description ASC';
-    $result = db_query($query);
-    while ($image = db_fetch_object($result)) {
-      $images[base_path() . $image->filepath] = $image->description;
+    $query = 'SELECT ti.fid, ti.description, f.uri FROM {sweaver_image} ti
+              INNER JOIN {file_managed} f on f.fid = ti.fid order by description ASC';
+    $images = db_query($query)->fetchAll();
+    foreach ($images as $image) {
+      $images[base_path() . $image->uri] = $image->description;
 
       // Imagecache presets.
       foreach ($imagecache_presets as $preset_key => $preset) {
