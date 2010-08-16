@@ -271,7 +271,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
    */
   function sweaver_form_css_js(&$inline_settings) {
 
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.css');
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.js');
 
     // Serializer for database storage

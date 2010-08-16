@@ -51,12 +51,14 @@ class sweaver_plugin {
   function sweaver_theme() {
     $theme_functions = array();
 
+    $skin = variable_get('sweaver_skin', SWEAVER_SKIN);
     $plugin_path = drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin';
+    $skin_path = drupal_get_path('module', 'sweaver') .'/skins/'. $skin;
     $theme_functions = array(
       'sweaver_plugin' => array(
-        'template' => 'sweaver-plugin',
-        'file' => 'sweaver_plugin.theme.inc',
-        'path' => $plugin_path,
+        'template' => $skin,
+        'file' => $skin . '.theme.inc',
+        'path' => $skin_path,
         'render element' => 'form',
       ),
       'sweaver_plugin_config_plugins' => array(
@@ -111,9 +113,10 @@ class sweaver_plugin {
    * Sweaver css and js.
    */
   function sweaver_form_css_js(&$inline_settings) {
+    $skin = variable_get('sweaver_skin', SWEAVER_SKIN);
     drupal_add_library('system', 'ui.draggable');
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.js');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.css');
+    drupal_add_css(drupal_get_path('module', 'sweaver') .'/skins/'. $skin .'/'. $skin .'.css');
   }
 
   /**

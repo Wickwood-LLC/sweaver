@@ -7,52 +7,6 @@
  */
 
 /**
- * Editor frontend.
- */
-function template_preprocess_sweaver_plugin(&$vars) {
-  $form = &$vars['form'];
-  $active_tab = '';
-  $sweaver_open = '';
-  $sweaver_height = '';
-  $vars['tabs'] = array();
-  $vars['tabs_data'] = array();
-  $vars['sweaver_popup'] = '';
-
-  ksort($form['#plugins']);
-
-  $i = 0;
-  foreach ($form['#plugins'] as $key => $plugin) {
-    if ($i == 0 && $plugin['name'] != 'sweaver_plugin') {
-      $active_tab = $plugin['name'];
-      $i++;
-    }
-    $object = sweaver_get_plugin($plugin['name']);
-    $object->sweaver_form_render($vars, $form, $plugin);
-  }
-
-  // Active tab.
-  if (isset($_COOKIE['sweaver_active_tab']) && !empty($_COOKIE['sweaver_active_tab'])) {
-    $active_tab = str_replace('tab-', '', $_COOKIE['sweaver_active_tab']);
-  }
-  $vars['active_tab'] = $active_tab;
-
-  // Open or closed.
-  if (isset($_COOKIE['sweaver_open']) && !empty($_COOKIE['sweaver_open'])) {
-    $sweaver_open = $_COOKIE['sweaver_open'];
-  }
-  $vars['sweaver_open'] = $sweaver_open;
-
-  // Heigt of content area
-  if (isset($_COOKIE['sweaver_height']) && !empty($_COOKIE['sweaver_height'])) {
-    $sweaver_height = $_COOKIE['sweaver_height'];
-  }
-  $vars['sweaver_height'] = $sweaver_height;
-
-  // Rest of the form.
-  $vars['rest_of_form'] = drupal_render_children($form);
-}
-
-/**
  * Plugins drag and drop configuration screen.
  */
 function template_preprocess_sweaver_plugin_config_plugins(&$vars) {
@@ -69,7 +23,7 @@ function template_preprocess_sweaver_plugin_config_plugins(&$vars) {
   }
 
   drupal_add_js('misc/tableheader.js');
-  drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.css');
+  drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.admin.css');
   drupal_add_tabledrag('plugins-configuration', 'order', 'sibling', 'plugin-weight', NULL, NULL, TRUE);
 
   $vars['rows'] = $rows;

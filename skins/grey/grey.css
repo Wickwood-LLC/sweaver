@@ -1,0 +1,638 @@
+/* $Id$ */
+
+/**
+ * @file
+ * Sweaver grey skin CSS.
+ */
+
+/*****************
+  General theming.
+******************/
+
+/* correct the body */
+body.sweaver {
+  margin-bottom: 230px;
+}
+
+/* sweaver layer */
+
+#sweaver {
+  width: 100%;
+  background-color: #3E3E3E !important;
+  color: #fff !important;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
+  font-size: 12px !important;
+  z-index: 1000;
+  text-transform: none !important;
+  background-image: none !important;
+  line-height: 1.3em !important;
+  text-align: left !important;
+}
+
+#sweaver a {
+  color: #fff !important;
+  text-decoration: none !important;
+  background-color: none  !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline !important;
+  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
+  font-size: 12px !important;
+}
+
+/* tabs */
+
+#sweaver #sweaver-tabs {
+  margin-top: -29px;
+  background-color: #000;
+  padding-top: 3px;
+}
+
+#sweaver .close a,
+#sweaver .tab a,
+#sweaver .tab-move a {
+  font-weight: normal !important;
+  height: 16px !important;
+  display: block !important;
+  float: left !important;
+  padding: 10px !important;
+  font-size: 13px !important;
+  line-height: 16px !important;
+  margin-left: 7px !important;
+  -moz-border-radius: 7px 7px 0 0 !important;
+  border-radius: 7px 7px 0 0 !important;
+  -webkit-border-radius: 7px 7px 0 0 !important;
+  outline: none !important;
+}
+
+#sweaver .tab-move a {
+  float: right !important;
+  margin-right: 7px !important;
+  cursor: move;
+}
+
+#sweaver .close a {
+  background-color: #666 !important;	
+  background: url(images/close.png) no-repeat center center !important;
+  text-indent: -10000px;
+  overflow: hidden;
+  padding: 5px 10px !important;
+  margin-top: 7px !important;  
+  -moz-border-radius: 9px !important;
+  -webkit-border-radius: 9px !important;  
+  border-radius: 9px !important;        
+  height:10px !important;  
+}
+
+#sweaver .close.active-tab a {
+  background-image: url(images/open.png);
+}
+
+#sweaver .active-tab a {
+  background-color: #3E3E3E !important;
+}
+
+/* message region */
+
+#sweaver-messages,
+#sweaver-popup {
+  -moz-border-radius: 7px !important;
+  -webkit-border-radius: 7px !important;
+  border-radius: 7px !important;
+  background: rgb(51,51,51) !important;
+  background: rgba(51,51,51,0.9) !important;
+  color: #fff !important;
+  display: none;
+  padding: 15px !important;
+  position: fixed !important;
+  font-size: 11px !important;
+  z-index: 1100 !important;
+  text-decoration: none !important;
+  top: 0;
+  left: 0;
+  width: 300px;
+  min-height: 50px;
+  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
+  font-size: 12px !important;
+}
+
+#sweaver-popup {
+  width: auto;
+  padding: 25px 15px !important;
+}
+
+#sweaver-messages .close,
+#sweaver-popup .close {
+  background: url(images/close-message.png) no-repeat center center;
+  text-indent: -10000px;
+  overflow: hidden;
+  width: 16px;
+  height: 15px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#sweaver-messages .close:hover,
+#sweaver-popup .close:hover {
+  cursor: pointer;
+}
+
+#sweaver-popup .content {
+  overflow-y: scroll;
+}
+
+#sweaver-popup a {
+  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
+  color: #fff !important;
+  text-decoration: underline !important;
+}
+
+#sweaver-popup legend {
+  font-size: 16px !important;
+  line-height:19px !important;
+  margin:0 0 10px !important;
+}
+
+#sweaver-popup fieldset fieldset legend {
+  font-size: 12px !important;
+  line-height: 13px !important;
+  background: transparent url(images/close.png) no-repeat left center !important;
+  padding-left: 25px !important;
+  height: 16px !important;
+  margin: 0 !important;
+}
+
+#sweaver-popup fieldset fieldset .fieldset-wrapper {
+  margin: 0px 0 10px 25px;
+}
+
+#sweaver-popup fieldset {
+  background: transparent none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 none !important;
+}
+
+#sweaver-popup fieldset .description {
+  border-radius: 5px 5px 5px 5px !important;
+  -moz-border-radius: 5px 5px 5px 5px !important;
+  -webkit-border-radius: 5px 5px 5px 5px !important;
+  background: none repeat scroll 0 0 #666666 !important;
+  color: #EEEEEE !important;
+  padding: 10px !important;
+}
+
+#sweaver-popup fieldset fieldset .description {
+  margin-top: 10px;
+}
+
+#sweaver-popup fieldset .form-item .description {
+  background: transparent none !important;
+  padding: 0 !important;
+  font-size: 0.9em !important;
+}
+
+#sweaver-popup fieldset .form-item {
+  padding: 15px 0 !important;
+  margin: 0 !important;
+  border-bottom: 1px solid #777 !important;
+}
+
+#sweaver-popup fieldset fieldset {
+  background: transparent none !important;
+  padding: 5px 0 !important;
+  margin: 0px !important;
+}
+
+#sweaver .popup-link {
+  border: 0px;
+  float: left;
+  margin-right: 10px;
+}
+
+#sweaver .popup-link a {
+  background: #999 url(images/popup.png) no-repeat 4px center !important;
+  color: #fff !important;
+  font-weight: bold !important;
+  padding: 5px 5px 5px 25px !important;
+  display: block !important;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+/* header region */
+
+#sweaver .sweaver-header {
+   padding: 7px !important;
+   clear: both !important;
+   margin: 0 !important;
+   background: transparent url(images/header-bg.png) repeat-x bottom left;   
+}
+
+#sweaver #sweaver-header a.button {
+  float: right;
+}
+
+#sweaver .sweaver-content {
+  padding: 10px !important;
+  margin: 0 !important;
+  background-color: #3E3E3E !important;
+  position: relative !important;
+}
+
+/* general theming */
+
+#sweaver h2 {
+  color: #fff !important;
+  font-weight: bold !important;
+  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
+  font-size: 14px !important;
+  text-transform: none !important;
+  padding: 0 0 5px 0 !important;
+  margin: 0 !important;
+  line-height: 1.1em !important;
+}
+
+#sweaver h3 {
+  color: #222 !important;
+  font-size:13px !important;
+  font-weight:bold !important;
+  line-height:18px !important;
+  margin: 5px 0 !important;
+}
+
+#sweaver p,
+#sweaver span {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent none !important;
+  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
+  font-size: 12px !important;
+}
+
+#sweaver label {
+  width: 115px !important;
+  float: left !important;
+  clear: left !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-weight: normal !important;
+}
+
+#sweaver .form-item {
+  padding: 5px 0 !important;
+  margin: 0 !important;
+}
+
+#sweaver input,
+#sweaver select,
+#sweaver textarea {
+  text-transform: none !important;
+  width: 140px !important;
+  border: 1px solid #fff !important;
+  padding: 3px !important;
+  margin: 0 !important;
+  color: #222 !important;
+  background-image: none !important;
+  background-color: #fff !important;
+  border-radius: 2px !important;
+  -moz-border-radius: 2px !important;
+  -webkit-border-radius: 2px !important;
+  height: auto !important;
+  box-shadow: 1px 1px 2px #000 !important;
+  -moz-box-shadow: 1px 1px 2px #000 !important;
+  -webkit-box-shadow: 1px 1px 2px #000 !important;
+  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
+  font-size: 12px !important;
+}
+
+#sweaver a.button {
+  width: 50px !important;
+  border: 1px solid #fff !important;
+  padding: 2px !important;
+  color: #222 !important;
+  background-image: none !important;
+  background-color: #fff !important;
+  display: block !important;
+  font-weight: normal !important;
+  text-align: center !important;
+  font-size: 13px !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  margin-left: 15px !important;
+}
+
+#sweaver a.button:hover {
+  text-decoration: none !important;
+}
+
+#sweaver input.form-submit {
+  clear: left;
+  display: block !important;
+  margin: 1em 0 0 0 !important;
+  background-color: #efefef !important;
+  color: #000 !important;
+  border: 0 none !important;
+  width: auto !important;
+  padding: 5px 10px !important;
+  -moz-border-radius: 15px !important;
+  -webkit-border-radius: 15px !important;
+  border-radius: 15px !important;
+  font-weight: normal !important;
+  
+}
+
+
+#sweaver label.option {
+  width: auto !important;
+  float: none !important;
+}
+
+#sweaver input.form-checkbox {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+}
+
+#sweaver .description {
+  margin-left: 120px !important;
+  font-size: 0.9em !important;
+  margin-top: 5px !important;
+}
+
+#sweaver .display-none, #sweaver-popup .display-none {
+  display: none;
+}
+
+/* containers */
+
+#sweaver .container {
+  float: left;
+  padding: 0;
+  margin: 0;
+}
+
+#sweaver .container-inner {
+  margin-right: 15px;
+  /*background: transparent url(images/container-separator.png) repeat-y top right;*/
+}
+
+#sweaver .container-1 {
+  width: 100%;
+}
+#sweaver .container-2 {
+  width: 50%;
+}
+#sweaver .container-3 {
+  width: 33%;
+}
+#sweaver .container-4 {
+  width: 25%;
+}
+
+/* General styling */
+
+#sweaver h3 {
+  float: left !important;
+  width: 250px !important;
+  margin: 0  !important;
+}
+
+#sweaver .float-left {
+  float: left;
+}
+
+#sweaver .margin-bottom {
+  margin-bottom: 15px;
+}
+
+#sweaver .form-floater .form-submit,
+#sweaver .form-floater .form-item {
+  float: left !important;
+  clear: none !important;
+  margin: 0 !important;
+}
+
+#sweaver .form-floater .form-item {
+  padding: 0 !important;
+  margin: 0 10px 0 0 !important;
+}
+
+#sweaver textarea {
+  width: 400px !important;
+}
+
+#sweaver .sweaver-switch-to-style {
+  border: 0px;
+  float: left;
+  margin-right: 10px;
+}
+
+#sweaver .sweaver-switch-to-style a {
+  background: #999 url(images/style.png) no-repeat 4px center !important;
+  color: #fff !important;
+  font-weight: bold !important;
+  padding: 5px 5px 5px 25px !important;
+  display: block !important;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+/* Images and selected images */
+
+#sweaver .selected-image {
+  -moz-box-shadow: 1px 1px 2px #000;
+  background: #FFFFFF;
+  color: #333333;
+  float: left;
+  margin-right: 25px;
+  padding: 5px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#sweaver .selected-image-default {
+  background: #333333;
+  color: #FFFFFF;
+  margin-top: 0;
+  padding: 15px;
+}
+
+/*****************
+  Editor
+******************/
+
+#sweaver_plugin_editor .sweaver-content {
+  padding-bottom: 36px !important;
+}
+
+#sweaver_plugin_editor #sweaver-editor {
+	display: none;
+}
+
+#sweaver_plugin_editor label {
+	line-height: 16px !important;
+	padding: 10px 0 0 0 !important;
+}
+
+#sweaver_plugin_editor .form-item,
+#sweaver_plugin_editor .sweaver-group {
+  padding: 0 !important;
+  margin: 0 !important;
+  clear: both !important;
+  position: relative !important;
+  line-height: 36px !important;
+}
+
+/* parent / children */
+
+#sweaver_plugin_editor .sweaver-group-content label {
+	display: none;
+}
+
+#sweaver_plugin_editor .sweaver-group-content .form-item {
+	float: left !important;
+	clear: none !important;
+	margin-right: 5px !important;
+}
+
+#sweaver_plugin_editor .sweaver-group-content select {
+  width: auto !important;
+}
+
+/* slider */
+
+#sweaver_plugin_editor .slider-value {
+  border: none !important;
+  background-color: #fff !important;
+  width: 30px !important;
+  text-align: center !important;
+}
+
+#sweaver_plugin_editor .slider {
+  width: 122px;
+}
+
+#sweaver_plugin_editor .slider-wrapper {
+  visibility: hidden;
+  padding: 10px !important;
+  background-color: #666 !important;
+  -moz-border-radius: 5px !important;
+  -webkit-border-radius: 5px !important;
+  border-radius: 5px !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100 !important;
+}
+
+/* selectors path */
+
+#sweaver_plugin_editor #full-path,
+#sweaver_plugin_editor #selected-path {
+  margin: 0 0 0 -7px;
+  padding: 3px 7px 3px 0;
+}
+
+#sweaver_plugin_editor #selected-path {
+	padding-bottom: 0;
+}
+
+#sweaver_plugin_editor #selected-path .label,
+#sweaver_plugin_editor #full-path .label {
+	width: 100px !important;
+	background-color: transparent !important;
+	clear:left;
+	display:block;
+	float:left;
+	margin: -3px 10px 0 0 !important;
+	padding: 3px 3px 3px 10px !important;
+	font-weight: bold !important;
+}
+
+#sweaver_plugin_editor #selected-path span,
+#sweaver_plugin_editor #full-path span {
+  padding: 3px 0 !important;
+}
+
+#sweaver_plugin_editor #selected-path span.active a,
+#sweaver_plugin_editor #full-path span.active a {
+  text-decoration: underline !important;
+}
+
+/* Follow link */
+
+#follow-link {
+  -moz-border-radius: 7px !important;
+  -webkit-border-radius: 7px !important;
+  border-radius: 7px !important;
+  background: rgb(51,51,51) !important;
+  background: rgba(51,51,51,0.9) !important;
+  color: #fff !important;
+  display: none;
+  opacity: 0.8 !important;
+  padding: 3px 7px !important;
+  position: absolute !important;
+  font-size: 11px !important;
+  z-index: 1100 !important;
+  text-decoration: none !important;
+  font-family: "trebuchet MS", Helvetica, Arial !important;
+  font-size: 12px !important;
+}
+
+#follow-link:hover {
+  text-decoration: underline !important;
+}
+
+/* Changes */
+
+#editor-changes {
+	position: absolute !important;
+	bottom: 20px;
+	left: -9000px;
+	padding: 5px !important;
+	width: 600px !important;
+	background-color: #000 !important;
+	color: #fff !important;
+  height: 160px;
+  overflow-y: scroll;
+  border: 1px solid #333;
+  z-index : 1110;
+}
+
+#sweaver_plugin_editor #changes-toggler {
+	border-radius: 0 7px 0 0 !important;
+	-moz-border-radius: 0 7px 0 0 !important;
+  -webkit-border-radius: 0 7px 0 0 !important;
+	background: #000 url(images/open2.png) no-repeat 95% 50%;
+  position: absolute;
+	bottom: 0;
+	left: 0;
+	padding: 5px 24px 5px 5px;
+  z-index : 1111;
+  width: 100px;
+  cursor: pointer;
+}
+
+#sweaver_plugin_editor #changes-toggler.open {
+  background-image: url(images/close2.png);
+}
+
+#sweaver_plugin_editor #editor-changes p {
+	margin-bottom: 5px !important;
+	padding: 2px 2px 2px 20px !important;
+  background: #3E3E3E url(images/remove.png) no-repeat left center !important;
+  cursor: pointer;
+}
+
+/* color picker */
+
+#sweaver #sweaver_plugin_editor .colorSelector div {
+  -moz-box-shadow:0 0 0 transparent !important;
+}

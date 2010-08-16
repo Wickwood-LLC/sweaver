@@ -22,6 +22,11 @@ define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver\n#admin-menu\n.colorpicker\n#sweav
 define('SWEAVER_CLASSES_EXCLUDE', "clear\nclear-fix\nclear-block");
 
 /**
+ * Default skin.
+ */
+define('SWEAVER_SKIN', "default");
+
+/**
  * Implements hook_permission().
  */
 function sweaver_permission() {

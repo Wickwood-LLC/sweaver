@@ -19,6 +19,21 @@ function sweaver_settings($form, &$form_state) {
     '#description' => t('Enable the editor at the bottom.'),
   );
 
+  $skins = array();
+  $ignore = array('.', '..', '.svn', 'CVS', '.git');
+  $directories = scandir(drupal_get_path('module', 'sweaver') .'/skins');
+  foreach ($directories as $directory) {
+    if (!in_array($directory, $ignore)) {
+      $skins[$directory] = $directory;
+    }
+  }
+  $form['sweaver_skin'] = array(
+    '#type' => 'select',
+    '#title' => t('Sweaver skin'),
+    '#options' => $skins,
+    '#default_value' => variable_get('sweaver_skin', SWEAVER_SKIN),
+  );
+
   $form['sweaver_paths'] = array(
     '#type' => 'textarea',
     '#title' => t('Exclude paths'),
@@ -40,7 +55,16 @@ function sweaver_settings($form, &$form_state) {
     '#description' => t('Define which classes should never be displayed in the css path. Enter one selector per line.'),
   );
 
-  return system_settings_form($form);
+  $form = system_settings_form($form);
+  $form['#submit'][] = 'sweaver_settings_submit';
+  return $form;
+}
+
+/**
+ * Settings screen submit.
+ */
+function sweaver_settings_submit($form, &$form_state) {
+  registry_rebuild();
 }
 
 /**

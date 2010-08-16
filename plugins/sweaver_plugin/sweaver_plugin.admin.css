@@ -1,0 +1,11 @@
+/* $Id$ */
+
+/* Plugins configuration */
+
+#plugins-configuration-form .form-checkbox {
+  float: left;
+}
+#plugins-configuration-form .description {
+  float: left;
+  margin-left: 5px;
+}

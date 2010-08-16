@@ -14,6 +14,7 @@ Table of contents
 9. General methods.
 10. General JS functions.
 11. General CSS styles.
+12. Skins
 
 ------------------------------------------------------
 1. Hook for cTools
@@ -341,5 +342,14 @@ There are several css classes which you can use which will do all kinds of stuff
 - container-1 to container-4: determines the width (from 25% to 100%)
 - float-left: floats to left
 - form-floater: makes form items and submits float
-- 
-display-none, popups, switch to style etc
+
+------------------------------------------------------
+12. Skins.
+------------------------------------------------------
+You can create new skins for the editor if you like. Simply
+create a new directory with your name and copy the files which
+are found in default, rename them to the name of your new skin
+and adjust them to your likings. On the general configuration screen, 
+you can select the skin you like.
+
+The variable in the database is 'sweaver_skin'.
