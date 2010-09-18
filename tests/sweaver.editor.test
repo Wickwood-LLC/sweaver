@@ -86,7 +86,7 @@ class sweaverEditor extends DrupalWebTestCase {
     $css = $sweaver->sweaver_get_current_style('garland', TRUE);
     $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
     $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
-    $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
+    $this->assertTrue(file_exists(file_default_scheme() . '://sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
     $this->assertRaw('sweaver/sweaver_garland_'. $css->thid .'.css', t('The style Garland 1 has been loaded'), $editor_tests);
 
     // Set some styles for garland 2.
@@ -106,7 +106,7 @@ class sweaverEditor extends DrupalWebTestCase {
     $css = $sweaver->sweaver_get_current_style('garland', TRUE);
     $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
     $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
-    $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
+    $this->assertTrue(file_exists(file_default_scheme() . '://sweaver/sweaver_garland_'. $css->thid .'.css'), 'Filename written', $editor_tests);
     $this->assertRaw('sweaver/sweaver_garland_'. $css->thid .'.css', t('The style Garland 2 has been loaded'), $editor_tests);
     $this->assertEqual($css->thid, 2, t('New revision'), $editor_tests);
 

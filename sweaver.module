@@ -315,7 +315,7 @@ function sweaver_preprocess_page(&$vars) {
     $current_style = $sweaver->sweaver_get_current_style($theme_key);
     if (isset($current_style->css)) {
       $css = $vars['css'];
-      $css_path = file_directory_path() .'/sweaver/sweaver_' . $theme_key . '_'. $current_style->thid .'.css';
+      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $theme_key . '_'. $current_style->thid .'.css';
       drupal_add_css($css_path, 'theme');
       $vars['css']['all']['theme'][$css_path] = TRUE;
       $vars['styles'] = drupal_get_css();

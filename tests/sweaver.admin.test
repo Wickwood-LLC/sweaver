@@ -133,7 +133,7 @@ class sweaverAdministration extends DrupalWebTestCase {
     );
     $this->drupalPost('admin/config/user-interface/sweaver/images/add', $edit, t('Save image'));
     $this->assertText(t('Image Image test has been saved.'), t('Image uploaded'), $editor_tests);
-    $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_image_1.png'), t('Image uploaded'), $editor_tests);
+    $this->assertTrue(file_exists(file_default_scheme() . '://sweaver/sweaver_image_1.png'), t('Image uploaded'), $editor_tests);
     $this->drupalGet('user');
     $this->assertRaw('value="'. base_path() . file_directory_path() .'/sweaver/sweaver_image_1.png"', t('Image found in editor'), $editor_tests);
 

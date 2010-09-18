@@ -81,13 +81,13 @@ class sweaver_plugin_images extends sweaver_plugin {
 
       $path = file_create_path('sweaver');
       file_check_directory($path, FILE_CREATE_DIRECTORY);
-      $image = file_save_upload('image_image', $validators, file_directory_path() .'/sweaver');
+      $image = file_save_upload('image_image', $validators, file_default_scheme() . '://sweaver');
 
       if ($image && !empty($form_state['values']['image_description'])) {
         $image->description = $form_state['values']['image_description'];
         $image_parts = explode('.', $image->filepath);
         $extension = array_pop($image_parts);
-        $new_image_name = file_directory_path() .'/sweaver/sweaver_image_'. $image->fid .'.'. $extension;
+        $new_image_name = file_default_scheme() . '://sweaver/sweaver_image_'. $image->fid .'.'. $extension;
         rename($image->filepath, $new_image_name);
 
         db_query("UPDATE {files} set filepath = '%s' WHERE fid = %d", $new_image_name, $image->fid);
@@ -259,7 +259,7 @@ class sweaver_plugin_images extends sweaver_plugin {
 
     $path = file_create_path('sweaver');
     file_check_directory($path, FILE_CREATE_DIRECTORY);
-    $image = file_save_upload('image', $validators, file_directory_path() .'/sweaver');
+    $image = file_save_upload('image', $validators, file_default_scheme() . '://sweaver');
     if ($image) {
       $form_state['image'] = $image;
     }
@@ -279,7 +279,7 @@ class sweaver_plugin_images extends sweaver_plugin {
       $image->fid = $image_uploaded->fid;
       $image_parts = explode('.', $image_uploaded->filepath);
       $extension = array_pop($image_parts);
-      $new_image_name = file_directory_path() .'/sweaver/sweaver_image_'. $image->fid .'.'. $extension;
+      $new_image_name = file_default_scheme() . '://sweaver/sweaver_image_'. $image->fid .'.'. $extension;
       rename($image_uploaded->filepath, $new_image_name);
       db_query("UPDATE {files} set filepath = '%s' WHERE fid = %d", $new_image_name, $image->fid);
       file_set_status($image_uploaded, FILE_STATUS_PERMANENT);

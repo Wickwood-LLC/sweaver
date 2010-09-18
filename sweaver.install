@@ -15,7 +15,7 @@ function sweaver_requirements($phase) {
   $t = get_t();
 
   if ($phase == 'runtime' || $phase == 'install') {
-    $sweaver_directory = file_directory_path() .'/sweaver';
+    $sweaver_directory = file_default_scheme() . '://sweaver';
     if (!file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
       if (!is_dir($sweaver_directory)) {
         $requirements['sweaver_directory'] = array(
