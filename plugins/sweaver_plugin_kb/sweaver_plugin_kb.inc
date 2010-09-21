@@ -23,8 +23,7 @@ class sweaver_plugin_kb extends sweaver_plugin {
   function sweaver_menu(&$weight, $page_arguments, $base) {
     $items = array();
 
-    // Enable or disable plugins.
-    $items['admin/settings/sweaver/kb'] = $base + array(
+    $items['admin/config/user-interface/sweaver/kb'] = $base + array(
       'title' => 'Keyboard',
       'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
@@ -38,8 +37,8 @@ class sweaver_plugin_kb extends sweaver_plugin {
    * Frontend css and js.
    */
   function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/jquery.hotkeys.js', 'module');
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/sweaver_plugin_kb.js', 'module');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/jquery.hotkeys.js');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/sweaver_plugin_kb.js');
     $first_key = (variable_get('sweaver_plugin_kb_firstkey', '') != '') ? variable_get('sweaver_plugin_kb_firstkey', '') .'+': '';
     $bindings = $this->sweaver_kb_bindings();
 
@@ -71,8 +70,7 @@ class sweaver_plugin_kb extends sweaver_plugin {
     $binding_options = drupal_map_assoc($this->sweaver_kb_binding_options());
 
     $form['info'] = array(
-      '#type' => 'markup',
-      '#value' => t('Select keys for every event possible. Note, there is no validation when saving this form, so make sure every event has a unique key combination.'),
+      '#markup' => t('Select keys for every event possible. Note, there is no validation when saving this form, so make sure every event has a unique key combination.'),
     );
 
     $form['sweaver_plugin_kb_firstkey'] = array(

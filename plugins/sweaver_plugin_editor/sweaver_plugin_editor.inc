@@ -184,8 +184,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
     // Switcher.
     $tab_switcher = '<div id="changes-toggler">'. t('Show changes') .'</div>';
     $form['editor_switcher'] = array(
-      '#type' => 'markup',
-      '#value' => $tab_switcher,
+      '#markup' => $tab_switcher,
     );
 
     // Images.
@@ -227,8 +226,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     // Changes.
     $form['editor_changes'] = array(
-      '#type' => 'markup',
-      '#value' => '<div id="editor-changes"></div>',
+      '#markup' => '<div id="editor-changes"></div>',
     );
 
     return $form;
@@ -430,8 +428,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       case 'color':
         return array(
-          '#type' => 'markup',
-          '#value' =>  '<div id="edit-'. $property->name .'-wrapper" class="form-item clearfix">
+          '#markup' =>  '<div id="edit-'. $property->name .'-wrapper" class="form-item clearfix">
             <label class="color">' . $property->description .':</label>
             <div id="'. $property->name .'" class="colorSelector-wrapper">
             <div class="colorSelector"><div style="background-color: #ffffff"></div>
@@ -460,7 +457,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       case 'parent':
         return array(
-          '#type' => 'markup',
           '#prefix' => '<div class="sweaver-group clearfix"><label>'. $property->description .':</label><div class="sweaver-group-content">',
           '#suffix' => '</div></div>',
         );

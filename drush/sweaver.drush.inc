@@ -212,7 +212,7 @@ function sweaver_drush_edit_style($style) {
     if (isset($style->active)) {
       $sweaver_styles->sweaver_export_file($stylesheet, $style, 'live');
       if ($data['ts_enabled']) {
-        $theme_settings_var = str_replace('/', '_', 'theme_'. $style->theme .'_settings');
+        $theme_settings_var = 'theme_'. $style->theme .'_settings';
         variable_set($theme_settings_var, unserialize($style->themesettings));
       }
     }
@@ -260,16 +260,16 @@ function sweaver_drush_list_styles() {
     $i = 1;
 
     // Draft versions.
-    $result = db_query("SELECT * FROM {sweaver_style_draft}");
-    while ($row = db_fetch_object($result)) {
-      $styles[$i] = $row;
+    $drafts = db_query("SELECT * FROM {sweaver_style_draft}")->fetchAll();
+    foreach ($drafts as $draft) {
+      $styles[$i] = $draft;
       $i++;
     }
 
     // Live versions.
-    $result = db_query("SELECT * FROM {sweaver_style} where active = 1");
-    while ($row = db_fetch_object($result)) {
-      $styles[$i] = $row;
+    $lives = db_query("SELECT * FROM {sweaver_style} where active = 1")->fetchAll();
+    foreach ($lives as $live) {
+      $styles[$i] = $live;
       $i++;
     }
   }

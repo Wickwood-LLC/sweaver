@@ -3,7 +3,7 @@
 
 /**
  * @file
- * Advanved tests for sweaver editor + theme settings.
+ * Advanced tests for sweaver editor + theme settings.
  *
  * For some particular reason, when trying to enable theme setting all
  * other tests start failing. So we will not test via posting values into
@@ -17,6 +17,7 @@
  */
 
 class sweaverThemeSettings extends DrupalWebTestCase {
+
   /**
    * Implementation of getInfo().
    */
@@ -32,7 +33,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
    * Implementation of setUp().
    */
   function setUp() {
-    parent::setUp('ctools', 'sweaver', 'jquery_ui');
+    parent::setUp('ctools', 'sweaver');
   }
 
   /**
@@ -48,15 +49,22 @@ class sweaverThemeSettings extends DrupalWebTestCase {
    * Scan the files directory.
    */
   function sweaver_filesdir_scan() {
-    $files = scandir(file_directory_path() .'/sweaver');
+    $files = scandir($this->sweaver_public_path() .'/sweaver');
     $this->_debugHelper($files);
+  }
+
+  /**
+   * Return public path helper function.
+   */
+  function sweaver_public_path() {
+    return variable_get('file_public_path', conf_path() . '/files');
   }
 
   /**
    * Enable sweaver plugins.
    */
   function enableSweaverData() {
-    $path = file_create_path('sweaver');
+    $path = $this->sweaver_public_path() .'/sweaver';
     if (!file_exists($path)) {
       $return = mkdir($path);
       $this->assertTrue($return, 'File directory has been created.');
@@ -91,8 +99,8 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     $sweaver_style = sweaver_get_plugin('sweaver_plugin_styles');
     $sweaver_ts = sweaver_get_plugin('sweaver_plugin_themesettings');
 
-    $form['#current_theme'] = 'garland';
-    $form['sweaver_plugin_themesettings']['form'] = $sweaver_ts->sweaver_get_theme_settings_form('garland', array());
+    $form['#current_theme'] = 'bartik';
+    $form['sweaver_plugin_themesettings']['form'] = $sweaver_ts->sweaver_get_theme_settings_form('bartik', array());
     $form['sweaver_plugin_themesettings']['form']['#sweaver_other_themesettings'] = array();
     $form['sweaver_plugin_styles']['form'] = $sweaver_style->sweaver_form();
 
@@ -103,14 +111,14 @@ class sweaverThemeSettings extends DrupalWebTestCase {
         'css' => '{"#center ":{"font-size":'. $size .'}}',
         'css_rendered' => '<style type="text/css">#center { font-size: '. $size .'px; } </style>',
         'sweaver_plugin_custom_css' => '',
-        'save_style' => 'Garland '. $style_id,
+        'save_style' => 'Bartik '. $style_id,
         'save_type' => $save_type,
         'save_keep_draft' => TRUE,
 
         // Theme settings.
         'toggle_name' => FALSE,
         'style_existing_id' => ($save_type) ? $style_id : 0,
-        'var' => 'theme_garland_settings',
+        'var' => 'theme_bartik_settings',
       );
     }
     else {
@@ -121,14 +129,17 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     if (!is_null($favicon)) {
       if (!$upload) {
         $edit['default_favicon'] = 0;
-        $edit['favicon_path'] = file_directory_path() .'/sweaver/favicon_garland_'. $style_id .'_draft.ico';
+        $edit['favicon_path'] = $this->sweaver_public_path() . '/sweaver/favicon_bartik_' . $style_id . '_draft.ico';
       }
       else {
-        $source = drupal_get_path('module', 'sweaver') .'/tests/'. $favicon;
+        $source = new stdClass;
+        $source = drupal_get_path('module', 'sweaver') . '/tests/' . $favicon;
         $parts = pathinfo($source);
-        $dest = 'sweaver/temp_favicon.'. $parts['extension'];
-        $return = file_copy($source, $dest, FILE_EXISTS_REPLACE);
-        $this->assertTrue($return, 'Favicon file copied to '. $dest .' for style id '. $style_id .' in scenario '. $scenario);
+        $source_copy = new stdClass;
+        $source_copy->uri = $source;
+        $dest = 'sweaver/temp_favicon.' . $parts['extension'];
+        $return = file_unmanaged_copy($source, $dest, FILE_EXISTS_REPLACE);
+        $this->assertTrue($return, 'Favicon file copied to ' . $dest . ' for style id ' . $style_id . ' in scenario ' . $scenario);
         $form['sweaver_plugin_themesettings']['form']['#favicon_path'] = $dest;
         $form['sweaver_plugin_themesettings']['form']['#favicon_path_extension'] = $parts['extension'];
         $edit['default_favicon'] = 0;
@@ -140,14 +151,17 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     if (!is_null($logo)) {
       if (!$upload) {
         $edit['default_logo'] = 0;
-        $edit['logo_path'] = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_draft.'. $logo;
+        $edit['logo_path'] = $this->sweaver_public_path() . '/sweaver/logo_bartik_' . $style_id . '_draft.' . $logo;
       }
       else {
-        $source = drupal_get_path('module', 'sweaver') .'/tests/'. $logo;
+        $source = new stdClass;
+        $source = drupal_get_path('module', 'sweaver') . '/tests/'. $logo;
         $parts = pathinfo($source);
-        $dest = 'sweaver/temp_logo.'. $parts['extension'];
-        $return = file_copy($source, $dest, FILE_EXISTS_REPLACE);
-        $this->assertTrue($return, 'Favicon file copied to '. $dest .' for style id '. $style_id .' in scenario '. $scenario);
+        $source_copy = new stdClass;
+        $source_copy->uri = $source;
+        $dest = 'sweaver/temp_logo.' . $parts['extension'];
+        $return = file_unmanaged_copy($source, $dest, FILE_EXISTS_REPLACE);
+        $this->assertTrue($return, 'Favicon file copied to ' . $dest . ' for style id ' . $style_id . ' in scenario ' . $scenario);
         $form['sweaver_plugin_themesettings']['form']['#logo_path'] = $dest;
         $form['sweaver_plugin_themesettings']['form']['#logo_path_extension'] = $parts['extension'];
         $edit['default_logo'] = 0;
@@ -198,7 +212,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
    */
   function getCSS($style_id, $draft = TRUE) {
     $table = ($draft) ? 'sweaver_style_draft' : 'sweaver_style';
-    return db_fetch_object(db_query("SELECT * FROM {". $table ."} where style_id = %d AND theme = '%s'", $style_id, 'garland'));
+    return db_query("SELECT * FROM {". $table ."} where style_id = :style_id AND theme = :theme", array(':style_id' => $style_id, ':theme' => 'bartik'))->fetchObject();
   }
 
   /**
@@ -273,7 +287,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
    */
   function sweaverDeleteStyle($scenario, $configuration, $style_id) {
     $form_state['values']['delete_style'] = $style_id;
-    $form_state['values']['var'] = 'theme_garland_settings';
+    $form_state['values']['var'] = 'theme_bartik_settings';
     $this->performStyleAction('Delete style', $form_state, $configuration['form']);
 
     // Assert no entries are found in database.
@@ -303,8 +317,8 @@ class sweaverThemeSettings extends DrupalWebTestCase {
    *   Whether they have to be equal or not.
    */
   function assertCSSFiles($scenario, $style_id, $draft, $live, $equal_check = FALSE, $equal = FALSE) {
-    $draft_filename = file_directory_path() .'/sweaver/sweaver_garland_'. $style_id .'_draft.css';
-    $live_filename = file_directory_path() .'/sweaver/sweaver_garland_'. $style_id .'_live.css';
+    $draft_filename = $this->sweaver_public_path() .'/sweaver/sweaver_bartik_'. $style_id .'_draft.css';
+    $live_filename = $this->sweaver_public_path() .'/sweaver/sweaver_bartik_'. $style_id .'_live.css';
 
     if ($draft) {
       $this->assertTrue(file_exists($draft_filename), t('Draft css file exists for style id '. $style_id .' in scenario '. $scenario));
@@ -356,12 +370,12 @@ class sweaverThemeSettings extends DrupalWebTestCase {
 
     if ($gone) {
 
-      $draft_logo_png = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_draft.png';
-      $live_logo_png = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_live.png';
-      $draft_logo_gif = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_draft.gif';
-      $live_logo_gif = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_live.gif';
-      $draft_favicon = file_directory_path() .'/sweaver/favicon_garland_'. $style_id .'_draft.ico';
-      $live_favicon = file_directory_path() .'/sweaver/favicon_garland_'. $style_id .'_live.ico';
+      $draft_logo_png = $this->sweaver_public_path() .'/sweaver/logo_bartik_'. $style_id .'_draft.png';
+      $live_logo_png = $this->sweaver_public_path() .'/sweaver/logo_bartik_'. $style_id .'_live.png';
+      $draft_logo_gif = $this->sweaver_public_path() .'/sweaver/logo_bartik_'. $style_id .'_draft.gif';
+      $live_logo_gif = $this->sweaver_public_path() .'/sweaver/logo_bartik_'. $style_id .'_live.gif';
+      $draft_favicon = $this->sweaver_public_path() .'/sweaver/favicon_bartik_'. $style_id .'_draft.ico';
+      $live_favicon = $this->sweaver_public_path() .'/sweaver/favicon_bartik_'. $style_id .'_live.ico';
 
       $this->assertFalse(file_exists($draft_logo_png), t('Draft png logo is gone for style id '. $style_id .' in scenario '. $scenario .' ('. $draft_logo_png .') '));
       $this->assertFalse(file_exists($live_logo_png), t('Live png logo is gone for style id '. $style_id .' in scenario '. $scenario .' ('. $live_logo_png .') '));
@@ -373,10 +387,10 @@ class sweaverThemeSettings extends DrupalWebTestCase {
 
     else {
 
-      $draft_logo = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_draft.'. $logo;
-      $live_logo = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_live.'. $logo;
-      $draft_favicon = file_directory_path() .'/sweaver/favicon_garland_'. $style_id .'_draft.ico';
-      $live_favicon = file_directory_path() .'/sweaver/favicon_garland_'. $style_id .'_live.ico';
+      $draft_logo = $this->sweaver_public_path() .'/sweaver/logo_bartik_'. $style_id .'_draft.'. $logo;
+      $live_logo = $this->sweaver_public_path() .'/sweaver/logo_bartik_'. $style_id .'_live.'. $logo;
+      $draft_favicon = $this->sweaver_public_path() .'/sweaver/favicon_bartik_'. $style_id .'_draft.ico';
+      $live_favicon = $this->sweaver_public_path() .'/sweaver/favicon_bartik_'. $style_id .'_live.ico';
 
       // Draft.
       if ($draft) {
@@ -430,14 +444,14 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     }
 
     if ($original) {
-      $this->assertRaw('/themes/garland/logo.png', t('Logo is original garland for style id '. $style_id .' in scenario '. $scenario));
+      $this->assertRaw('/themes/bartik/logo.png', t('Logo is original bartik for style id '. $style_id .' in scenario '. $scenario));
       $this->assertRaw('/misc/favicon.ico', t('Favicon is original druplicon for style id '. $style_id .' in scenario '. $scenario));
     }
     else {
-      $this->assertNoRaw('/themes/garland/logo.png', t('Logo is not original garland for style id '. $style_id .' in scenario '. $scenario));
+      $this->assertNoRaw('/themes/bartik/logo.png', t('Logo is not original bartik for style id '. $style_id .' in scenario '. $scenario));
       $this->assertNoRaw('/misc/favicon.ico', t('Favicon is not original druplicon for style id '. $style_id .' in scenario '. $scenario));
-      $live_logo = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_live.'. $logo;
-      $live_favicon = file_directory_path() .'/sweaver/favicon_garland_'. $style_id .'_live.'. $favicon;
+      $live_logo = $this->sweaver_public_path() .'/sweaver/logo_bartik_'. $style_id .'_live.'. $logo;
+      $live_favicon = $this->sweaver_public_path() .'/sweaver/favicon_bartik_'. $style_id .'_live.'. $favicon;
       $this->assertRaw($live_logo, t('Logo is uploaded logo for style id '. $style_id .' in scenario '. $scenario .' ('. $live_logo .')'));
       $this->assertRaw($live_favicon, t('Favicon is uploaded logo for style id '. $style_id .' in scenario '. $scenario .' ('. $live_favicon .')'));
     }

@@ -71,8 +71,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
     }
 
     $form['sweaver_plugin_themeclasses'] = array(
-      '#type' => 'markup',
-      '#value' => $content,
+      '#markup' => $content,
     );
 
     return $form;

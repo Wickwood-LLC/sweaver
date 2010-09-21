@@ -13,7 +13,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
   function sweaver_init() {
     // Override theme settings in $conf variable when in Draft.
     if ($this->sweaver_session(NULL, 'draft_mode')) {
-      $theme_key = variable_get('theme_default', 'garland');
+      $theme_key = variable_get('theme_default', 'bartik');
       // Check with themeswitch.
       if ($theme_switch = $this->sweaver_session(NULL, 'sweaver_plugin_switch_theme')) {
         $theme_key = $theme_switch;
@@ -21,7 +21,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       $css = $this->sweaver_get_current_style($theme_key);
       if (isset($css->themesettings) && !empty($css->themesettings)) {
         global $conf;
-        $theme_settings_name = str_replace('/', '_', 'theme_'. $theme_key .'_settings');
+        $theme_settings_name = 'theme_'. $theme_key .'_settings';
         $conf[$theme_settings_name] = unserialize($css->themesettings);
       }
     }
@@ -48,7 +48,8 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     $form['#sweaver_other_themesettings'] = array();
 
     // Let other modules alter the form.
-    $form_state = array();
+    $form['#method'] = 'post';
+    $form_state['method'] = 'post';
     drupal_prepare_form('system_theme_settings', $form, $form_state);
 
     // Convert all fieldsets to buttons. The content of those fieldsets
@@ -66,8 +67,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         $title = $form[$key]['#title'];
 
         $form['item_'. $i] = array(
-          '#type' => 'markup',
-          '#value' => '<div class="popup-link"><a href="#" id="theme-settings-link-'. $i .'">'. check_plain($title) .'</a></div>',
+          '#markup' => '<div class="popup-link"><a href="#" id="theme-settings-link-'. $i .'">'. check_plain($title) .'</a></div>',
           '#weight' => $weight++,
         );
 
@@ -156,10 +156,11 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         if (isset($form['sweaver_plugin_themesettings']['form']['#'. $file])) {
           $type = str_replace('_path', '', $file);
           $theme_name = $form['#current_theme'];
-          $source_path = file_directory_path() .'/'. $form['sweaver_plugin_themesettings']['form']['#'. $file];
+          $source_path = new stdClass;
+          $source_path->uri = file_default_scheme() .'://'. $form['sweaver_plugin_themesettings']['form']['#'. $file];
           $dest_draft = 'sweaver/'. $type .'_'. $theme_name .'_'. $style_id .'_draft.'. $form['sweaver_plugin_themesettings']['form']['#'. $file .'_extension'];
           file_move($source_path, $dest_draft, FILE_EXISTS_REPLACE);
-          $theme_values[$file] = file_directory_path() .'/'. $dest_draft;
+          $theme_values[$file] = file_default_scheme() .'://'. $dest_draft;
         }
 
         // Copy to live if save_live is found. Can either be directly after the upload
@@ -176,10 +177,10 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       // And finally save. Always save the draft version. If the
       // save_live key is found also update the live table.
       $theme_values_serialized = serialize($theme_values);
-      db_query("UPDATE {sweaver_style_draft} set themesettings = '%s' WHERE style_id = %d", $theme_values_serialized, $style_id);
+      db_query("UPDATE {sweaver_style_draft} set themesettings = :themesettings WHERE style_id = :style_id", array(':themesettings' => $theme_values_serialized, ':style_id' => $style_id));
       if ($form_state['publish']) {
         variable_set($theme_key, $theme_values);
-        db_query("UPDATE {sweaver_style} set themesettings = '%s' WHERE style_id = %d", $theme_values_serialized, $style_id);
+        db_query("UPDATE {sweaver_style} set themesettings = :themesettings WHERE style_id = :style_id", array(':themesettings' => $theme_values_serialized, ':style_id' => $style_id));
       }
 
       // Fire other submit functions on the theme settings form.
@@ -201,11 +202,12 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       }
 
       // Remove files.
-      $dir = file_directory_path() .'/sweaver';
+      $dir = file_default_scheme() .'://sweaver';
       $mask = '(.*)'. $style->theme .'_'. $style->style_id .'_(.*)';
       $files = file_scan_directory($dir, $mask);
       foreach ($files as $key => $file) {
-        file_delete($file->filename);
+        $file->uri = $file->filename;
+        file_delete($file);
       }
     }
   }
@@ -248,12 +250,13 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
    */
   function sweaver_get_theme_settings_form($key, $revision_theme_settings) {
     $has_theme = FALSE;
+    $form_state = array();
 
     $features = array();
     // Default settings are defined in theme_get_setting() in includes/theme.inc
     if ($key) {
       $settings = theme_get_setting($key);
-      $var = str_replace('/', '_', 'theme_'. $key .'_settings');
+      $var = 'theme_'. $key .'_settings';
       $themes = $this->sweaver_get_all_themes();
       if (isset($themes[$key]->info['features'])) {
         $has_theme = TRUE;
@@ -271,6 +274,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
 
     $form['var'] = array('#type' => 'hidden', '#value' => $var);
 
+    // @todo move this or not ?
     // Check for a new uploaded logo. Put it in the form
     // so we can give it the right filename in the submit function.
     if ($file = file_save_upload('logo_upload', array('file_validate_is_image' => array()))) {
@@ -309,16 +313,15 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
 
     // Toggle settings
     $toggles = array(
-      'logo'                 => t('Logo'),
-      'name'                 => t('Site name'),
-      'slogan'               => t('Site slogan'),
-      'mission'              => t('Mission statement'),
-      'node_user_picture'    => t('User pictures in posts'),
-      'comment_user_picture' => t('User pictures in comments'),
-      'search'               => t('Search box'),
-      'favicon'              => t('Shortcut icon'),
-      'primary_links'        => t('Primary links'),
-      'secondary_links'      => t('Secondary links'),
+      'logo'                      => t('Logo'),
+      'name'                      => t('Site name'),
+      'slogan'                    => t('Site slogan'),
+      'node_user_picture'         => t('User pictures in posts'),
+      'comment_user_picture'      => t('User pictures in comments'),
+      'comment_user_verification' => t('User verification status in comments'),
+      'favicon'                   => t('Shortcut icon'),
+      'main_menu'                 => t('Main menu'),
+      'secondary_menu'            => t('Secondary menu'),
     );
 
     // Some features are not always available
@@ -327,8 +330,9 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       $disabled['toggle_node_user_picture'] = TRUE;
       $disabled['toggle_comment_user_picture'] = TRUE;
     }
-    if (!module_exists('search')) {
-      $disabled['toggle_search'] = TRUE;
+    if (!module_exists('comment')) {
+      $disabled['toggle_comment_user_picture'] = TRUE;
+      $disabled['toggle_comment_user_verification'] = TRUE;
     }
 
     $form['theme_settings'] = array(
@@ -338,38 +342,15 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     );
     foreach ($toggles as $name => $title) {
       if ((!$key) || in_array($name, $features)) {
-        $form['theme_settings']['toggle_'. $name] = array('#type' => 'checkbox', '#title' => check_plain($title), '#default_value' => $settings['toggle_'. $name]);
+        $form['theme_settings']['toggle_' . $name] = array('#type' => 'checkbox', '#title' => $title, '#default_value' => theme_get_setting('toggle_' . $name, $key));
         // Disable checkboxes for features not supported in the current configuration.
-        if (isset($disabled['toggle_'. $name])) {
-          $form['theme_settings']['toggle_'. $name]['#disabled'] = TRUE;
+        if (isset($disabled['toggle_' . $name])) {
+          $form['theme_settings']['toggle_' . $name]['#disabled'] = TRUE;
         }
       }
     }
 
-    // System wide only settings.
-    if (!$key) {
-      // Create neat 2-column layout for the toggles
-      $form['theme_settings'] += array(
-        '#prefix' => '<div class="theme-settings-left">',
-        '#suffix' => '</div>',
-      );
-
-      // Toggle node display.
-      $node_types = node_get_types('names');
-      if ($node_types) {
-        $form['node_info'] = array(
-          '#type' => 'fieldset',
-          '#title' => t('Display post information on'),
-          '#description' => t('Enable or disable the <em>submitted by Username on date</em> text when displaying posts of the following type.'),
-          '#prefix' => '<div class="theme-settings-right">',
-          '#suffix' => '</div>',
-        );
-        foreach ($node_types as $type => $name) {
-          $form['node_info']["toggle_node_info_$type"] = array('#type' => 'checkbox', '#title' => check_plain($name), '#default_value' => $settings["toggle_node_info_$type"]);
-        }
-      }
-    }
-    elseif (!element_children($form['theme_settings'])) {
+    if (!element_children($form['theme_settings'])) {
       // If there is no element in the theme settings fieldset then do not show
       // it -- but keep it in the form if another module wants to alter.
       $form['theme_settings']['#access'] = FALSE;
@@ -381,7 +362,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         '#type' => 'fieldset',
         '#title' => t('Logo image settings'),
         '#description' => t('If toggled on, the following logo will be displayed.'),
-        '#attributes' => array('class' => 'theme-settings-bottom'),
+        '#attributes' => array('class' => array('theme-settings-bottom')),
       );
       $form['logo']["default_logo"] = array(
         '#type' => 'checkbox',
@@ -431,37 +412,53 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     }
 
     if ($key) {
-      // Include the theme's theme-settings.php file
-      $filename = './'. str_replace("/$key.info", '', $themes[$key]->filename) .'/theme-settings.php';
-      if (!file_exists($filename) and !empty($themes[$key]->info['base theme'])) {
-        // If the theme doesn't have a theme-settings.php file, use the base theme's.
-        $base = $themes[$key]->info['base theme'];
-        $filename = './'. str_replace("/$base.info", '', $themes[$base]->filename) .'/theme-settings.php';
-      }
-      if (file_exists($filename)) {
-        require_once $filename;
+      // Call engine-specific settings.
+      $function = $themes[$key]->prefix . '_engine_settings';
+      if (function_exists($function)) {
+        $form['engine_specific'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Theme-engine-specific settings'),
+          '#description' => t('These settings only exist for the themes based on the %engine theme engine.', array('%engine' => $themes[$key]->prefix)),
+        );
+        $function($form, $form_state);
       }
 
-      // Call engine-specific settings.
-      $function = $themes[$key]->prefix .'_engine_settings';
-      if (function_exists($function)) {
-        $group = $function($settings);
-        if (!empty($group)) {
-          $form['engine_specific'] = array('#type' => 'fieldset', '#title' => t('Theme-engine-specific settings'), '#description' => t('These settings only exist for all the templates and styles based on the %engine theme engine.', array('%engine' => $themes[$key]->prefix)));
-          $form['engine_specific'] = array_merge($form['engine_specific'], $group);
+      // Create a list which includes the current theme and all its base themes.
+      if (isset($themes[$key]->base_themes)) {
+        $theme_keys = array_keys($themes[$key]->base_themes);
+        $theme_keys[] = $key;
+      }
+      else {
+        $theme_keys = array($key);
+      }
+
+      // Save the name of the current theme (if any), so that we can temporarily
+      // override the current theme and allow theme_get_setting() to work
+      // without having to pass the theme name to it.
+      $default_theme = !empty($GLOBALS['theme_key']) ? $GLOBALS['theme_key'] : NULL;
+      $GLOBALS['theme_key'] = $key;
+
+      // Process the theme and all its base themes.
+      foreach ($theme_keys as $theme) {
+        // Include the theme-settings.php file.
+        $filename = DRUPAL_ROOT . '/' . str_replace("/$theme.info", '', $themes[$theme]->filename) . '/theme-settings.php';
+        if (file_exists($filename)) {
+          require_once $filename;
+        }
+
+        // Call theme-specific settings.
+        $function = $theme . '_form_system_theme_settings_alter';
+        if (function_exists($function)) {
+          $function($form, $form_state);
         }
       }
-      // Call theme-specific settings.
-      $function = $key .'_settings';
-      if (!function_exists($function)) {
-        $function = $themes[$key]->prefix .'_settings';
+
+      // Restore the original current theme.
+      if (!is_null($default_theme)) {
+        $GLOBALS['theme_key'] = $default_theme;
       }
-      if (function_exists($function)) {
-        $group = $function($settings);
-        if (!empty($group)) {
-          $form['theme_specific'] = array('#type' => 'fieldset', '#title' => t('Theme-specific settings'), '#description' => t('These settings only exist for the %theme theme and all the styles based on it.', array('%theme' => $themes[$key]->info['name'])));
-          $form['theme_specific'] = array_merge($form['theme_specific'], $group);
-        }
+      else {
+        unset($GLOBALS['theme_key']);
       }
     }
 

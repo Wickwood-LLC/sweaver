@@ -43,9 +43,9 @@ class sweaver_plugin_customcss extends sweaver_plugin {
     $clicked_button = $form_state['clicked_button']['#value'];
 
     if (($clicked_button == t('Save style') || $clicked_button == t('Publish style')) && isset($form_state['style_id'])) {
-      db_query("UPDATE {sweaver_style_draft} set customcss = '%s' WHERE style_id = %d", $form_state['values']['sweaver_plugin_custom_css'], $form_state['style_id']);
+      db_query("UPDATE {sweaver_style_draft} set customcss = :customcss WHERE style_id = :style_id", array(':customcss' => $form_state['values']['sweaver_plugin_custom_css'], ':style_id' => $form_state['style_id']));
       if ($form_state['publish']) {
-        db_query("UPDATE {sweaver_style} set customcss = '%s' WHERE style_id = %d", $form_state['values']['sweaver_plugin_custom_css'], $form_state['style_id']);
+        db_query("UPDATE {sweaver_style} set customcss = :customcss WHERE style_id = :style_id", array(':customcss' => $form_state['values']['sweaver_plugin_custom_css'], ':style_id' => $form_state['style_id']));
       }
     }
   }

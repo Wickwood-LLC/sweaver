@@ -20,21 +20,11 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
       'title' => 'Styles',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
+      'theme callback' => '_sweaver_custom_theme',
       'weight' => $weight++,
     );
 
     return $items;
-  }
-
-  /**
-   * Init
-   */
-  function sweaver_init() {
-    global $custom_theme, $theme_key;
-    if ($theme_switch = $this->sweaver_session(NULL, 'sweaver_plugin_switch_theme')) {
-      $custom_theme = $theme_switch;
-      $theme_key = $theme_switch;
-    }
   }
 
   /**
@@ -59,13 +49,13 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
 
       if ($theme_key != $theme->name) {
         $switch_description = t('Switch to @theme', array('@theme' => $theme->info['name']));
-        $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
+        $image = theme('image', array('path' => $image_file, 'alt' => $switch_description, 'title' => $switch_description, 'attributes' => array('width' => '150', 'height' => '90'), 'getsize' => FALSE));
         $image = l($image, 'sweaver_themeswitch/'. $theme->name, array('html' => TRUE, 'query' => drupal_get_destination()));
         $content .= '<div class="selected-image">'. $image;
       }
       else {
         $switch_description = t('This theme is currently selected');
-        $image = theme('image', $image_file, $switch_description, $switch_description, array('width' => '150', 'height' => '90'), FALSE);
+        $image = theme('image', array('path' => $image_file, 'alt' => $switch_description, 'title' => $switch_description, 'attributes' => array('width' => '150', 'height' => '90'), 'getsize' => FALSE));
         $content .= '<div class="selected-image selected-image-default">'. $image;
       }
       $number_of_themes++;
@@ -76,8 +66,7 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
     }
 
     $form['markup'] = array(
-      '#type' => 'markup',
-      '#value' => '<div id="themeswitch-pane"><div id="themeswitch-content">'. $content .'</div><div class="scroll-bar-wrap"><div class="scroll-bar"></div></div></div>',
+      '#markup' => '<div id="themeswitch-pane"><div id="themeswitch-content">'. $content .'</div><div class="scroll-bar-wrap"><div class="scroll-bar"></div></div></div>',
     );
 
     return $form;
@@ -97,8 +86,8 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
    * Frontend css and js.
    */
   function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.js', 'module');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.css', 'module');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.js');
+    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.css');
   }
 
   /**
@@ -106,7 +95,7 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
    */
   function sweaver_menu_callback() {
     $theme = arg(1);
-    $theme_default = variable_get('theme_default', 'garland');
+    $theme_default = variable_get('theme_default', 'bartik');
 
     $all_themes = $this->sweaver_get_all_themes();
     if (!empty($theme) && isset($all_themes[$theme]) && $all_themes[$theme]->status == 1) {

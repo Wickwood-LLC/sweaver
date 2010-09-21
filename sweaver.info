@@ -9,4 +9,5 @@ files[] = sweaver.install
 files[] = sweaver.registry.inc
 files[] = tests/sweaver.admin.test
 files[] = tests/sweaver.editor.test
+files[] = tests/sweaver.themesettings.test
 configure = admin/config/user-interface/sweaver

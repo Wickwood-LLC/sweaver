@@ -35,11 +35,11 @@ $(document).ready(function() {
  */
 Drupal.Sweaver.kbShowPopup = function(type, element) {
   if (type != kb_popup && element != '') {
-	kb_popup = type;
+    kb_popup = type;
     Drupal.Sweaver.showPopup($(element), '400px', '200px');
   }
   else {
-	kb_popup = '';
+    kb_popup = '';
     Drupal.Sweaver.hidePopup();
   }
 }

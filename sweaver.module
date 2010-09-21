@@ -196,7 +196,7 @@ function sweaver_export_check_serialized_keys($object) {
  *   The machine name of the object.
  * @param $map
  *   Can be an array passed on by the load arguments of the menu or a string.
- *   In case of array, object_type will be index 5.
+ *   In case of array, object_type will be index 6.
  * @param $status
  *   Whether to return all objects or only enabled.
  * @return
@@ -206,7 +206,7 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
 
   static $run = FALSE;
   static $objects = NULL;
-  $object_type = is_array($map) ? $map[5] : $map;
+  $object_type = is_array($map) ? $map[6] : $map;
 
   if (!$run) {
 
@@ -340,7 +340,7 @@ function sweaver_preprocess_page(&$vars) {
     $sweaver_style = $sweaver->sweaver_get_current_style($theme_key);
     if (isset($sweaver_style->css) && ctools_static('load_style')) {
       $css = $vars['css'];
-      $css_path = file_directory_path() .'/sweaver/sweaver_'. $theme_key . '_'. $sweaver_style->style_id .'_'. $sweaver_style->type .'.css';
+      $css_path = file_default_scheme() .'://sweaver/sweaver_'. $theme_key . '_'. $sweaver_style->style_id .'_'. $sweaver_style->type .'.css';
       drupal_add_css($css_path, 'theme');
       $vars['css']['all']['theme'][$css_path] = TRUE;
       $vars['styles'] = drupal_get_css();
@@ -528,5 +528,15 @@ function sweaver_menu_callback_form_submit($form, &$form_state) {
   $callback_submit_function = $form['#callback_method'] .'_submit';
   if (method_exists($object, $callback_submit_function)) {
     $object->$callback_submit_function($form, $form_state);
+  }
+}
+
+/**
+ * Implements custom_theme().
+ */
+function sweaver_custom_theme() {
+  $sweaver = sweaver_get_plugin('sweaver_plugin');
+  if ($theme_switch = $sweaver->sweaver_session(NULL, 'sweaver_plugin_switch_theme')) {
+    return $sweaver->sweaver_session(NULL, 'sweaver_plugin_switch_theme');
   }
 }

@@ -206,7 +206,7 @@ class sweaver_plugin {
       }
       elseif ($this->sweaver_session(NULL, 'draft_mode')) {
         $table = ($this->sweaver_session(NULL, 'loaded_table') == 'live') ? 'sweaver_style' : 'sweaver_style_draft';
-        $css = db_query("SELECT * FROM {". $table ."} where thid = :thid", array(':thid' => $this->sweaver_session(NULL, 'loaded_style')))->fetchObject();
+        $css = db_query("SELECT * FROM {". $table ."} where style_id = :style_id", array(':style_id' => $this->sweaver_session(NULL, 'loaded_style')))->fetchObject();
         $css->type = 'draft';
       }
       else {
