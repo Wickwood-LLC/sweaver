@@ -85,8 +85,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       $items['admin/config/user-interface/sweaver/editor/'. $item['ctools_collection']] = array(
         'title' => $item['title'],
-        'page callback' => 'sweaver_objects_list',
-        'page arguments' => array($item['ctools_object']),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('sweaver_plugin_editor_objects_list', $item['ctools_object']),
         'access arguments' => array('configure sweaver'),
         'file' => 'plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.inc',
         'type' => MENU_LOCAL_TASK,
@@ -152,6 +152,9 @@ class sweaver_plugin_editor extends sweaver_plugin {
         'path' => $editor_plugin_path,
         'render element' => 'form',
       ),
+      'sweaver_plugin_editor_objects_list' => array(
+        'render element' => 'form',
+      ),
     );
 
     return $theme_functions;
@@ -181,7 +184,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
     // Switcher.
     $tab_switcher = '<div id="changes-toggler">'. t('Show changes') .'</div>';
     $form['editor_switcher'] = array(
-      '#markup' => $tab_switcher,
+      '#type' => 'markup',
+      '#value' => $tab_switcher,
     );
 
     // Images.
@@ -223,7 +227,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     // Changes.
     $form['editor_changes'] = array(
-      '#markup' => '<div id="editor-changes"></div>',
+      '#type' => 'markup',
+      '#value' => '<div id="editor-changes"></div>',
     );
 
     return $form;
@@ -238,25 +243,62 @@ class sweaver_plugin_editor extends sweaver_plugin {
     $vars['tabs'][$name]['#tab_name'] = $form[$name]['#tab_name'];
     $vars['tabs_data'][$name]['#tab_description'] = $form[$name]['#tab_description'];
 
-    // Width class.
-    $container_class = 'container-'. count($form[$name]['form']['#editor_containers']);
-
     $output = '';
 
-    $output .= '<div id="sweaver-editor" class="clear-block">';
+    $output .= '<div id="sweaver-editor" class="clearfix">';
 
     // Tab switcher.
     $output .= drupal_render($form[$name]['form']['editor_switcher']);
 
     // Containers.
+    $vertical_tabs = '';
+    $containers = '';
+
     foreach ($form[$name]['form']['#editor_containers'] as $key => $container_value) {
-      $output .= '<div class="'. $container_class .' container"><div class="container-inner">';
-      $output .= '<h2>'. $container_value['title'] .'</h2>';
-      foreach ($container_value['properties'] as $key) {
-        $output .= drupal_render($form[$name]['form'][$key]);
+      // Set the first tab as active by default.
+      $tab_class = '';
+      if ($key == 'one') {
+        $tab_class = 'class="active"';
       }
-      $output .= '</div></div>';
+
+      // Combine all vertical tabs.
+      $vertical_tabs .= '<div id="tab-'. $key .'" class="vertical-tab"><a href="#" '. $tab_class .'>'. $container_value['title'] .'</a></div>';
+
+      // Combine all properties in containers.
+      $i = 0;
+      $container_count = 1;
+      $container_total = ceil(count($container_value['properties'])/5);
+
+      $containers .= '<div id="container-'. $key .'" class="container-wrapper">';
+      foreach ($container_value['properties'] as $property) {
+        if ($i == 0) {
+          // Add first/last classes to the containers.
+          $container_class = '';
+          if ($container_count == 1) {
+            $container_class .= ' container-first';
+          }
+          if ($container_total == $container_count) {
+            $container_class .= ' container-last';
+          }
+          $containers .= '<div class="container '. $container_class .'"><div class="container-inner">';
+        }
+
+        $containers .= drupal_render($form[$name]['form'][$property]);
+        $i++;
+        if ($i == 5) {
+          $containers .= '</div></div>';
+          $container_count++;
+          $i = 0;
+        }
+      }
+      if ($i != 0) {
+        $containers .= '</div></div>';
+      }
+      $containers .= '</div>';
     }
+
+    $output .= '<div class="vertical-tabs">'. $vertical_tabs .'</div>';
+    $output .= '<div class="vertical-content">'. $containers .'</div>';
 
     // Changes
     $output .= drupal_render($form[$name]['form']['editor_changes']);
@@ -285,16 +327,22 @@ class sweaver_plugin_editor extends sweaver_plugin {
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/colorpicker/js/colorpicker.js');
 
     // Selectors.
+    $new_weight = 100;
     $js_selectors = array();
     $selectors = sweaver_object_load(NULL, 'selector');
+    $order = variable_get('sweaver_selector_order', array());
     foreach ($selectors as $key => $selector) {
+      $weight = isset($order[$selector->name]) ? $order[$selector->name] : $new_weight++;
       $options = array(
+        'weight' => $weight,
+        'name' => $selector->name,
         'description' => check_plain($selector->description),
         'selector' => check_plain($selector->selector_selector),
         'highlight' => $selector->selector_highlight,
       );
       $js_selectors[$key] = $options;
     }
+    asort($js_selectors);
 
     // Types.
     $js_types = array();
@@ -312,7 +360,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
       if ($property->property_type != 'parent') {
         $options = array(
           'name' => $property->name,
-          'property' => $property->name,
+          'property' => $property->property,
           'parent' => $property->property_parent,
           'type' => $property->property_type,
           'options' => $property->property_options,
@@ -354,13 +402,16 @@ class sweaver_plugin_editor extends sweaver_plugin {
     $inline_settings['sweaver']['exclude_selectors'] = $js_excluded_selectors;
     $inline_settings['sweaver']['exclude_classes'] = $js_excluded_classes;
     $inline_settings['sweaver']['invokes'][] = 'sweaver_plugin_editor';
+    $inline_settings['sweaver']['preview_selector'] = variable_get('sweaver_preview_selection', TRUE);
   }
 
   /**
    * Create a form element for a property.
    *
-   * @param stdClass $property The property.
-   * @param array $images A collection of images to use for the image type.
+   * @param $property
+   *   The property.
+   * @param $images
+   *   A collection of images to use for the image type.
    */
   protected function sweaver_property_element($property, $images) {
     switch ($property->property_type) {
@@ -379,7 +430,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       case 'color':
         return array(
-          '#markup' =>  '<div id="edit-'. $property->name .'-wrapper" class="form-item clear-block">
+          '#type' => 'markup',
+          '#value' =>  '<div id="edit-'. $property->name .'-wrapper" class="form-item clearfix">
             <label class="color">' . $property->description .':</label>
             <div id="'. $property->name .'" class="colorSelector-wrapper">
             <div class="colorSelector"><div style="background-color: #ffffff"></div>
@@ -408,8 +460,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       case 'parent':
         return array(
-          '#markup' => 'markup',
-          '#prefix' => '<div class="sweaver-group clear-block"><label>'. $property->description .':</label><div class="sweaver-group-content">',
+          '#type' => 'markup',
+          '#prefix' => '<div class="sweaver-group clearfix"><label>'. $property->description .':</label><div class="sweaver-group-content">',
           '#suffix' => '</div></div>',
         );
         break;

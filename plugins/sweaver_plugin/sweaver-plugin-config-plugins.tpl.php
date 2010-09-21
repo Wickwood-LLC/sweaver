@@ -9,7 +9,7 @@
   $count = 0;
 ?>
 
-<p><?php print t('You can enable or disable plugins on this screen and select the order of them on the frontend.'); ?></p>
+<p><?php print t('Enable or disable plugins and select the order of the tabs on the frontend. Some plugins do not provide tabs in the frontend, but only add extra functionality.'); ?></p>
 
 <div id="plugins-configuration-form">
 

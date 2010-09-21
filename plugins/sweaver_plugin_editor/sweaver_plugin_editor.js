@@ -1,17 +1,16 @@
 // $Id$
 
-(function ($) {
-
 /**
  * Add the sweaver bar at the bottom of the theme
  */
+
+(function ($) {
 
 Drupal.Sweaver = Drupal.Sweaver || {};
 
 Drupal.Sweaver.types = new Array(); // A type groups different properties.
 Drupal.Sweaver.properties = new Array(); // The actual css properties.
 Drupal.Sweaver.selectors = new Array(); // The list of defined selector objects.
-Drupal.Sweaver.selectorsSelectors = new Array(); // An array containing all defined selectors.
 Drupal.Sweaver.css = new Object(); // Object with all targets and their properties.
 Drupal.Sweaver.path = new Array(); // Full path to the root of the document.
 Drupal.Sweaver.pathIndexes = new Array(); // An array with the indexes of all selected items.
@@ -28,6 +27,8 @@ $(document).ready(function() {
 
   Drupal.Sweaver.writeCss();
 
+  Drupal.Sweaver.changed = false;
+
   Drupal.Sweaver.addSliders();
 
   Drupal.Sweaver.addColorPicker();
@@ -43,7 +44,7 @@ $(document).ready(function() {
  *
  * Return editor css.
  */
-sweaver_plugin_editor_updateCss = function() {
+function sweaver_plugin_editor_updateCss() {
   var css = '';
   var fullCss = '';
   var cssContent = '';
@@ -52,19 +53,24 @@ sweaver_plugin_editor_updateCss = function() {
     var target = Drupal.Sweaver.css[key];
     for (var prop in target) {
       if (Drupal.Sweaver.properties[prop]) {
-	    	// Special case for transparent.
-	    	if (prop == 'background-color' && target[prop] == 'transparent') {
-	          cssContent += '  '+ prop + ': ' + target[prop] + ';\n';
-	    	}
-        // Special case for background image.
-        else if (prop == 'background-image' && target[prop] == '') {
-            cssContent = '';
-        }        
-	    	else {
-	          cssContent += '  '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
-	    	}
+
+        var properties = Drupal.Sweaver.properties[prop]['property'].split(' ');
+        $.each(properties, function(i, property) {
+          // Don't write anything if the value is empty.
+          if (target[prop] == '') {
+            cssContent += '';
+          }
+          // Don't add a prefix and suffix for these exceptions.
+          else if ((property == 'background-color' && target[prop] == 'transparent') || (property == 'background-image' && target[prop] == 'none')) {
+              cssContent += '  '+ property + ': ' + target[prop] + ';\n';
+          }
+          else {
+              cssContent += '  '+ property + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
+          }
+        });
       }
     }
+
     if (cssContent != '') {
       css += key + '{\n';
       css += cssContent;
@@ -89,43 +95,31 @@ sweaver_plugin_editor_updateCss = function() {
  */
 Drupal.Sweaver.init = function() {
 
-  // Add sweaver class for extra margin at bottom.
-  $('body').addClass('sweaver');
-
   // Get previously stored information or create empty object with all targets
   db_css = $("#edit-css");
-
   if (db_css.val() && db_css.val() != '[]'){
     Drupal.Sweaver.css = $.evalJSON(db_css.val());
     db_css.val('');
   }
 
-  // Sweaver selectors.
+  // Get Sweaver selectors.
   Drupal.Sweaver.selectors = Drupal.settings.sweaver['selectors'];
-  
-  // A string containing all selectors, used to avoid looping later on in the code.
-  $.each(Drupal.Sweaver.selectors, function (index, selector) {
-    Drupal.Sweaver.selectorsSelectors.push(selector.selector);
-  });
 
-  // Sweaver types.
+  // Get Sweaver types.
   Drupal.Sweaver.types = Drupal.settings.sweaver['types'];
 
-  // Sweaver properties.
+  // Get Sweaver properties.
   Drupal.Sweaver.properties = Drupal.settings.sweaver['properties'];
 
-  // Classes that will never be used in the paths or generated css.
+  // Get classes that will never be used in the paths or generated css.
   Drupal.Sweaver.excludeClasses = Drupal.settings.sweaver['exclude_classes'];
-  
-  // Add div to store inline css and fill it up
-  $('body > div:first').before('<div id="sweaver-css"></div>');
 
-  // Add a link to be able to follow links.
+  // Add a link popup to be able to follow links.
   $('body').append('<a href="" id="follow-link">' + Drupal.t('Click here to follow this link') + '</div>');
 }
 
 /**
- * Get all values and update the form
+ * Get all css values and update the form
  */
 Drupal.Sweaver.updateForm = function() {
 
@@ -134,6 +128,7 @@ Drupal.Sweaver.updateForm = function() {
 
   // Prevent changes from being saved
   Drupal.Sweaver.updateMode = false;
+
   // Update form with saved settings
   if (Drupal.Sweaver.activePath != '') {
     if ($("#tab-sweaver_plugin_editor").hasClass('active-tab')) {
@@ -143,17 +138,38 @@ Drupal.Sweaver.updateForm = function() {
     if (!isEmpty(Drupal.Sweaver.activeElement)) {
       var type = Drupal.Sweaver.activeElement.type;
       if (Drupal.Sweaver.types[type]) {
-	      $.each(Drupal.Sweaver.types[type], function (index, object){
-	        var value = $(Drupal.Sweaver.activePath).css(object);
-	        if(!isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'color') {
-	          $('#' + object + ' .colorSelector div').css('backgroundColor', value);
-	        }
-	        else {
-	          if (value) {
-	            $("#sweaver_plugin_editor #edit-" + object).val(value.replace('px', ''));
-	          }
-	        }
-	      });
+        $.each(Drupal.Sweaver.types[type], function (index, object){
+          var properties = Drupal.Sweaver.properties[object]['property'].split(' ');
+          var tempValue = '';
+          var value = '';
+          $.each(properties, function(i, property) {
+            value = $(Drupal.Sweaver.activePath).css(property);
+            if (tempValue == '') {
+              tempValue = value;
+            }
+            else {
+              if (tempValue != value) {
+                value = '';
+                return false;
+              }
+            }
+          });
+          if(value != '' && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'color') {
+            $('#' + object + ' .colorSelector div').css('backgroundColor', value);
+          }
+          else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'image') {
+            // Remove the url() from around the image url.
+            // Mozilla browsers wrap in url(""), while webkit browsers wrap in url()
+            // so we need two replacements.
+            stripped = value.replace('url("', '').replace('")', '').replace('url(', '').replace(')', '');
+            $("#sweaver_plugin_editor #edit-" + object).val(stripped);
+          }
+          else {
+            if (value) {
+              $("#sweaver_plugin_editor #edit-" + object).val(value.replace('px', ''));
+            }
+          }
+        });
       }
     }
     Drupal.Sweaver.updateSliders();
@@ -161,35 +177,30 @@ Drupal.Sweaver.updateForm = function() {
   Drupal.Sweaver.updateMode = true;
 }
 
-
 /**
  * Empty form values and hide unnecessary fields
  */
 Drupal.Sweaver.initForm = function() {
 
+  // Hide all sliders, all groups and all containers.
   Drupal.Sweaver.hideOverlays();
-
-  // First hide titles and groups
-  $('#sweaver #sweaver_plugin_editor h2, #sweaver #sweaver_plugin_editor .sweaver-group').each(function (i) {
-    $(this).hide();
-  });
+  $('#sweaver-editor .sweaver-group').hide();
+  $('#sweaver-editor .container').hide();
 
   if (!isEmpty(Drupal.Sweaver.activeElement)) {
-    // Decide which items should be shown or hidden. 	  
+    // Decide which items should be shown or hidden.
+
     var type = Drupal.Sweaver.activeElement.type;
-	  $.each(Drupal.Sweaver.properties, function(index, object){
-	    if(object.name in Drupal.Sweaver.types[type]) {
-	      $('#sweaver #edit-' + object.name + '-wrapper').show();
-        $('#sweaver #edit-' + object.name + '-wrapper').parents('.sweaver-group').show();	   
-        $('#sweaver #edit-' + object.name + '-wrapper').parents('.container-inner').children('h2').show();           
-	    } else {
-	      $('#sweaver #edit-' + object.name + '-wrapper').hide();    
-	    }
-	  });
-  } 
-  else {
     $.each(Drupal.Sweaver.properties, function(index, object){
-      $('#sweaver #edit-' + object.name + '-wrapper').hide(); 
+      if(object.name in Drupal.Sweaver.types[type]) {
+        $('#sweaver #edit-' + object.name + '-wrapper').parent('.form-item').show();
+        // From the moment that we have an visible element in a group, we need to show that group.
+        $('#sweaver #edit-' + object.name + '-wrapper').parents('.sweaver-group').show();
+        // From the moment that we have an visible element in a container, we need to show that container.
+        $('#sweaver #edit-' + object.name + '-wrapper').parents('.container').show();
+      } else {
+        $('#sweaver #edit-' + object.name + '-wrapper').parent('.form-item').hide();
+      }
     });
   }
 }
@@ -205,21 +216,21 @@ Drupal.Sweaver.addColorPicker = function() {
       color: '#ffffff',
       // Determine the current color and send it to colorpicker.
       onBeforeShow: function () {
-    	  var current_color_object = {};
-    	  var current_color_value = ($('div', this).css('background-color')).replace('rgb(', '').replace(')', '').split(',');
-    	  if (current_color_value[0] != 'transparent') {
-      	  current_color_object.r = current_color_value[0];
-    	    current_color_object.g = current_color_value[1];
-    	    current_color_object.b = current_color_value[2];
-  		    $(this).ColorPickerSetColor(current_color_object);
-    	  }
-    	  else {
-    	    current_color_object.r = '255';
-    	    current_color_object.g = '255';
-    	    current_color_object.b = '255';
-		      $(this).ColorPickerSetColor(current_color_object);
-    	  }
-  	  },
+        var current_color_object = {};
+        var current_color_value = ($('div', this).css('background-color')).replace('rgb(', '').replace(')', '').split(',');
+        if (current_color_value[0] != 'transparent') {
+          current_color_object.r = current_color_value[0];
+          current_color_object.g = current_color_value[1];
+          current_color_object.b = current_color_value[2];
+          $(this).ColorPickerSetColor(current_color_object);
+        }
+        else {
+          current_color_object.r = '255';
+          current_color_object.g = '255';
+          current_color_object.b = '255';
+          $(this).ColorPickerSetColor(current_color_object);
+        }
+      },
       onShow: function (colpkr) {
         $(colpkr).fadeIn(500);
         if (object.parents('.sweaver-group-content').length == 0) {
@@ -233,10 +244,10 @@ Drupal.Sweaver.addColorPicker = function() {
         return false;
       },
       onChange: function (hsb, hex, rgb) {
-    	var preview = hex;
-    	if (hex != 'transparent') {
-    	  preview = '#'+ hex;
-    	}
+      var preview = hex;
+      if (hex != 'transparent') {
+        preview = '#'+ hex;
+      }
         $('div', object).css('backgroundColor', preview);
         if (Drupal.Sweaver.updateMode) {
           Drupal.Sweaver.setValue(property, hex);
@@ -260,25 +271,25 @@ Drupal.Sweaver.addSliders = function() {
 
   $("#sweaver .slider").each(function() {
     minSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_min;
-	  if (minSlider == null) {
-	    minSlider = 0;
-	  }
+    if (minSlider == null) {
+      minSlider = 0;
+    }
     maxSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_max;
     if (maxSlider == null) {
       maxSlider = 2000;
     }
-	  $(this).slider({
-	    min: minSlider,
-	    max: maxSlider,
-	    slide: function(event, ui) {
+    $(this).slider({
+      min: minSlider,
+      max: maxSlider,
+      slide: function(event, ui) {
         $('#edit-' + $(this).attr("id").replace('-slider','')).val(ui.value);
         // TODO: can I trigger onchange event here?
         if (Drupal.Sweaver.updateMode) {
           Drupal.Sweaver.setValue($(this).attr("id").replace('-slider',''), ui.value);
         }
-	    }
-	  });
-	});
+      }
+    });
+  });
 }
 
 /*
@@ -301,59 +312,132 @@ Drupal.Sweaver.bindClicks = function() {
   // Get a list of selectors to exclude.
   var excludes = Drupal.settings.sweaver['exclude_selectors'];
 
+  // Add hover outline object.
+  $('#sweaver-frontend').append('<div style="position: absolute; top: 0; left: 0; border: 2px dotted #ccc" id="#sweaver-hover"></div>');
+
   // Never select the editor form as themeable.
+  // This function appears to be needed, although we exclude on the click bind too.
   $(excludes).click(function(event) {
     event.stopPropagation();
   });
 
-  // Catch click on a selector.
-  $.each(Drupal.Sweaver.selectors, function (index, object) {
-    var selectors = $(object.selector).filter(':parents(' + excludes + '):not(' + excludes + ')');
-    selectors.click(function(event) {
-      event.stopPropagation();
+  // Build an object with all the elements that can be hovered/clicked
+  var tempSelectors = $('body').find('*').filter(':parents(' + excludes + '):not(' + excludes + ')');
+
+  // When an element is hovered, add a class 'sweaver-hovered'.
+  if (Drupal.settings.sweaver['preview_selector']) {
+    tempSelectors
+    .bind('mouseenter', function(event){
       // Only do something when the content area is visible.
-      if (Drupal.Sweaver.open == 'true' && $('#sweaver_plugin_editor .sweaver-content').is(':visible')) {
-        $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clear-block"></div><div id="selected-path" class="clear-block"></div>');
-        
-        var element = $(this);
-        
-	      // handle clicking on a link.
-	      $('#follow-link').hide();
-	      if(object.selector == 'a' && element.attr('id') != 'follow-link') {
-	        var position = element.offset();
-	        $('#follow-link').attr('href', element.attr('href')).css({'top' : position.top + element.outerHeight() + 5, 'left': position.left}).fadeIn();
-	        event.preventDefault();
-	      }
-	      
-	      if (element.attr('id') != 'follow-link') {
-	        // Reset some values.
-	        Drupal.Sweaver.path.length = 0;
-	        Drupal.Sweaver.pathIndexes.length = 0;
-	        $("#selected-path").html('');
-	        $("#full-path").html('');
+      if (Drupal.Sweaver.visible()) {
+        tempObject = $(event.target);
+        object = Drupal.Sweaver.buildSweaverObject(tempObject);
+        // Loop through the selectors to see if the current item should be selectable.
+        if (!object.translation[0]) {
+          $.each(tempObject.parents(), function() {
+            tempObject = $(this);
+            object = Drupal.Sweaver.buildSweaverObject(tempObject);
+            if (object.translation[0]) {
+              return false;
+            }
+          });
+        }
+        // Make sure only one item has the outline.
+        $('.sweaver-hovered').removeClass('sweaver-hovered');
 
-	        // Build path with parents.
-	        Drupal.Sweaver.buildPath(this);
+        // Don't add the class on elements that cover the entire screen
+        // since that would add a, annoying horizontal scrollbar.
+        if (tempObject.outerWidth() != $(window).width()) {
+          tempObject.addClass('sweaver-hovered');
+        }
+      }
+    })
+    .bind('mouseleave', function(event){
+      // Loop through the selectors to see if the current item should be selectable.
+      if (Drupal.Sweaver.visible()) {
+        tempObject = $(this);
+        tempObject.removeClass('sweaver-hovered');
 
-	        Drupal.Sweaver.updateForm();
-	      }
+        $.each(tempObject.parents(), function() {
+          tempObject = $(this);
+          object = Drupal.Sweaver.buildSweaverObject(tempObject);
+          if (object.translation[0]) {
+            return false;
+          }
+        });
+        if (tempObject.outerWidth() != $(window).width()) {
+          tempObject.addClass('sweaver-hovered');
+        }
       }
     });
+  }
+
+  // When an element is clicked, add a class and build the entire path.
+  tempSelectors
+  .bind('click', function (event) {
+    event.stopPropagation();
+    // Only do something when the content area is visible.
+    if (Drupal.Sweaver.visible()) {
+
+      tempObject = $(event.target);
+      object = Drupal.Sweaver.buildSweaverObject(tempObject);
+
+      // Only do something if the clicked item is found in the selectors.
+      if (!object.translation[0]) {
+        $.each(tempObject.parents(), function() {
+          tempObject = $(this);
+          object = Drupal.Sweaver.buildSweaverObject(tempObject);
+          if (object.translation[0]) {
+            return false;
+          }
+        });
+      }
+
+      // clear the old paths.
+      $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clearfix"></div><div id="selected-path" class="clear-block"></div>');
+
+      $('#follow-link').hide();
+
+      // Don't do anything if the clicked object is the 'follow-link' link.
+      if (object.id != 'follow-link') {
+        // If the clicked object is a link, or an element in a link, prevent default behavior.
+        if(object.tag == 'a' || tempObject.parents('a').length > 0) {
+          var position = tempObject.offset();
+          var clickObject = tempObject;
+          if (object.tag != 'a') {
+            clickObject = tempObject.parents('a');
+          }
+          $('#follow-link').attr('href', clickObject.attr('href')).css({'top' : position.top + clickObject.outerHeight() + 5, 'left': position.left}).fadeIn();
+          event.preventDefault();
+        }
+
+        // Reset some values.
+        Drupal.Sweaver.path.length = 0;
+        Drupal.Sweaver.pathIndexes.length = 0;
+        $("#selected-path").html('');
+        $("#full-path").html('');
+
+        // Build path with parents.
+        Drupal.Sweaver.buildPath(tempObject);
+        Drupal.Sweaver.updateScreen();
+        Drupal.Sweaver.updateForm();
+      }
+    }
   });
 
-	// Toggle changes area.
-	$('#changes-toggler').click(function(event){
-	  event.stopPropagation();
-	  toggler = $('#editor-changes');
-	  if (parseInt(toggler.css('left')) < 0) {
-		  Drupal.Sweaver.writeChanges();
-		  toggler.css({'left' : '0px'});
+  // Toggle changes area.
+  $('#changes-toggler').click(function(event){
+    event.stopPropagation();
+    toggler = $('#editor-changes');
+    if (parseInt(toggler.css('left')) < 0) {
+      Drupal.Sweaver.writeChanges();
+      toggler.css({'left' : '10px'});
       $(this).toggleClass('open').html(Drupal.t('Hide changes'));
-		} else {
+    } else {
       toggler.css({'left' : '-9000px'});
       $(this).toggleClass('open').html(Drupal.t('Show changes'));
-		}
-	});
+    }
+  });
 
   // Hide sliders and close groups when clicking outside of them.
   $("#sweaver").click(function() {
@@ -378,17 +462,31 @@ Drupal.Sweaver.bindClicks = function() {
       slider.css({'visibility' : 'hidden'});
     }
     else {
-	    // Hide all other sliders.
-	    $('#sweaver_plugin_editor .slider-wrapper').css({'visibility' : 'hidden'});
+      // Hide all other sliders.
+      $('#sweaver_plugin_editor .slider-wrapper').css({'visibility' : 'hidden'});
 
-      var left = -(slider.width() / 2) + ($(this).outerWidth() / 2); 
+      var left = -(slider.width() / 2) + ($(this).outerWidth() / 2);
       if (slider.siblings('label').is(':visible')) {
         left += slider.siblings('label').width();
       }
-      var top = slider.outerHeight();	    
-	    slider.css({'left' : left, 'top' : top}).css({'visibility' : 'visible'});
-	  }
+      var top = slider.outerHeight();
+      slider.css({'left' : left, 'top' : top}).css({'visibility' : 'visible'});
+    }
   });
+}
+
+/**
+ * Loop through all clickable area's and bind click
+ */
+Drupal.Sweaver.updateScreen = function() {
+  if (Drupal.settings.sweaver['preview_selector']) {
+    // Add border around selected element.
+    var excludes = Drupal.settings.sweaver['exclude_selectors'];
+    $('.sweaver-clicked').removeClass('sweaver-clicked');
+    if ($(Drupal.Sweaver.activePath).outerWidth() != $(window).width()) {
+      $(Drupal.Sweaver.activePath).filter(':parents(' + excludes + '):not(' + excludes + ')').addClass('sweaver-clicked');
+    }
+  }
 }
 
 /**
@@ -398,47 +496,59 @@ Drupal.Sweaver.buildPath = function(object) {
   var index = 0;
 
   // Collect info on currently active item.
-  Drupal.Sweaver.activeElement.id = $(object).attr('id');
-  Drupal.Sweaver.activeElement.class = $(object).attr('class').split(' ');
-  Drupal.Sweaver.activeElement.tag = $(object).get(0).tagName.toLowerCase();
-  Drupal.Sweaver.activeElement.type = $(object).css('display');
-  Drupal.Sweaver.activeElement.object = object;
+  Drupal.Sweaver.activeElement = Drupal.Sweaver.buildSweaverObject(object);
 
   // Add active element to first element in the path array.
-  Drupal.Sweaver.path[0] = new Object({'id' : Drupal.Sweaver.activeElement.id, 'class' : Drupal.Sweaver.activeElement.class, 'tag' : Drupal.Sweaver.activeElement.tag,  'type' : Drupal.Sweaver.activeElement.type, 'object' : Drupal.Sweaver.activeElement.object});
+  Drupal.Sweaver.path[0] = new Object({'id' : Drupal.Sweaver.activeElement.id, 'classes' : Drupal.Sweaver.activeElement.classes, 'tag' : Drupal.Sweaver.activeElement.tag,  'type' : Drupal.Sweaver.activeElement.type, 'translation' : Drupal.Sweaver.activeElement.translation, 'css' : Drupal.Sweaver.activeElement.css});
 
   // Show the currenty active path and the full path.
-  Drupal.Sweaver.addToFullPath(object, index, true);
-  Drupal.Sweaver.addToActivePath(0, object);
+  Drupal.Sweaver.addToFullPath(index, true);
+  Drupal.Sweaver.addToActivePath(0);
 
   // Traverse all parents and save them in the path array.
   var i = 1;
   var active;
-  $(object).parents().each(function() {
+  object.parents().each(function() {
+
     active = false;
+    var parent = Drupal.Sweaver.buildSweaverObject($(this));
+    if (parent.translation[0]) {
+      Drupal.Sweaver.path[i] = new Object({'id' : parent.id, 'classes' : parent.classes, 'tag' : parent.tag, 'type' : parent.type, 'translation' : parent.translation, 'css' : parent.css});
 
-	  id = $(this).attr('id');
-	  class = $(this).attr('class').split(' ');
-	  tag = $(this).get(0).tagName.toLowerCase();
-    type = $(this).css('display');
-	  item = this;
+      // If selector is tagged as 'highlight', automatically select it.
+      var match = '';
+      $.each(Drupal.Sweaver.selectors, function (index, selector) {
+        if (selector.selector == 'sweaver_all_ids' || selector.selector == 'sweaver_all_classes' || selector.selector == 'sweaver_all_tags') {
+          return false;
+        }
+        if (selector.selector == '#' + parent.id || selector.selector == parent.tag) {
+          match = selector.selector;
+           if (selector.highlight == '1') {
+            active = true;
+            Drupal.Sweaver.addToActivePath(i);
+          }
+        } else {
+          $.each(parent.classes, function(index, aClass) {
+            if (selector.selector == '.' + aClass) {
+               match = selector.selector;
+               if (selector.highlight == '1') {
+                active = true;
+                Drupal.Sweaver.addToActivePath(i);
+                return false;
+              }
+            }
+          });
+        }
+        if (match != '') {
+         return false;
+        }
+      });
 
-    if ($.inArray('#' + id, Drupal.Sweaver.selectorsSelectors) > -1 || $.inArray('.' + class[0], Drupal.Sweaver.selectorsSelectors) > -1 || $.inArray(tag, Drupal.Sweaver.selectorsSelectors) > -1) {
-      Drupal.Sweaver.path[i] = new Object({'id' : id, 'class' : class, 'tag' : tag, 'type' : type, 'object' : item});
-
-	    // If selector is tagged as 'highlight', automatically select it.
-	    $.each(Drupal.Sweaver.selectors, function (index, selector) {
-	      if (selector.highlight == '1' && (selector.selector == '#' + id || selector.selector == '.' + class || selector.selector == tag)) {
-	        active = true;
-	        Drupal.Sweaver.addToActivePath(i, item);
-	      }
-	    });
-	
-	    // Add all items to the full path except for the html tag.
-	    if (tag != 'html') {
-	      Drupal.Sweaver.addToFullPath(item, i, active);
-	    }
-	    i++;
+      // Add all items to the full path except for the html tag.
+      if (parent.tag != 'html') {
+        Drupal.Sweaver.addToFullPath(i, active);
+      }
+      i++;
     }
   });
   Drupal.Sweaver.printActivePath();
@@ -446,10 +556,10 @@ Drupal.Sweaver.buildPath = function(object) {
 }
 
 /**
- * Print the full path.
+ * Add one item to the full path.
  */
-Drupal.Sweaver.addToFullPath = function(object, index, active) {
-  var path_separator = ' > ';
+Drupal.Sweaver.addToFullPath = function(index, active) {
+  var path_separator = '&nbsp;&gt;&nbsp;';
   var active_class = '';
 
   // Don't show a seperator after the last item in the path.
@@ -459,28 +569,85 @@ Drupal.Sweaver.addToFullPath = function(object, index, active) {
 
   // Add an active class to the selected items.
   if (active == true) {
-    active_class = ' class="active"';
+    active_class = ' active';
   }
 
-  // Populate path with clickable links.
-  $("#full-path").prepend($('<span id="thid-' + index + '" '+ active_class +'><a href="#">' + Drupal.Sweaver.objectToReadable(Drupal.Sweaver.path[index]) + '</a> '+ path_separator +' </span>').click(function() {
-    $(this).toggleClass('active');
-    Drupal.Sweaver.addToActivePath(index, $(object));
+  // Get the list of translated selectors.
+  var selectorList = Drupal.Sweaver.path[index].translation;
+
+  // First add the default selector.
+  $("#full-path").prepend('<div class="selector-wrapper' + active_class + '" id="sid-' + index + '"><div class="first-selector"><a title="' + Drupal.t('Click to add this element to the selected path') + '">' + selectorList[0] + '</a></div><div class="selector-separator">' + path_separator + '</div></div>');
+
+  // Next add a popup with all possible selectors.
+  if (selectorList.length > 2) {
+    var tempObj = ''
+    for (var i=1; i < selectorList.length; i++) {
+      tempClass = '';
+      // Add a class active to indicate the preferred selector.
+      if (i == 1) {
+        tempClass += 'active ';
+      }
+      if (i == 1) {
+        tempClass += 'first ';
+      }
+      if (i == selectorList.length - 1) {
+        tempClass += 'last';
+      }
+      tempObj += '<li class="' + tempClass + '"><a href="#" id="ssid-' + (i-1) + '">' + selectorList[i] + '</a></li>';
+    }
+    $("#sid-" + index).prepend('<div class="selector-popup-opener">open</div><div class="selector-popup"><ul>' +tempObj + '</ul></div>');
+  }
+
+  // Bind click to change the active path.
+  $('#sid-' + index + ' .first-selector a').click(function() {
+    $(this).parent().parent().toggleClass('active');
+    Drupal.Sweaver.addToActivePath(index);
     Drupal.Sweaver.printActivePath();
-	  // Reset the active element as it might have changed.
-	  Drupal.Sweaver.pathIndexes.sort(function(a,b){return a - b});
-	  Drupal.Sweaver.activeElement = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]] ? Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]] : {} ;
-	  Drupal.Sweaver.updateForm();
+    // Reset the active element as it might have changed.
+    Drupal.Sweaver.pathIndexes.sort(function(a,b){return a - b});
+    Drupal.Sweaver.activeElement = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]] ? Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]] : {} ;
+    Drupal.Sweaver.updateForm();
+    Drupal.Sweaver.updateScreen();
 
     // Stop the link from doing anything.
     return false;
-  }));
+  });
+
+  // Bind click to change the active path from a popup.
+  $('#sid-' + index + ' .selector-popup a').click(function() {
+    // Store in the active object that there is a new preferred selector instead of the first one defined in the backend.
+    var link = $(this);
+    var i = link.attr('id').substr(5);
+    Drupal.Sweaver.path[index].preferredSelector = i;
+    Drupal.Sweaver.printActivePath();
+    link.parents('.selector-popup').hide();
+    // Replace the selector in the full path.
+    $('#sid-' + index + ' .first-selector a').html(link.html());
+    // Add an active class.
+    link.parent().siblings('.active').removeClass('active');
+    link.parent().addClass('active');
+    Drupal.Sweaver.updateForm();
+    Drupal.Sweaver.updateScreen();
+    return false;
+  });
+
+  // Bind click to hide/show selector popups.
+  $('#sid-' + index + ' .selector-popup-opener').click(function() {
+    var popup = $(this).siblings('.selector-popup');
+    if (popup.is(':visible')) {
+      popup.hide();
+    }
+    else {
+      popup.slideDown('fast');
+    }
+    $('#sweaver .selector-popup').hide();
+  });
 }
 
 /**
  * Add an item to the active path.
  */
-Drupal.Sweaver.addToActivePath = function(i, item) {
+Drupal.Sweaver.addToActivePath = function(i) {
   // Do not add the item when selected or remove it from Active path.
   var position = $.inArray(i, Drupal.Sweaver.pathIndexes);
   if (position < 0) {
@@ -507,20 +674,31 @@ Drupal.Sweaver.printActivePath = function() {
   Drupal.Sweaver.pathIndexes.sort(function(a,b){return a - b});
 
   // Print the selected path in human-readable language.
-  for ( var i=0, len=Drupal.Sweaver.pathIndexes.length; i<len; ++i ){
-    if (i > 0) {
-      $("#selected-path").append(' in ');
+  if (Drupal.Sweaver.pathIndexes.length > 0) {
+    for ( var i=0, len=Drupal.Sweaver.pathIndexes.length; i<len; ++i ){
+      if (i > 0) {
+        $("#selected-path").append(' in ');
+      }
+      // See which translation should be used.
+      var j = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].preferredSelector ? Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].preferredSelector : 0;
+      j++;
+      $("#selected-path").append(Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].translation[j]);
     }
-    $("#selected-path").append(Drupal.Sweaver.objectToReadable(Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]]));
+
+    // Save the currently active css path.
+    Drupal.Sweaver.activePath = '';
+    Drupal.Sweaver.pathIndexes.reverse();
+    for (var i=0, len=Drupal.Sweaver.pathIndexes.length; i<len; ++i){
+      // See which translation should be used.
+      var j = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].preferredSelector ? Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].preferredSelector : 0;
+      j++;
+      Drupal.Sweaver.activePath += Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].css[j] + ' ';
+    }
+  }
+  else {
+    $("#selected-path").html(Drupal.t('none'));
   }
   $("#selected-path").prepend('<span class="label">' + Drupal.t('Selected item: ') + '</span>');
-
-  // Save the currently active css path.
-  Drupal.Sweaver.activePath = '';
-  Drupal.Sweaver.pathIndexes.reverse();
-  for (var i=0, len=Drupal.Sweaver.pathIndexes.length; i<len; ++i){
-    Drupal.Sweaver.activePath += Drupal.Sweaver.objectToCss(Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]]) + ' ';
-  }
 }
 
 /**
@@ -529,22 +707,26 @@ Drupal.Sweaver.printActivePath = function() {
  * style tab. To switch tabs, you can use the Drupal.Sweaver.switchTab
  * function.
  */
-Drupal.Sweaver.updateStyleTab = function(class_name, class_object) {
+Drupal.Sweaver.updateStyleTab = function(theClass, name) {
+  // Build the object with manipulated data.
+  var tempObject = Drupal.Sweaver.buildSweaverObject($('.' + theClass));
 
-  Drupal.Sweaver.activeElement.id = '';
-  Drupal.Sweaver.activeElement.class = new Array(class_name);
-  Drupal.Sweaver.activeElement.tag = 'div';
-  Drupal.Sweaver.activeElement.type = 'block';
-  Drupal.Sweaver.activeElement.object = class_object;
+  tempObject.translation = new Array(name, name);
+  tempObject.classes = new Array('.' + theClass);
+  tempObject.css = new Array('.' + theClass, '.' + theClass);
 
-  $('#sweaver_plugin_editor .sweaver-header').html('<div id="selected-path" class="clear-block"></div>');
-  Drupal.Sweaver.path[0] = new Object({'id' : Drupal.Sweaver.activeElement.id, 'class' : Drupal.Sweaver.activeElement.class, 'tag' : Drupal.Sweaver.activeElement.tag,  'type' : Drupal.Sweaver.activeElement.type, 'object' : Drupal.Sweaver.activeElement.object});
-  Drupal.Sweaver.addToFullPath(class_object, 0, true);
-  Drupal.Sweaver.activePath = '';
-  Drupal.Sweaver.pathIndexes = new Array();  
-  Drupal.Sweaver.addToActivePath(0, class_object);
+  Drupal.Sweaver.activeElement = tempObject;
+
+  // Build path with parents.
+  $('#sweaver_plugin_editor .sweaver-header').html('<div id="selected-path" class="clearfix"></div>');
+  Drupal.Sweaver.path[0] = new Object({'id' : Drupal.Sweaver.activeElement.id, 'class' : Drupal.Sweaver.activeElement.classes, 'tag' : Drupal.Sweaver.activeElement.tag,  'type' : Drupal.Sweaver.activeElement.type, 'translation' : Drupal.Sweaver.activeElement.translation, 'css' : Drupal.Sweaver.activeElement.css});
+  Drupal.Sweaver.addToFullPath(0, true);
+  Drupal.Sweaver.pathIndexes = new Array();
+  Drupal.Sweaver.addToActivePath(0, tempObject);
   Drupal.Sweaver.printActivePath();
+  Drupal.Sweaver.activePath = '.' + theClass;
   Drupal.Sweaver.updateForm();
+  Drupal.Sweaver.updateScreen();
 }
 
 /**
@@ -559,23 +741,23 @@ Drupal.Sweaver.setValue = function(property, value) {
 }
 
 /**
- * Write changes.
+ * Write changes to the changes popup so that people can remove them again.
  */
 Drupal.Sweaver.writeChanges = function() {
   $('#editor-changes').html('');
   for (key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
-	for (prop in target) {
-      if (Drupal.Sweaver.properties[prop]) {
-    	// Special case for transparent.
-    	if (prop == 'background-color' && target[prop] == 'transparent') {
-   	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
-    	}
-    	else {
- 	      $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
-    	}
-	  }
-	}
+    for (prop in target) {
+      if (Drupal.Sweaver.properties[prop] && target[prop] != '') {
+      // Special case for transparent.
+        if ((prop == 'background-color' && target[prop] == 'transparent') || (prop == 'background-image' && target[prop] == 'none')) {
+          $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
+        }
+        else {
+          $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
+        }
+      }
+    }
   }
 }
 
@@ -600,111 +782,124 @@ Drupal.Sweaver.deleteProperty = function(key, property) {
  */
 Drupal.Sweaver.objectToReadable = function(object) {
 
-  var translation = '';
+  var translation = new Array();
+  var css = new Array();
+  var selector = '';
+  var description = '';
+  var tempSelectors = new Array();
 
-  // First handle selectors defined in the backend.
+  // Traverse all selectors defined in the backend and return an array with the description.
+  // TODO: move translation.push en tempSelectors to seperate function.
   $.each(Drupal.Sweaver.selectors, function() {
-    if (this.selector == '#' + object.id || this.selector == '.' + object.class[0] || this.selector == object.tag) {  
-      translation = this.description;
-      return false;
+    selector = this.selector;
+    name = this.name;
+    description = this.description;
+
+    if (name == 'allids') {
+      if (object.id && $.inArray('#' + object.id, tempSelectors) < 0) {
+        translation.push('the ' + object.id + ' region');
+        css.push('#' + object.id);
+        tempSelectors.push('#' + object.id);
+      }
+    }
+    else if (name == 'allclasses') {
+      if (object.classes && object.classes[0]) {
+        $.each(object.classes, function(index, tempClass) {
+          if ($.inArray(tempClass, Drupal.Sweaver.excludeClasses) < 0 && $.inArray('.' + tempClass, tempSelectors) < 0) {
+            translation.push('all ' + tempClass);
+            css.push('.' + tempClass);
+            tempSelectors.push('.' + tempClass);
+          }
+        });
+      }
+    }
+    else if (name == 'alltags' && $.inArray(object.tag, tempSelectors) < 0) {
+      translation.push(object.tag);
+      css.push(object.tag);
+      tempSelectors.push(object.tag);
+    }
+    else {
+      if (selector == '#' + object.id && $.inArray('#' + object.id, tempSelectors) < 0) {
+        translation.push(description);
+        css.push('#' + object.id);
+        tempSelectors.push('#' + object.id);
+      } else if (selector == object.tag && $.inArray(object.tag, tempSelectors) < 0) {
+        translation.push(description);
+        css.push(object.tag);
+        tempSelectors.push(object.tag);
+      } else {
+        $.each(object.classes, function(index, tempClass) {
+          if (selector == '.' + tempClass  && $.inArray(tempClass, Drupal.Sweaver.excludeClasses) < 0 && $.inArray('.' + tempClass, tempSelectors) < 0) {
+            translation.push(description);
+            css.push('.' + tempClass);
+            tempSelectors.push('.' + tempClass);
+          }
+        });
+      }
     }
   });
-  
-  // Else build a generic translation.
-  if (translation == '') {
-	  if (object.tag == 'body') {
-	    translation = Drupal.Sweaver.selectors.body.description;
-	  } 
-	  else {
-		  if (object.id) {
-	      translation = 'the ' + object.id + ' region';
-		  }
-		  else if (object.class[0] && $.inArray(object.class[0], Drupal.Sweaver.excludeClasses) < 0) {
-	      translation = 'all ' + object.class[0];
-		  }
-		  else if (object.tag) {
-		    translation = object.tag;
-		  }
-	  }
-	}
+
+  // If a prefered selector was set in the object, return that one instead of the default first one.
+  index = object.preferredSelector ? object.preferredSelector : 0;
+  translation.splice(0, 0, translation[index]);
+  css.splice(0, 0, css[index]);
+
+  object.translation = translation;
+  object.css = css;
   return translation;
 }
 
 /**
- * Translate an parent item in a css name.
+ * Build a Sweaver object.
  */
-Drupal.Sweaver.objectToCss = function(object) {
-  
-  var css = '';
-  
-  // First handle selectors defined in the backend.
-  $.each(Drupal.Sweaver.selectors, function() {
-    if (this.selector == '#' + object.id || this.selector == '.' + object.class[0] || this.selector == object.tag) {
-      css = this.selector;
-      return false;
-    }
-  });
-  
-  // Else build a generic translation.  
-  if (css == '') {  
-	  if (object.id) {
-	    css = '#' + object.id;
-	  }
-	  else if (object.class[0] && $.inArray(object.class[0], Drupal.Sweaver.excludeClasses) < 0) {
-	    css = '.' + object.class[0];
-	  }
-	  else if (object.tag) {
-	    css = object.tag;
-	  }
-  }
-  return css;
+Drupal.Sweaver.buildSweaverObject = function(object) {
+  var tempObject = new Object;
+  tempObject.id = object.attr('id');
+  tempObject.classes = trim(object.attr('class')).split(' ');
+  tempObject.tag = object.get(0).tagName.toLowerCase();
+  tempObject.type = object.css('display');
+
+  // Generate a human-readable name and a css selector.
+  Drupal.Sweaver.objectToReadable(tempObject);
+  return tempObject;
 }
 
+/**
+ * Helper function to remove trailing leading and multiple spaces.
+ */
+function trim(s) {
+  s = s.replace(/(^\s*)|(\s*$)/gi,"");
+  s = s.replace(/[ ]{2,}/gi," ");
+  s = s.replace(/\n /,"\n");
+  return s;
+}
+
+/**
+ * Hide all sliders.
+ */
 Drupal.Sweaver.hideOverlays = function() {
-  // Hide all sliders.
   $('#sweaver .slider-wrapper').css({'visibility' : 'hidden'});
-
-  // Hide all groups.
-  $('#sweaver .sweaver-group-active .sweaver-group-content').css({'visibility' : 'hidden', 'right' :  '-10000px'});
-  $('#sweaver .sweaver-group-active').removeClass('sweaver-group-active');
 }
 
+/**
+ * Hide the changes tab.
+ */
 Drupal.Sweaver.hideChanges = function() {
   $('#editor-changes').css({'left' : '-9000px'});
   $('#changes-toggler').removeClass('open').html(Drupal.t('Show changes'));
 }
 
-Drupal.behaviors.openGroup = function() {
-
-  // Open a group when it is clicked.
-  $('#sweaver .sweaver-group').click(function (event) {
-    event.stopPropagation();
-    Drupal.Sweaver.hideOverlays();
-    Drupal.Sweaver.hideChanges();
-
-    var content = $('.sweaver-group-content', this);
-    if(!content.is(':visible')) {
-
-      // Open the clicked group and make sure it does not cover the label or fall off the screen.
-      group = $(this);
-      var right = 0;
-      var top = group.outerHeight() - 10;
-      var position = group.offset();
-      if (position.top + content.outerHeight() > $(window).height()) {
-        top = - content.height();
-      }
-      content.css({'right' : right, 'top' : top, 'visibility' : 'visible'}).parent().toggleClass('sweaver-group-active');
-    }
-  });
-}
-
-
 /**
- * Add custom expression to exclude all selectors in the sweaver bar.
+ * Check wether the editor tab is visible.
  */
-$.expr[':'].parents = function(a,i,m){
-  return jQuery(a).parents(m[3]).length < 1;
-};
+Drupal.Sweaver.visible = function() {
+  if (Drupal.Sweaver.open == 'true' && $('#sweaver_plugin_editor .sweaver-content').is(':visible')) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
 
 /**
  * Helper function to check if an object is empty.
@@ -716,5 +911,13 @@ function isEmpty(obj) {
   }
   return true;
 }
+
+
+/**
+ * Add custom expression to exclude all selectors in the sweaver bar.
+ */
+$.expr[':'].parents = function(a,i,m){
+  return jQuery(a).parents(m[3]).length < 1;
+};
 
 })(jQuery);

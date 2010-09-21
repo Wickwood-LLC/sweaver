@@ -9,10 +9,6 @@ define('SWEAVER_PLUGIN_THEMECLASSES_DEFAULT', 'skinr');
 
 class sweaver_plugin_themeclasses extends sweaver_plugin {
 
-  function sweaver_enabled($plugin_name) {
-    return variable_get('sweaver_plugin_status_'. $plugin_name, TRUE);
-  }
-
   /**
    * Menu registry.
    */
@@ -59,7 +55,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
       foreach ($groups as $group) {
         $group = trim($group);
         if (isset($theme_info[$group])) {
-          $this->get_styles($theme_info[$group], $styles);
+          $this->sweaver_get_styles($theme_info[$group], $styles);
         }
       }
 
@@ -71,11 +67,12 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
       $content = t('<h2>Styles</h2>!styles', array('!styles' => implode(' ', $styles)));
     }
     else {
-      $content = t('<p>No styles found</p>');
+      $content = t('<p>No styles found.</p>');
     }
 
     $form['sweaver_plugin_themeclasses'] = array(
-      '#markup' => $content,
+      '#type' => 'markup',
+      '#value' => $content,
     );
 
     return $form;
@@ -92,7 +89,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
   /**
    * Menu callback.
    */
-  function menu_callback() {
+  function sweaver_menu_callback() {
     $form = array();
 
     $form['sweaver_themeclasses_groups'] = array(
@@ -104,7 +101,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
 
     $form['sweaver_themeclasses_submit'] = array(
       '#type' => 'submit',
-      '#value' => t('Save classes'),
+      '#value' => t('Save configuration'),
     );
 
     return $form;
@@ -113,23 +110,23 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
   /**
    * Menu callback submit.
    */
-  function menu_callback_submit($form, &$form_state) {
-    drupal_set_message(t('The theme classes have been saved.'));
+  function sweaver_menu_callback_submit($form, &$form_state) {
     db_query("DELETE FROM {variable} where name LIKE '%s%%'", 'sweaver_plugin_themeclasses_');
     variable_set('sweaver_themeclasses_groups', $form_state['values']['sweaver_themeclasses_groups']);
+    drupal_set_message(t('The configuration options have been saved.'));
   }
 
   /**
    * Get styles from the group. We look for a key called 'class'.
    */
-  function get_styles($theme_info, &$styles) {
+  function sweaver_get_styles($theme_info, &$styles) {
     foreach ($theme_info as $key => $value) {
       if (is_array($value) && isset($value['class'])) {
         $label = isset($value['label']) ? $value['label'] : $value['class'];
-        $styles[] = '<div class="sweaver-switch-to-style " id="spt-'. $value['class'] .'"><a href="javascript:Drupal.Sweaver.ThemeClasses(\'spt-'. $value['class'] .'\')">'. strip_tags($value['label']) .'</a></div>';
+        $styles[] = '<div class="sweaver-switch-to-style " id="spt-'. $value['class'] .'"><a href="javascript:Drupal.Sweaver.ThemeClasses(\'spt-'. $value['class'] .'\', \'spt-'. strip_tags($value['label']) .'\')">'. strip_tags($value['label']) .'</a></div>';
       }
       if (is_array($value)) {
-        $this->get_styles($theme_info[$key], $styles);
+        $this->sweaver_get_styles($theme_info[$key], $styles);
       }
     }
   }

@@ -20,20 +20,20 @@ class sweaver_plugin_images extends sweaver_plugin {
       'type' => MENU_LOCAL_TASK,
       'weight' => $weight++,
     );
-    $page_arguments['callback_method'] = 'images_backend_form';
+    $page_arguments['callback_method'] = 'sweaver_images_backend_form';
     $items['admin/config/user-interface/sweaver/images/add'] = $base + array(
       'title' => 'Add new image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
     );
-    $page_arguments['callback_method'] = 'images_backend_form';
-    $items['admin/config/user-interface/sweaver/images/edit'] = $base + array(
+    $page_arguments['callback_method'] = 'sweaver_images_backend_form';
+    $items['admin/settings/sweaver/images/edit'] = $base + array(
       'title' => 'Edit image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
     );
-    $page_arguments['callback_method'] = 'images_confirm_form_delete';
-    $items['admin/config/user-interface/sweaver/images/delete'] = $base + array(
+    $page_arguments['callback_method'] = 'sweaver_images_confirm_form_delete';
+    $items['admin/config/user-interface/sweaver/images/edit'] = $base + array(
       'title' => 'Add new image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
@@ -57,6 +57,7 @@ class sweaver_plugin_images extends sweaver_plugin {
       $form['image_form']['image_image'] = array(
         '#type' => 'file',
         '#title' => t('Image'),
+        '#size' => '40',
         '#description' => t('Upload images which you can use as background images. Extensions are limited to jpg, jpeg, png and gif.<br />Note: there is no scaling on the images on upload.'),
       );
       $form['image_form']['image_submit'] = array(
@@ -81,13 +82,13 @@ class sweaver_plugin_images extends sweaver_plugin {
 
       $path = file_create_path('sweaver');
       file_check_directory($path, FILE_CREATE_DIRECTORY);
-      $image = file_save_upload('image_image', $validators, file_default_scheme() . '://sweaver');
+      $image = file_save_upload('image_image', $validators, file_directory_path() .'/sweaver');
 
       if ($image && !empty($form_state['values']['image_description'])) {
         $image->description = $form_state['values']['image_description'];
         $image_parts = explode('.', $image->filepath);
         $extension = array_pop($image_parts);
-        $new_image_name = file_default_scheme() . '://sweaver/sweaver_image_'. $image->fid .'.'. $extension;
+        $new_image_name = file_directory_path() .'/sweaver/sweaver_image_'. $image->fid .'.'. $extension;
         rename($image->filepath, $new_image_name);
 
         db_query("UPDATE {files} set filepath = '%s' WHERE fid = %d", $new_image_name, $image->fid);
@@ -105,6 +106,7 @@ class sweaver_plugin_images extends sweaver_plugin {
    * Images handler.
    */
   function sweaver_images_handler(&$images) {
+    // @todo use presets module here.
     $imagecache_presets = array();
     if (variable_get('sweaver_plugin_images_imagecache', FALSE) && function_exists('imagecache_presets')) {
       $imagecache_presets = imagecache_presets();
@@ -114,11 +116,11 @@ class sweaver_plugin_images extends sweaver_plugin {
               INNER JOIN {file_managed} f on f.fid = ti.fid order by description ASC';
     $images = db_query($query)->fetchAll();
     foreach ($images as $image) {
-      $images[base_path() . $image->uri] = $image->description;
+      $images[$GLOBALS['base_url'] .'/'. $image->uri] = $image->description;
 
       // Imagecache presets.
       foreach ($imagecache_presets as $preset_key => $preset) {
-        $images[imagecache_create_url($preset['presetname'], $image->filepath)] = $image->description .' ('. $preset['presetname'] .')';
+        $images[$GLOBALS['base_url'] .'/'. imagecache_create_url($preset['presetname'], $image->uri)] = $image->description .' ('. $preset['presetname'] .')';
       }
     }
   }
@@ -126,7 +128,7 @@ class sweaver_plugin_images extends sweaver_plugin {
   /**
    * Menu callback.
    */
-  function menu_callback() {
+  function sweaver_menu_callback() {
     $form = array();
 
     $form['sweaver_plugin_images_tab'] = array(
@@ -148,18 +150,24 @@ class sweaver_plugin_images extends sweaver_plugin {
     else {
       $form['imagecache_disabled'] = array(
         '#type' => 'markup',
-        '#value' => t('If you enable the imagecache plugin, all images can be made available with all imagecache preset variants.'),
+        '#value' => '<p>'. t('If you enable the imagecache module, all images can be made available with all imagecache preset variants.') .'</p>',
+      );
+      $form['sweaver_plugin_images_imagecache'] = array(
+        '#type' => 'value',
+        '#value' => 0,
       );
     }
 
-    $form['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t('Save settings'),
+    $form['sweaver_plugin_handle_images'] = array(
+      '#type' => 'hidden',
+      '#value' => variable_get('sweaver_plugin_handle_images', 'sweaver_plugin_images'),
     );
+
+    $form = system_settings_form($form);
 
     // Images list
     $rows = array();
-    $output = '<p>'. l(t('Add new image'), 'admin/config/user-interface/sweaver/images/add') .'</p>';
+    $output = '<p>'. l(t('Add new image'), 'admin/settings/sweaver/images/add') .'</p>';
 
     $query = 'SELECT ti.fid, ti.description, f.uri FROM {sweaver_image} ti
               INNER JOIN {file_managed} f on f.fid = ti.fid order by description ASC';
@@ -168,8 +176,8 @@ class sweaver_plugin_images extends sweaver_plugin {
       $row = array();
       $row[] = check_plain($image->description);
       $operations = l(t('View'), file_create_url($image->uri)) .' - ';
-      $operations .= l(t('Edit'), 'admin/config/user-interface/sweaver/images/edit/'. $image->fid) .' - ';
-      $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/images/delete/'. $image->fid);
+      $operations .= l(t('Edit'), 'admin/settings/sweaver/images/edit/'. $image->fid) .' - ';
+      $operations .= l(t('Delete'), 'admin/settings/sweaver/images/delete/'. $image->fid);
       $row[] = $operations;
       $rows[] = $row;
     }
@@ -199,16 +207,17 @@ class sweaver_plugin_images extends sweaver_plugin {
   /**
    * Menu callback submit.
    */
-  function menu_callback_submit($form, &$form_state) {
+  function sweaver_menu_callback_submit($form, &$form_state) {
     variable_set('sweaver_plugin_images_imagecache', $form_state['values']['sweaver_plugin_images_imagecache']);
     variable_set('sweaver_plugin_images_tab', $form_state['values']['sweaver_plugin_images_tab']);
     variable_set('sweaver_plugin_handle_images', 'sweaver_plugin_images');
+    drupal_set_message(t('The configuration options have been saved.'));
   }
 
   /**
    * Images form.
    */
-  function images_backend_form() {
+  function sweaver_images_backend_form() {
     $form = array();
 
     $description = '';
@@ -252,14 +261,14 @@ class sweaver_plugin_images extends sweaver_plugin {
   /**
    * Images validate.
    */
-  function images_backend_form_validate($form, &$form_state) {
+  function sweaver_images_backend_form_validate($form, &$form_state) {
     $validators = array(
       'file_validate_is_image' => array(),
     );
 
     $path = file_create_path('sweaver');
     file_check_directory($path, FILE_CREATE_DIRECTORY);
-    $image = file_save_upload('image', $validators, file_default_scheme() . '://sweaver');
+    $image = file_save_upload('image', $validators, file_directory_path() .'/sweaver');
     if ($image) {
       $form_state['image'] = $image;
     }
@@ -271,7 +280,7 @@ class sweaver_plugin_images extends sweaver_plugin {
   /**
    * Images add submit.
    */
-  function images_backend_form_submit(&$form, &$form_state) {
+  function sweaver_images_backend_form_submit(&$form, &$form_state) {
     $image = new stdClass;
 
     if (isset($form_state['image'])) {
@@ -279,7 +288,7 @@ class sweaver_plugin_images extends sweaver_plugin {
       $image->fid = $image_uploaded->fid;
       $image_parts = explode('.', $image_uploaded->filepath);
       $extension = array_pop($image_parts);
-      $new_image_name = file_default_scheme() . '://sweaver/sweaver_image_'. $image->fid .'.'. $extension;
+      $new_image_name = file_directory_path() .'/sweaver/sweaver_image_'. $image->fid .'.'. $extension;
       rename($image_uploaded->filepath, $new_image_name);
       db_query("UPDATE {files} set filepath = '%s' WHERE fid = %d", $new_image_name, $image->fid);
       file_set_status($image_uploaded, FILE_STATUS_PERMANENT);
@@ -291,45 +300,49 @@ class sweaver_plugin_images extends sweaver_plugin {
     drupal_write_record('sweaver_image', $image, $update);
 
     drupal_set_message(t('Image %description has been saved.', array('%description' => $image->description)));
-    $form_state['redirect'] = 'admin/config/user-interface/sweaver/images';
+    $form_state['redirect'] = 'admin/settings/sweaver/images';
   }
 
   /**
    * Image delete form.
    */
-  function images_confirm_form_delete($form_state, $fid) {
+  function sweaver_images_confirm_form_delete() {
     $image = $this->sweaver_get_image(arg(5));
     if ($image) {
       $form['#image'] = $image;
-      return confirm_form($form, t('Are you sure you want to delete image %description?', array('%description' => $image->description)), 'admin/config/user-interface/sweaver/images');
+      return confirm_form($form, t('Are you sure you want to delete image %description?', array('%description' => $image->description)), 'admin/settings/sweaver/images');
     }
     else {
       drupal_set_message(t('Image not found'));
-      drupal_goto('admin/config/user-interface/sweaver/images');
+      drupal_goto('admin/settings/sweaver/images');
     }
   }
 
   /**
    * Image delete submit callback.
    */
-  function images_confirm_form_delete_submit(&$form, &$form_state) {
+  function sweaver_images_confirm_form_delete_submit(&$form, &$form_state) {
     $image = $form['#image'];
     file_delete($image->filepath);
-    db_query("DELETE FROM {file_managed} where fid = %d", $image->fid);
+    db_query("DELETE FROM {files} where fid = %d", $image->fid);
     db_query("DELETE FROM {sweaver_image} where fid = %d", $image->fid);
     drupal_set_message(t('Image %description has been deleted.', array('%description' => $image->description)));
-    $form_state['redirect'] = 'admin/config/user-interface/sweaver/images';
+    $form_state['redirect'] = 'admin/settings/sweaver/images';
   }
 
   /**
    * Helper function to get image.
-   * @param integer $fid The file id.
+   *
+   * @param $fid
+   *   The file id.
+   * @return
+   *   False or image object.
    */
   function sweaver_get_image($fid) {
     if (!empty($fid)) {
       $query = 'SELECT ti.fid, ti.description, f.filepath FROM {sweaver_image} ti
-                INNER JOIN {file_managed} f on f.fid = ti.fid WHERE f.fid = %d';
-      $image = db_query($query, $fid)->fetch();
+                INNER JOIN {files} f on f.fid = ti.fid WHERE f.fid = %d';
+      $image = db_fetch_object(db_query($query, $fid));
       if ($image->fid) {
         return $image;
       }

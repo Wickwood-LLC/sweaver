@@ -5,12 +5,7 @@
  * @file
  * @font-face plugin.
  */
-
 class sweaver_plugin_fontface extends sweaver_plugin {
-
-  function sweaver_enabled($plugin_name) {
-    return variable_get('sweaver_plugin_status_'. $plugin_name, TRUE) && module_exists('fontyourface');
-  }
 
   /**
    * Sweaver dependencies.

@@ -2,10 +2,9 @@
 
 (function ($) {
 
-
 /**
  * Implementation of HOOK_updateCss().
- * 
+ *
  * Return custom css.
  */
 sweaver_plugin_customcss_updateCss = function() {
@@ -17,14 +16,12 @@ sweaver_plugin_customcss_updateCss = function() {
 /**
  * Preview button onclick behavior.
  */
-Drupal.behaviors.SweaverCustomCss = { 
-  attach: function(context, settings) {
-    $('#edit-sweaver-plugin-custom-css-button').click(function(){
-      Drupal.Sweaver.writeCss();
-      Drupal.Sweaver.setMessage(Drupal.t('Your custom css has been succesfully applied.'));
-      return false;
-    });
-  }
+Drupal.behaviors.SweaverCustomCss = function(context) {
+  $('#edit-sweaver-plugin-custom-css-button').click(function(){
+    Drupal.Sweaver.writeCss();
+    Drupal.Sweaver.setMessage(Drupal.t('Your custom css has been succesfully applied.'), 5000);
+    return false;
+  });
 }
 
 })(jQuery);

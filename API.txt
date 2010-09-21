@@ -65,6 +65,7 @@ function hook_default_sweaver_property() {
   $property->disabled = FALSE; // Set this to true if you want to disable this by default.
   $property->name = 'machine_name';
   $property->description = 'Description';
+  $property->property = '';  // The actual css property. Seperate multiple values by spaces.
   $property->property_parent = ''; // Wether this property has a parent.
   $property->property_type = 'select'; // Can be select, slider, image, color or parent.
   // Prefix or suffix: eg: padding has suffix 'px', url has prefix 'url(' and suffix ');'
@@ -144,13 +145,6 @@ function hook_sweaver_plugins() {
 class pluginname extends sweaver_plugin {
 
   /**
-   * Status of plugin.
-   */
-  function sweaver_enabled($plugin_name) {
-    return variable_get('sweaver_plugin_status_'. $plugin_name, TRUE);
-  }
-
-  /**
    * Return module dependencies.
    */
   function sweaver_dependencies() {
@@ -168,7 +162,7 @@ class pluginname extends sweaver_plugin {
     //  );
     // You can use these to add to your menu items.
     // Other stuff you can return in page arguments:
-    // callback_method: defaults to menu_callback - optional.
+    // callback_method: defaults to sweaver_menu_callback - optional.
     // return_method : default to drupal_get_form - optional
     // Return menu items for Drupal.
   }
@@ -221,9 +215,9 @@ class pluginname extends sweaver_plugin {
   }
   
   /**
-   * Menu callback.
+   * Default menu callback.
    */
-  function menu_callback() {
+  function sweaver_menu_callback() {
     // Return a form or simply some other output.
     // Must return a form array() by default. This
     // is the default method you need to implement.
@@ -234,16 +228,16 @@ class pluginname extends sweaver_plugin {
   }
 
   /**
-   * Menu callback validate.
+   * Default sweaver menu callback validate.
    */
-  function menu_callback_validate($form, &$form_state) {
+  function sweaver_menu_callback_validate($form, &$form_state) {
     // Validate the submission.
   }
 
   /**
-   * Menu callback submit
+   * Default sweaver menu callback submit
    */
-  function menu_callback_submit($form, &$form_state) {
+  function sweaver_menu_callback_submit($form, &$form_state) {
     // Do something with the submitted values.
   }
 }

@@ -1,4 +1,4 @@
-/* $Id */
+/* $Id$ */
 
 /**
  * @file
@@ -7,12 +7,23 @@
 
 /* Objects table */
 
-#objects tr.disabled {
+
+#object-list-disabled th {
   filter:alpha(opacity=60);
   opacity:0.6;
 }
 
-#objects tr.odd td.empty {
+#object-list-disabled tr.disabled {
+  filter:alpha(opacity=60);
+  opacity:0.6;
+}
+
+#sweaver-plugin-editor-objects-list input {
+  margin: 0px;
+  padding: 0px;
+}
+
+#object-list-disabled tr.odd td.empty {
   background-color: #fff;
 }
 

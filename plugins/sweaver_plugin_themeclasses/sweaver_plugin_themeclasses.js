@@ -16,7 +16,7 @@ $(document).ready(function() {
  * Switch to style editor and start editing the class.
  */
 
-Drupal.Sweaver.ThemeClasses = function(class_name) {
+Drupal.Sweaver.ThemeClasses = function(class_name, class_label) {
 
   // Switch tabs.
   var remove_tab = 'tab-sweaver_plugin_themeclasses';
@@ -24,7 +24,7 @@ Drupal.Sweaver.ThemeClasses = function(class_name) {
   Drupal.Sweaver.switchTab(remove_tab, show_tab);
 
   // Update the values for the Style tab.
-  var class_name = class_name.replace('spt-', '');
-  var class_object = $('.'+ class_name);
-  Drupal.Sweaver.updateStyleTab(class_name, class_object);
+  class_name = class_name.replace('spt-', '');
+  class_label = class_label.replace('spt-', '');  
+  Drupal.Sweaver.updateStyleTab(class_name, class_label);
 }

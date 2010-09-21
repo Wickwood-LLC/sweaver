@@ -9,17 +9,17 @@
 /**
  * Default paths to exclude the frontend editor from.
  */
-define('SWEAVER_PATHS_EXCLUDE', "admin*\nnode/add*\nnode/*/edit\nuser/*/edit");
+define('SWEAVER_PATHS_EXCLUDE', "admin*\nnode/add*\nnode/*/edit\nuser/*/edit\nbatch*");
 
 /**
  * Default selectors to exclude from selecting.
  */
-define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver\n#admin-menu\n.colorpicker\n#sweaver-messages\n#sweaver-popup");
+define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver-frontend\n#admin-menu\n.colorpicker\n#sweaver-messages\n#sweaver-popup\n#follow-link");
 
 /**
  * Default classes to exclude from not being themed.
  */
-define('SWEAVER_CLASSES_EXCLUDE', "clear\nclear-fix\nclear-block");
+define('SWEAVER_CLASSES_EXCLUDE', "clear\nclear-fix\nclearfix\nsweaver\nsweaver-hovered\nsweaver-clicked\nsweaver-clicked-temp");
 
 /**
  * Default skin.
@@ -174,10 +174,9 @@ function sweaver_export_sweaver_object($object, $object_type) {
 }
 
 /**
- * Helper function to check if we have a serialized key.
- * If so convert it to an array.
+ * Check if we have a serialized key. If so convert it to an array.
  *
- * @param stdClass $object
+ * @param $object
  *   A sweaver object.
  */
 function sweaver_export_check_serialized_keys($object) {
@@ -193,21 +192,21 @@ function sweaver_export_check_serialized_keys($object) {
 /**
  * Load one object or all objects.
  *
- * @param string $name
+ * @param $name
  *   The machine name of the object.
- * @param mixed $map
+ * @param $map
  *   Can be an array passed on by the load arguments of the menu or a string.
- *   If it's a map, the object_type will be index 4 otherwise we just have a string.
- * @param string $status
+ *   In case of array, object_type will be index 5.
+ * @param $status
  *   Whether to return all objects or only enabled.
- * @return mixed
+ * @return
  *   One object or an array of objects.
  */
 function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
 
   static $run = FALSE;
   static $objects = NULL;
-  $object_type = is_array($map) ? $map[6] : $map;
+  $object_type = is_array($map) ? $map[5] : $map;
 
   if (!$run) {
 
@@ -229,12 +228,10 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
       }
 
       // Let sweaver plugins alter objects.
-      foreach (sweaver_get_plugin() as $plugin) {
+      foreach (sweaver_get_plugin(NULL, TRUE) as $plugin) {
         $plugin_name = $plugin['name'];
         $object = sweaver_get_plugin($plugin_name);
-        if ($object->sweaver_enabled($plugin_name)) {
-          $object->sweaver_objects_alter($objects);
-        }
+        $object->sweaver_objects_alter($objects);
       }
 
       cache_set('sweaver', $objects);
@@ -253,28 +250,53 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
 /**
  * Get all plugins or a plugin handler.
  *
- * @param string $plugin_name
+ * @param $plugin_name
  *   The name of the plugin.
- * @return mixed
- *   Either a list of plugins or a loaded plugin class.
+ * @param $enabled
+ *   Whether the plugin has to be enabled or not.
+ * @return
+ *   Either a list of (enabled) plugins or a(n) (enabled) loaded plugin class.
  */
-function sweaver_get_plugin($plugin_name = NULL) {
-  static $cache = array();
-  static $cached_plugins = array();
+function sweaver_get_plugin($plugin_name = NULL, $enabled = NULL) {
+  static $run = FALSE;
+  static $cache, $cached_plugins, $cached_plugins_enabled = array();
 
-  if (empty($cached_plugins)) {
+  if (!$run) {
     ctools_include('plugins');
-    $plugins = ctools_get_plugins('sweaver', 'plugins');
-    $cached_plugins = $plugins;
+    if ($plugins_cache = cache_get('sweaver_plugins')) {
+      $cached_plugins = $plugins_cache->data['sweaver_plugins'];
+      $cached_plugins_enabled = $plugins_cache->data['sweaver_plugins_enabled'];
+    }
+    else {
+      $plugins = ctools_get_plugins('sweaver', 'plugins');
+      $cached_plugins = $plugins;
+
+      // Build enabled plugins.
+      foreach ($cached_plugins as $key => $plugin) {
+        if (variable_get('sweaver_plugin_status_'. $key, FALSE)) {
+          $cached_plugins_enabled[$key] = $plugin;
+        }
+      }
+
+      // Cache the plugins ourselves too.
+      $sweaver_plugins['sweaver_plugins'] = $cached_plugins;
+      $sweaver_plugins['sweaver_plugins_enabled'] = $cached_plugins_enabled;
+      cache_set('sweaver_plugins', $sweaver_plugins);
+    }
+    $run = TRUE;
   }
 
   if ($plugin_name == NULL) {
-    return $cached_plugins;
+    return ($enabled) ? $cached_plugins_enabled : $cached_plugins;
   }
   else {
     if (!isset($cache[$plugin_name])) {
-      if ($class = ctools_plugin_get_class($cached_plugins[$plugin_name], 'handler')) {
+      $check = ($enabled) ? isset($cached_plugins_enabled[$plugin_name]) : TRUE;
+      if ($check && $class = ctools_plugin_get_class($cached_plugins[$plugin_name], 'handler')) {
         $cache[$plugin_name] = new $class($cached_plugins[$plugin_name]);
+      }
+      else {
+        $cache[$plugin_name] = FALSE;
       }
     }
     return isset($cache[$plugin_name]) ? $cache[$plugin_name] : FALSE;
@@ -282,21 +304,24 @@ function sweaver_get_plugin($plugin_name = NULL) {
 }
 
 /**
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function sweaver_init() {
+  // We use the ctools_static here instead of a session, because
+  // pressflow doesn't allow us to start a session without breaking
+  // the page cache.
+  $load_style = &ctools_static('load_style', TRUE);
   if (sweaver_show_editor()) {
+    $load_style = FALSE;
     $inline_js_settings = array('sweaver' => array('invokes' => array()));
 
-    foreach (sweaver_get_plugin() as $plugin) {
+    foreach (sweaver_get_plugin(NULL, TRUE) as $plugin) {
       $plugin_name = $plugin['name'];
       $object = sweaver_get_plugin($plugin_name);
-      if ($object->sweaver_enabled($plugin_name)) {
-        // Fire init.
-        $object->sweaver_init();
-        // CSS and JS.
-        $object->sweaver_form_css_js($inline_js_settings);
-      }
+      // Fire init.
+      $object->sweaver_init();
+      // CSS and JS.
+      $object->sweaver_form_css_js($inline_js_settings);
     }
 
     // JS inline settings.
@@ -308,14 +333,14 @@ function sweaver_init() {
  * Implements hook_preprocess_page().
  */
 function sweaver_preprocess_page(&$vars) {
+  // Load css for this theme if available.
   if (variable_get('sweaver_load_style_when_editor_inactive', TRUE) || sweaver_show_editor()) {
-    // Load css for this theme.
     global $theme_key;
     $sweaver = sweaver_get_plugin('sweaver_plugin');
-    $current_style = $sweaver->sweaver_get_current_style($theme_key);
-    if (isset($current_style->css)) {
+    $sweaver_style = $sweaver->sweaver_get_current_style($theme_key);
+    if (isset($sweaver_style->css) && ctools_static('load_style')) {
       $css = $vars['css'];
-      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $theme_key . '_'. $current_style->thid .'.css';
+      $css_path = file_directory_path() .'/sweaver/sweaver_'. $theme_key . '_'. $sweaver_style->style_id .'_'. $sweaver_style->type .'.css';
       drupal_add_css($css_path, 'theme');
       $vars['css']['all']['theme'][$css_path] = TRUE;
       $vars['styles'] = drupal_get_css();
@@ -367,7 +392,8 @@ function sweaver_show_editor() {
 /**
  * Rock 'n' roll: the sweaver editor.
  */
-function sweaver_frontend($form, &$form_state) {
+function sweaver_frontend(&$form_state) {
+  $form = array();
   $weight = 1;
   global $theme_key;
   $form['#plugins'] = array();
@@ -375,25 +401,23 @@ function sweaver_frontend($form, &$form_state) {
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
   $plugins_order = variable_get('sweaver_plugins_weight', array());
 
-  foreach (sweaver_get_plugin() as $plugin) {
+  foreach (sweaver_get_plugin(NULL, TRUE) as $plugin) {
     $plugin_name = $plugin['name'];
-
     $object = sweaver_get_plugin($plugin_name);
 
-    if ($object->sweaver_enabled($plugin_name)) {
+    // Calculate weight.
+    $default_weight = isset($plugins_order[$plugin_name]) ? $plugins_order[$plugin_name] : $weight++;
+    if ($plugin_name == 'sweaver_plugin') $default_weight = -100;
+    $form['#plugins_order'][$plugin_name] = $default_weight;
+    $form['#plugins_full'][$plugin_name] = $plugin;
 
-      // Calculate weight.
-      $default_weight = in_array($plugin_name, $plugins_order) ? array_search($plugin_name, $plugins_order) : $weight++;
-      $form['#plugins'][$default_weight] = $plugin;
-
-      // Form.
-      $plugin_form = $object->sweaver_form();
-      if (!empty($plugin_form)) {
-        $form[$plugin['name']]['form'] = $plugin_form;
-        if (isset($plugin['handler']['tab'])) {
-          $form[$plugin['name']]['#tab_name'] = isset($plugin['handler']['tab']) ? $plugin['handler']['tab'] : drupal_ucfirst($plugin_name);
-          $form[$plugin['name']]['#tab_description'] = isset($plugin['handler']['tab_description']) ? $plugin['handler']['tab_description'] : '';
-        }
+    // Form.
+    $plugin_form = $object->sweaver_form();
+    if (!empty($plugin_form)) {
+      $form[$plugin['name']]['form'] = $plugin_form;
+      if (isset($plugin['handler']['tab'])) {
+        $form[$plugin['name']]['#tab_name'] = isset($plugin['handler']['tab']) ? $plugin['handler']['tab'] : drupal_ucfirst($plugin_name);
+        $form[$plugin['name']]['#tab_description'] = isset($plugin['handler']['tab_description']) ? $plugin['handler']['tab_description'] : '';
       }
     }
   }
@@ -420,15 +444,12 @@ function sweaver_frontend($form, &$form_state) {
  */
 function sweaver_frontend_submit($form, &$form_state) {
 
-  foreach (sweaver_get_plugin() as $plugin) {
+  foreach (sweaver_get_plugin(NULL, TRUE) as $plugin) {
     $plugin_name = $plugin['name'];
-
     $object = sweaver_get_plugin($plugin_name);
-    if ($object->sweaver_enabled($plugin_name)) {
-      // In the first version, we'll let everyone who has submit methods
-      // simply do their stuff with the submitted values.
-      $object->sweaver_form_submit($form, $form_state);
-    }
+    // In the first version, we'll let everyone who has submit methods
+    // simply do their stuff with the submitted values.
+    $object->sweaver_form_submit($form, $form_state);
   }
 
   // Redirect to same path. We issue this function so things like
@@ -438,23 +459,26 @@ function sweaver_frontend_submit($form, &$form_state) {
 
 /**
  * Sweaver menu callback.
- *sweaver_selectors_exclude
- * @param array $settings
+ *
+ * @param $settings
  *   A collection of page arguments from the menu callback.
- * @return string $output
+ * @return
  *   The rendered page - can be form or anything else.
  */
 function sweaver_menu_callback($settings) {
   $plugin_name = $settings['plugin'];
-  $callback_method = (isset($settings['callback_method'])) ? $settings['callback_method']: 'menu_callback';
+  $callback_method = (isset($settings['callback_method'])) ? $settings['callback_method']: 'sweaver_menu_callback';
   $return_method = (isset($settings['return_method'])) ? $settings['return_method'] : 'drupal_get_form';
+  $js = (isset($settings['js'])) ? TRUE : FALSE;
 
-  $object = sweaver_get_plugin($plugin_name);
-  if ($object->sweaver_enabled($plugin_name)) {
+  if ($object = sweaver_get_plugin($plugin_name, TRUE)) {
     $output = $object->$callback_method();
     if (!empty($output)) {
       if ($return_method == 'drupal_get_form') {
         return drupal_get_form('sweaver_menu_callback_form', $output, $plugin_name, $callback_method);
+      }
+      elseif (isset($js)) {
+        exit(drupal_to_js($output));
       }
       elseif (!empty($return_method) && function_exists($return_method)) {
         return $return_method($output);
@@ -465,17 +489,17 @@ function sweaver_menu_callback($settings) {
     }
   }
 
-  return t('No page found or you do not have sufficient permission to access the page.');
+  return t('No page found or you do not have sufficient permissions to access the page.');
 }
 
 /**
  * Helper function to return the form passed by sweaver_menu_callback.
  *
- * @param string $plugin_name
+ * @param $plugin_name
  *   Name of the plugin.
- * @param string $callback_method
+ * @param $callback_method
  *   Name of the method to call.
- * @return string $form
+ * @return $form
  *   The rendered form.
  */
 function sweaver_menu_callback_form($form, &$form_state, $current_form, $plugin_name, $callback_method) {
@@ -502,5 +526,7 @@ function sweaver_menu_callback_form_validate($form, &$form_state) {
 function sweaver_menu_callback_form_submit($form, &$form_state) {
   $object = sweaver_get_plugin($form['#plugin_name']);
   $callback_submit_function = $form['#callback_method'] .'_submit';
-  $object->$callback_submit_function($form, $form_state);
+  if (method_exists($object, $callback_submit_function)) {
+    $object->$callback_submit_function($form, $form_state);
+  }
 }

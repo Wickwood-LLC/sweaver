@@ -36,13 +36,17 @@ class sweaver_plugin_customcss extends sweaver_plugin {
     return $form;
   }
 
-
   /**
    * Frontend form submit handler.
    */
   function sweaver_form_submit($form, &$form_state) {
-    if ($form_state['clicked_button']['#value'] == t('Save style') && isset($form_state['saved_style_id'])) {
-      db_query("UPDATE {sweaver_style} set customcss = '%s' WHERE thid = %d", $form_state['values']['sweaver_plugin_custom_css'], $form_state['saved_style_id']);
+    $clicked_button = $form_state['clicked_button']['#value'];
+
+    if (($clicked_button == t('Save style') || $clicked_button == t('Publish style')) && isset($form_state['style_id'])) {
+      db_query("UPDATE {sweaver_style_draft} set customcss = '%s' WHERE style_id = %d", $form_state['values']['sweaver_plugin_custom_css'], $form_state['style_id']);
+      if ($form_state['publish']) {
+        db_query("UPDATE {sweaver_style} set customcss = '%s' WHERE style_id = %d", $form_state['values']['sweaver_plugin_custom_css'], $form_state['style_id']);
+      }
     }
   }
 

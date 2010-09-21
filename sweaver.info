@@ -3,6 +3,7 @@ name = Sweaver
 description = "Visual interface for tweaking or building Drupal themes."
 core = 7.x
 dependencies[] = ctools
+package = "User interface"
 files[] = sweaver.module
 files[] = sweaver.install
 files[] = sweaver.registry.inc
