@@ -21,7 +21,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       $css = $this->sweaver_get_current_style($theme_key);
       if (isset($css->themesettings) && !empty($css->themesettings)) {
         global $conf;
-        $theme_settings_name = 'theme_'. $theme_key .'_settings';
+        $theme_settings_name = 'theme_' . $theme_key . '_settings';
         $conf[$theme_settings_name] = unserialize($css->themesettings);
       }
     }
@@ -66,20 +66,20 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
 
         $title = $form[$key]['#title'];
 
-        $form['item_'. $i] = array(
-          '#markup' => '<div class="popup-link"><a href="#" id="theme-settings-link-'. $i .'">'. check_plain($title) .'</a></div>',
+        $form['item_' . $i] = array(
+          '#markup' => '<div class="popup-link"><a href="#" id="theme-settings-link-' . $i . '">' . check_plain($title) . '</a></div>',
           '#weight' => $weight++,
         );
 
         if (isset($form[$key]['#prefix'])) {
-          $form[$key]['#prefix'] .= '<div class="display-none" id="theme-settings-data-'. $i .'">';
+          $form[$key]['#prefix'] .= '<div class="display-none" id="theme-settings-data-' . $i . '">';
         }
         else {
-          $form[$key]['#prefix'] = '<div class="display-none" id="theme-settings-data-'. $i .'">';
+          $form[$key]['#prefix'] = '<div class="display-none" id="theme-settings-data-' . $i . '">';
         }
 
         if (isset($form[$key]['#suffix'])) {
-          $form[$key]['#suffix'] = '</div>'. $form[$key]['#suffix'];
+          $form[$key]['#suffix'] = '</div>' . $form[$key]['#suffix'];
         }
         else {
           $form[$key]['#suffix'] = '</div>';
@@ -153,23 +153,22 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       foreach (array('logo_path', 'favicon_path') as $file) {
 
         // Rename when just uploaded.
-        if (isset($form['sweaver_plugin_themesettings']['form']['#'. $file])) {
+        if (isset($form['sweaver_plugin_themesettings']['form']['#' . $file])) {
           $type = str_replace('_path', '', $file);
           $theme_name = $form['#current_theme'];
-          $source_path = new stdClass;
-          $source_path->uri = file_default_scheme() .'://'. $form['sweaver_plugin_themesettings']['form']['#'. $file];
-          $dest_draft = 'sweaver/'. $type .'_'. $theme_name .'_'. $style_id .'_draft.'. $form['sweaver_plugin_themesettings']['form']['#'. $file .'_extension'];
-          file_move($source_path, $dest_draft, FILE_EXISTS_REPLACE);
-          $theme_values[$file] = file_default_scheme() .'://'. $dest_draft;
+          $source_path = file_default_scheme() . '://' . $form['sweaver_plugin_themesettings']['form']['#' . $file];
+          $dest_draft = 'sweaver/' . $type . '_' . $theme_name . '_' . $style_id . '_draft. ' . $form['sweaver_plugin_themesettings']['form']['#' . $file . '_extension'];
+          file_unmanaged_move($source_path, $dest_draft, FILE_EXISTS_REPLACE);
+          $theme_values[$file] = file_default_scheme() . '://' . $dest_draft;
         }
 
         // Copy to live if save_live is found. Can either be directly after the upload
         // or when setting a style live after the uploads were done already.
-        $default = 'default_'. str_replace('_path', '', $file);
+        $default = 'default_' . str_replace('_path', '', $file);
         if ($form_state['publish'] && !$theme_values[$default] && !empty($theme_values[$file])) {
           $source_path = $theme_values[$file];
           $dest_live = str_replace('_draft', '_live', $theme_values[$file]);
-          file_copy($source_path, $dest_live, FILE_EXISTS_REPLACE);
+          file_unmanaged_copy($source_path, $dest_live, FILE_EXISTS_REPLACE);
           $theme_values[$file] = $dest_live;
         }
       }
@@ -202,12 +201,11 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       }
 
       // Remove files.
-      $dir = file_default_scheme() .'://sweaver';
-      $mask = '(.*)'. $style->theme .'_'. $style->style_id .'_(.*)';
+      $dir = file_default_scheme() . '://sweaver';
+      $mask = '/(.*)' . $style->theme . '_' . $style->style_id . '_(.*)/';
       $files = file_scan_directory($dir, $mask);
       foreach ($files as $key => $file) {
-        $file->uri = $file->filename;
-        file_delete($file);
+        file_unmanaged_delete($file->filename);
       }
     }
   }
@@ -256,7 +254,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     // Default settings are defined in theme_get_setting() in includes/theme.inc
     if ($key) {
       $settings = theme_get_setting($key);
-      $var = 'theme_'. $key .'_settings';
+      $var = 'theme_' . $key . '_settings';
       $themes = $this->sweaver_get_all_themes();
       if (isset($themes[$key]->info['features'])) {
         $has_theme = TRUE;
@@ -279,7 +277,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     // so we can give it the right filename in the submit function.
     if ($file = file_save_upload('logo_upload', array('file_validate_is_image' => array()))) {
       $parts = pathinfo($file->filename);
-      $filename = 'sweaver/temp_logo.'. $parts['extension'];
+      $filename = 'sweaver/temp_logo. ' . $parts['extension'];
       $form['#logo_path'] = $filename;
       $form['#logo_path_extension'] = $parts['extension'];
 
@@ -297,7 +295,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     // so we can give it the right filename in the submit function.
     if ($file = file_save_upload('favicon_upload')) {
       $parts = pathinfo($file->filename);
-      $filename = 'sweaver/temp_favicon.'. $parts['extension'];
+      $filename = 'sweaver/temp_favicon. ' . $parts['extension'];
       $form['#favicon_path'] = $filename;
       $form['#favicon_path_extension'] = $parts['extension'];
 
@@ -342,7 +340,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     );
     foreach ($toggles as $name => $title) {
       if ((!$key) || in_array($name, $features)) {
-        $form['theme_settings']['toggle_' . $name] = array('#type' => 'checkbox', '#title' => $title, '#default_value' => theme_get_setting('toggle_' . $name, $key));
+        $form['theme_settings']['toggle_' . $name] = array('#type' => 'checkbox', '#title' => check_plain($title), '#default_value' => theme_get_setting('toggle_' . $name, $key));
         // Disable checkboxes for features not supported in the current configuration.
         if (isset($disabled['toggle_' . $name])) {
           $form['theme_settings']['toggle_' . $name]['#disabled'] = TRUE;

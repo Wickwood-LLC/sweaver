@@ -259,47 +259,49 @@ Drupal.Sweaver.hidePopup = function() {
 /**
  * Set behaviors on link which will open the popup.
  */
-Drupal.behaviors.sweaverOpenPopup = function (context) {
-  $('#sweaver .popup-link a').click(function() {
-    var wrapper = $(this).attr('id').replace('link', 'data');
+Drupal.behaviors.sweaverOpenPopup = {
+  attach: function (context) {
+    $('#sweaver .popup-link a').click(function() {
+      var wrapper = $(this).attr('id').replace('link', 'data');
+      console.log(wrapper);
 
-    popup = $('#sweaver-popup');
-    if (popup.is(':visible') && $(this).hasClass('open-tab')) {
+      popup = $('#sweaver-popup');
+      if (popup.is(':visible') && $(this).hasClass('open-tab')) {
+        Drupal.Sweaver.hidePopup();
+        $(this).removeClass('open-tab');
+      }
+      else {
+        $('#sweaver .open-style-actions').removeClass('open-style-actions');
+        $('#sweaver .open-tab').removeClass('open-tab');
+        $(this).addClass('open-tab');
+        Drupal.Sweaver.showPopup($('#'+ wrapper));
+      }
+      return false;
+    });
+
+    $('#sweaver .form-submit').click(function() {
       Drupal.Sweaver.hidePopup();
-      $(this).removeClass('open-tab');
-    }
-    else {
-      $('#sweaver .open-style-actions').removeClass('open-style-actions');
-      $('#sweaver .open-tab').removeClass('open-tab');
-      $(this).addClass('open-tab');
-      Drupal.Sweaver.showPopup($('#'+ wrapper));
-    }
-    return false;
-  });
+    });
 
-  $('#sweaver .form-submit').click(function() {
-    Drupal.Sweaver.hidePopup();
-  });
+    // Open a popup when clicking on an open/save/delete/publish link.
+    $('#sweaver .style-actions-link a').click(function() {
+      var wrapper = $(this).attr('id').replace('link', 'data');
 
-  // Open a popup when clicking on an open/save/delete/publish link.
-  $('#sweaver .style-actions-link a').click(function() {
-    var wrapper = $(this).attr('id').replace('link', 'data');
-
-    popup = $('#sweaver-popup');
-    if (popup.is(':visible') && $(this).hasClass('open-style-actions')) {
-      Drupal.Sweaver.hidePopup();
-      $(this).removeClass('open-style-actions');
-    }
-    else {
-      $('#sweaver .open-style-actions').removeClass('open-style-actions');
-      $('#sweaver .open-tab').removeClass('open-tab');
-      $(this).addClass('open-style-actions');
-      Drupal.Sweaver.hidePopup();
-      Drupal.Sweaver.showPopup($('#'+ wrapper), '400px', '200px');
-    }
-    return false;
-  });
-
+      popup = $('#sweaver-popup');
+      if (popup.is(':visible') && $(this).hasClass('open-style-actions')) {
+        Drupal.Sweaver.hidePopup();
+        $(this).removeClass('open-style-actions');
+      }
+      else {
+        $('#sweaver .open-style-actions').removeClass('open-style-actions');
+        $('#sweaver .open-tab').removeClass('open-tab');
+        $(this).addClass('open-style-actions');
+        Drupal.Sweaver.hidePopup();
+        Drupal.Sweaver.showPopup($('#'+ wrapper), '400px', '200px');
+      }
+      return false;
+    });
+  }
 };
 
 

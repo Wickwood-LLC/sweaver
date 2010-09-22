@@ -82,13 +82,13 @@ class sweaver_plugin_images extends sweaver_plugin {
 
       $path = file_create_path('sweaver');
       file_check_directory($path, FILE_CREATE_DIRECTORY);
-      $image = file_save_upload('image_image', $validators, file_directory_path() .'/sweaver');
+      $image = file_save_upload('image_image', $validators, file_directory_path() . '/sweaver');
 
       if ($image && !empty($form_state['values']['image_description'])) {
         $image->description = $form_state['values']['image_description'];
         $image_parts = explode('.', $image->filepath);
         $extension = array_pop($image_parts);
-        $new_image_name = file_directory_path() .'/sweaver/sweaver_image_'. $image->fid .'.'. $extension;
+        $new_image_name = file_directory_path() . '/sweaver/sweaver_image_' . $image->fid . '.' . $extension;
         rename($image->filepath, $new_image_name);
 
         db_query("UPDATE {files} set filepath = '%s' WHERE fid = %d", $new_image_name, $image->fid);
@@ -120,7 +120,7 @@ class sweaver_plugin_images extends sweaver_plugin {
 
       // Imagecache presets.
       foreach ($imagecache_presets as $preset_key => $preset) {
-        $images[$GLOBALS['base_url'] .'/'. imagecache_create_url($preset['presetname'], $image->uri)] = $image->description .' ('. $preset['presetname'] .')';
+        $images[$GLOBALS['base_url'] . '/' . imagecache_create_url($preset['presetname'], $image->uri)] = $image->description . ' (' . $preset['presetname'] . ')';
       }
     }
   }
@@ -150,7 +150,7 @@ class sweaver_plugin_images extends sweaver_plugin {
     else {
       $form['imagecache_disabled'] = array(
         '#type' => 'markup',
-        '#value' => '<p>'. t('If you enable the imagecache module, all images can be made available with all imagecache preset variants.') .'</p>',
+        '#value' => '<p>' . t('If you enable the imagecache module, all images can be made available with all imagecache preset variants.') . '</p>',
       );
       $form['sweaver_plugin_images_imagecache'] = array(
         '#type' => 'value',
@@ -167,7 +167,7 @@ class sweaver_plugin_images extends sweaver_plugin {
 
     // Images list
     $rows = array();
-    $output = '<p>'. l(t('Add new image'), 'admin/config/user-interface/sweaver/images/add') .'</p>';
+    $output = '<p>' . l(t('Add new image'), 'admin/config/user-interface/sweaver/images/add') . '</p>';
 
     $query = 'SELECT ti.fid, ti.description, f.uri FROM {sweaver_image} ti
               INNER JOIN {file_managed} f on f.fid = ti.fid order by description ASC';
@@ -175,9 +175,9 @@ class sweaver_plugin_images extends sweaver_plugin {
     foreach ($result as $image) {
       $row = array();
       $row[] = check_plain($image->description);
-      $operations = l(t('View'), file_create_url($image->uri)) .' - ';
-      $operations .= l(t('Edit'), 'admin/config/user-interface/sweaver/images/edit/'. $image->fid) .' - ';
-      $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/images/delete/'. $image->fid);
+      $operations = l(t('View'), file_create_url($image->uri)) . ' - ';
+      $operations .= l(t('Edit'), 'admin/config/user-interface/sweaver/images/edit/' . $image->fid) . ' - ';
+      $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/images/delete/' . $image->fid);
       $row[] = $operations;
       $rows[] = $row;
     }
@@ -196,7 +196,7 @@ class sweaver_plugin_images extends sweaver_plugin {
       $output .= theme('table', $variables);
     }
     else {
-      $output .= '<p>'. t('No images uploaded.') .'</p>';
+      $output .= '<p>' . t('No images uploaded.') . '</p>';
     }
 
     $form['images_list'] = array(

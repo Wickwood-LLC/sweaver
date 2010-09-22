@@ -10,7 +10,7 @@
  */
 
 /**
- * Implementation of hook_drush_help().
+ * Implements hook_drush_help().
  */
 function sweaver_drush_help($section) {
   switch ($section) {
@@ -23,7 +23,7 @@ function sweaver_drush_help($section) {
 
 
 /**
- * Implementation of hook_drush_command().
+ * Implements hook_drush_command().
  */
 function sweaver_drush_command() {
   $items = array();
@@ -70,6 +70,7 @@ function sweaver_drush_style() {
       break;
     case 'edit':
       if (isset($styles[$args[0]])) {
+        sweaver_drush_verify_edit($styles[$args[0]]);
         return sweaver_drush_edit_style($styles[$args[0]]);
       }
       drush_print(dt('Style id does not exists.'));
@@ -139,7 +140,7 @@ function sweaver_drush_edit_style($style) {
       $temp_file = drush_save_data_to_temp_file($step_value);
       $data['tempfiles'][$step] = $temp_file;
       $data['current_step'] = $step;
-      $edit_command = $editor .' '. $temp_file;
+      $edit_command = $editor . ' ' . $temp_file;
       $pipes = array();
 
       // Opend the editor.
@@ -173,7 +174,7 @@ function sweaver_drush_edit_style($style) {
   // Do we want to save ?
   $message = 'Do you want to save all changes ?';
   if (isset($style->active) && $style->active) {
-    $message = 'Do you want to save all changes ? All changes will be visible for your visitors.';
+    $message = 'Do you want to save all changes ? All changes will be visible for your visitors. ';
   }
   $save = drush_confirm(dt($message));
 
@@ -193,7 +194,7 @@ function sweaver_drush_edit_style($style) {
 
     // Create stylesheet.
     $stylesheet = $style->write_css;
-    $stylesheet .= "\n". $style->customcss;
+    $stylesheet .= "\n" . $style->customcss;
 
     // Save draft version.
     if (!isset($style->active)) {
@@ -212,7 +213,7 @@ function sweaver_drush_edit_style($style) {
     if (isset($style->active)) {
       $sweaver_styles->sweaver_export_file($stylesheet, $style, 'live');
       if ($data['ts_enabled']) {
-        $theme_settings_var = 'theme_'. $style->theme .'_settings';
+        $theme_settings_var = 'theme_' . $style->theme . '_settings';
         variable_set($theme_settings_var, unserialize($style->themesettings));
       }
     }
@@ -239,7 +240,7 @@ function sweaver_drush_print_styles($styles) {
       unset($styles[$key]->themesettings);
       $style->style_id = $key;
       if (isset($style->active)) {
-        $style->style = $style->style .' '. dt('(live)');
+        $style->style = $style->style . ' ' . dt('(live)');
         unset($style->active);
       }
     }
@@ -296,18 +297,18 @@ function sweaver_drush_variables() {
 
   switch ($action) {
     case 'list':
-      drush_print(dt('Your favorite editor is currently @editor.', array('@editor' => variable_get('sweaver_drush_editor', 'vi'))));
-      drush_print(dt('Warning message currently set to @warning.', array('@warning' => variable_get('sweaver_drush_warning_edit', 'true'))));
+      drush_print(dt('Your favorite editor is currently @editor. ', array('@editor' => variable_get('sweaver_drush_editor', 'vi'))));
+      drush_print(dt('Warning message currently set to @warning. ', array('@warning' => variable_get('sweaver_drush_warning_edit', 'true'))));
       break;
 
     case 'save':
       if ($args[0] == 'tmp') {
         variable_set('sweaver_drush_editor', $args[1]);
-        drush_print(dt('Temporary directory set to @tmp.', array('@tmp' => $args[1])));
+        drush_print(dt('Temporary directory set to @tmp. ', array('@tmp' => $args[1])));
       }
       elseif ($args[0] == 'warning') {
         variable_set('sweaver_drush_warning_edit', $args[1]);
-        drush_print(dt('Style warning set to @warning.', array('@warning' => $args[1])));
+        drush_print(dt('Style warning set to @warning. ', array('@warning' => $args[1])));
       }
       else {
         drush_print(dt('The first argument can only be "editor" or "warning"'));
@@ -332,7 +333,6 @@ function sweaver_drush_verify($args, $type = 'styles') {
   }
 
   if ($type == 'styles' && isset($args[0]) && is_numeric($args[0])) {
-    sweaver_drush_verify_edit();
     return 'edit';
   }
 
@@ -347,20 +347,16 @@ function sweaver_drush_verify($args, $type = 'styles') {
 /**
  * Verify if drush can write into the sweaver files directory.
  */
-function sweaver_drush_verify_edit() {
+function sweaver_drush_verify_edit($style) {
   $write = TRUE;
-
-  $test_file = file_directory_path() .'/sweaver/testfile';
-  $fp = @fopen($test_file, 'w');
-  if (!$fp) {
-    $write = FALSE;
-  }
-  @unlink($test_file);
-  @fclose($fp);
+  $draft_file = file_directory_path() . '/sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_draft.css';
+  $live_file = file_directory_path() . '/sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_live.css';
+  $touch_file = (isset($style->active)) ? $live_file : $draft_file;
+  $write = @touch($touch_file);
 
   if (!$write) {
     drush_set_context("DRUSH_EXECUTION_COMPLETED", TRUE);
-    drush_print(dt('Drush is not able to write to the sweaver directory. Either change the permissions (best option) of that directory or run Drush with sudo permissions (might conflict later on when editing the style again from the interface.)'));
+    drush_print(dt('The drush user is not able to overwrite the files in the sweaver directory. Either change the permissions (best option) of those files or run Drush with sudo permissions (might conflict later on when editing the style again from the interface.)'));
     exit();
   }
 }

@@ -61,30 +61,32 @@ Drupal.Sweaver.AutoSave = function(context) {
 /**
  * Behaviors for style actions.
  */
-Drupal.behaviors.StylesActions = function(context) {
-  $("#style-actions-data-1 select.radio-style-save-type").change(function() {
-    var radio_style_save_type = $("#style-actions-data-1 select.radio-style-save-type option:selected").val();
-    if (radio_style_save_type == 1) {
-      $('#edit-save-style').hide();
-      $('#edit-style-existing-id').show();
-    }
-    else {
-      $('#edit-save-style').show();
-      $('#edit-style-existing-id').hide();
-    }
-  });
+Drupal.behaviors.StylesActions = {
+  attach: function (context) {
+    $("#style-actions-data-1 select.radio-style-save-type").change(function() {
+      var radio_style_save_type = $("#style-actions-data-1 select.radio-style-save-type option:selected").val();
+      if (radio_style_save_type == 1) {
+        $('#edit-save-style').hide();
+        $('#edit-style-existing-id').show();
+      }
+      else {
+        $('#edit-save-style').show();
+        $('#edit-style-existing-id').hide();
+      }
+    });
 
-  $("#sweaver-popup #edit-delete-confirm").click(function() {
-    $('#sweaver-popup .delete-style-confirm').hide();
-    $('#sweaver-popup .delete-style-question').show();
-    return false;
-  });
+    $("#sweaver-popup #edit-delete-confirm").click(function() {
+      $('#sweaver-popup .delete-style-confirm').hide();
+      $('#sweaver-popup .delete-style-question').show();
+      return false;
+    });
 
-  $("#sweaver-popup #edit-delete-cancel").click(function() {
-    $('#sweaver-popup .delete-style-confirm').show();
-    $('#sweaver-popup .delete-style-question').hide();
-    return false;
-  });
+    $("#sweaver-popup #edit-delete-cancel").click(function() {
+      $('#sweaver-popup .delete-style-confirm').show();
+      $('#sweaver-popup .delete-style-question').hide();
+      return false;
+    });
+  }
 }
 
 })(jQuery);

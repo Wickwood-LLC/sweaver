@@ -137,7 +137,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
       // Add the active versions of a style.
       $active_results = db_query("SELECT style_id, style FROM {sweaver_style} WHERE active = 1")->fetchAll();
       foreach ($active_results as $active) {
-        $load_style_options[$active->style_id .'_live_table'] = $active->style .' ('. t('live') .')';
+        $load_style_options[$active->style_id . '_live_table'] = $active->style . ' (' . t('live') . ')';
       }
       // Fresh start.
       $load_style_options[0] = t('Fresh style');
@@ -186,7 +186,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
       // Confirmation.
       $form['delete_style_popup']['warning'] = array(
         '#type' => 'item',
-        '#value' => '<div>'. t('Are you sure you want to delete the style ? All changes and files will be lost. If the style is also active, your visitors will see the default theming.') .'</div>',
+        '#value' => '<div>' . t('Are you sure you want to delete the style ? All changes and files will be lost. If the style is also active, your visitors will see the default theming.') . '</div>',
       );
       $form['delete_style_popup']['warning']['delete_submit'] = array(
         '#type' => 'submit',
@@ -206,7 +206,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $form['#popups_styles'] = array(
       'save_style_popup' => array(
         'title' => t('Save'),
-        'description' => 'Save a style for yourself. It will only be visible for your visitors after publishing.',
+        'description' => 'Save a style for yourself. It will only be visible for your visitors after publishing. ',
       ),
       'load_style_popup' => array(
         'title' => t('Load'),
@@ -225,8 +225,8 @@ class sweaver_plugin_styles extends sweaver_plugin {
       if (isset($form[$key])) {
         ++$i;
         $form['#popups'][] = $key;
-        $form['#popups_links'] .= '<div class="style-actions-link"><a href="#" id="style-actions-link-'. $i .'">'. $action['title'] .'</a></div>';
-        $form[$key]['#prefix'] = '<div class="display-none '. str_replace('_', '-', $key) .'" id="style-actions-data-'. $i .'"><h2>'. t('@action style', array('@action' => $action['title'])) .'</h2><p>'. $action['description'] .'</p>';
+        $form['#popups_links'] .= '<div class="style-actions-link"><a href="#" id="style-actions-link-' . $i . '">' . $action['title'] . '</a></div>';
+        $form[$key]['#prefix'] = '<div class="display-none ' . str_replace('_', '-', $key) . '" id="style-actions-data-' . $i . '"><h2>' . t('@action style', array('@action' => $action['title'])) . '</h2><p>' . $action['description'] . '</p>';
         $form[$key]['#suffix'] = '</div>';
       }
     }
@@ -249,15 +249,15 @@ class sweaver_plugin_styles extends sweaver_plugin {
     if (variable_get('sweaver_styles_autosave', 10) > 0) {
       $inline_settings['sweaver']['autosave'] = variable_get('sweaver_styles_autosave', 10);
     }
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_styles/sweaver_plugin_styles.js', 'module');
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_styles/sweaver_plugin_styles.js', 'module');
   }
 
   /**
    * Frontend form submit.
    */
   function sweaver_form_submit($form, &$form_state) {
-     $sweaver_directory = file_default_scheme() . '://sweaver';
-     file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    $sweaver_directory = file_default_scheme() . '://sweaver';
+    file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
 
     $styles_form = $form['sweaver_plugin_styles']['form'];
     $clicked_button = $form_state['clicked_button']['#value'];
@@ -303,7 +303,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
       if ($submit_type == SWEAVER_STYLE_PUBLISH) {
         $style->active = 1;
         $this->sweaver_export_file($form_state['values']['css_rendered'], $style, 'live');
-        $message = 'The style @style has been published.';
+        $message = 'The style @style has been published. ';
         db_query("UPDATE {sweaver_style} set active = 0 WHERE theme = :theme", array(':theme' => $style->theme));
         // Find out first if this style already exists or not.
         if (db_query("SELECT style_id FROM {sweaver_style} WHERE style_id = :style_id", array(':style_id' => $style->style_id))->fetchField() === FALSE) {
@@ -317,11 +317,11 @@ class sweaver_plugin_styles extends sweaver_plugin {
           $this->sweaver_session(TRUE, 'draft_mode');
           $this->sweaver_session($style->style_id, 'loaded_style');
           $this->sweaver_session('draft', 'loaded_table');
-          $message = 'The style @style has been saved. You can keep working on your style.';
+          $message = 'The style @style has been saved. You can keep working on your style. ';
         }
         // Leave draft mode.
         else {
-          $message = 'The style @style has been saved. To work on the style again, you need to load it.';
+          $message = 'The style @style has been saved. To work on the style again, you need to load it. ';
         }
       }
 
@@ -383,12 +383,12 @@ class sweaver_plugin_styles extends sweaver_plugin {
   function sweaver_export_file($css, $style, $type = 'draft') {
     $css = str_replace('<style type="text/css">', '', $css);
     $css = str_replace('</style>', '', $css);
-    $filename = 'sweaver_' . $style->theme . '_'. $style->style_id .'_'. $type .'.css';
+    $filename = 'sweaver_' . $style->theme . '_' . $style->style_id . '_' . $type . '.css';
 
     // Create the css within the files folder.
     $sweaver_directory = file_default_scheme() . '://sweaver';
     file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
-    $file = $sweaver_directory .'/'. $filename;
+    $file = $sweaver_directory . '/' . $filename;
     if (!$fp = fopen($file, 'w')) {
       $this->sweaver_session(t('The css file could not be created.'));
     }
@@ -421,14 +421,14 @@ class sweaver_plugin_styles extends sweaver_plugin {
   function sweaver_delete_style($style) {
     db_query("DELETE FROM {sweaver_style} WHERE style_id = :style_id", array(':style_id' => $style->style_id));
     db_query("DELETE FROM {sweaver_style_draft} WHERE style_id = :style_id", array(':style_id' => $style->style_id));
-    $draft = file_default_scheme() .'://sweaver/sweaver_'. $style->theme .'_'. $style->style_id .'_draft.css';
-    $live = file_default_scheme() .'://sweaver/sweaver_'. $style->theme .'_'. $style->style_id .'_live.css';
+    $draft = file_default_scheme() . '://sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_draft.css';
+    $live = file_default_scheme() . '://sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_live.css';
     file_unmanaged_delete($draft);
     file_unmanaged_delete($live);
 
     // Remove files tied to theme.
-    $dir = file_default_scheme() .'://sweaver';
-    $mask = '/(.*)'. $style->theme .'_'. $style->style_id .'_(.*)/';
+    $dir = file_default_scheme() . '://sweaver';
+    $mask = '/(.*)' . $style->theme . '_' . $style->style_id . '_(.*)/';
     $files = file_scan_directory($dir, $mask);
     foreach ($files as $key => $file) {
       file_unmanaged_delete($file->filename);
@@ -492,13 +492,13 @@ class sweaver_plugin_styles extends sweaver_plugin {
       $row[] = check_plain($style->style);
       $row[] = str_replace('_', ' ', check_plain($style->theme));
       $row[] = ($style->active) ? t('active') : t('inactive');
-      $operations = l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/'. $style->style_id);
+      $operations = l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/' . $style->style_id);
       $row[] = $operations;
       $rows[] = $row;
     }
 
     if (empty($rows)) {
-      $output = '<p>'. t('No styles found.') .'</p>';
+      $output = '<p>' . t('No styles found.') . '</p>';
     }
     else {
 
@@ -568,7 +568,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     // Get the themesettings if applicable and overwrite style id & style name.
     if ($this->sweaver_session(NULL, 'draft_mode')) {
       $table = ($this->sweaver_session(NULL, 'loaded_table') == 'live') ? 'sweaver_style' : 'sweaver_style_draft';
-      $original = db_query('SELECT style_id, style, theme, themesettings FROM {'. $table .'} where style_id = :style_id', array(':style_id' => $this->sweaver_session(NULL, 'loaded_style')));
+      $original = db_query('SELECT style_id, style, theme, themesettings FROM {' . $table . '} where style_id = :style_id', array(':style_id' => $this->sweaver_session(NULL, 'loaded_style')));
       if (isset($original->style_id)) {
         $style->style_id = $original->style_id;
         $style->style = $original->style;

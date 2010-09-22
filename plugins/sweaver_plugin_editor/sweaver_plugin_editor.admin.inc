@@ -28,7 +28,7 @@ function sweaver_settings($form, &$form_state) {
 
   $skins = array();
   $ignore = array('.', '..', '.svn', 'CVS', '.git');
-  $directories = scandir(drupal_get_path('module', 'sweaver') .'/skins');
+  $directories = scandir(drupal_get_path('module', 'sweaver') . '/skins');
   foreach ($directories as $directory) {
     if (!in_array($directory, $ignore)) {
       $skins[$directory] = $directory;
@@ -95,7 +95,7 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
   }
 
   $form['add_link'] = array(
-    '#markup' => l(t('Add new @sweaver_object', array('@sweaver_object' => $object_type)), 'admin/config/user-interface/sweaver/editor/add/'. $object_type),
+    '#markup' => l(t('Add new @sweaver_object', array('@sweaver_object' => $object_type)), 'admin/config/user-interface/sweaver/editor/add/' . $object_type),
   );
 
   $new_weight = 100;
@@ -125,18 +125,18 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
 
       // Operations.
       $operations = array();
-      $operations['edit'] = l(t('Edit'), 'admin/config/user-interface/sweaver/editor/edit/'. $object_type .'/'. $object_name);
+      $operations['edit'] = l(t('Edit'), 'admin/config/user-interface/sweaver/editor/edit/' . $object_type . '/' . $object_name);
 
       if ($object_export_type != 2) {
-        $operations['export'] = l(t('Export'), 'admin/config/user-interface/sweaver/editor/export/'. $object_type .'/'. $object_name);
+        $operations['export'] = l(t('Export'), 'admin/config/user-interface/sweaver/editor/export/' . $object_type . '/' . $object_name);
       }
 
       // Delete - revert.
       if ($object_export_type == 1) {
-        $operations['delete'] = l(t('Delete'), 'admin/config/user-interface/sweaver/editor/delete/'. $object_type .'/'. $object_name);
+        $operations['delete'] = l(t('Delete'), 'admin/config/user-interface/sweaver/editor/delete/' . $object_type . '/' . $object_name);
       }
       elseif ($object_export_type == 3) {
-        $operations['delete'] = l(t('Revert'), 'admin/config/user-interface/sweaver/editor/revert/'. $object_type .'/'. $object_name);
+        $operations['delete'] = l(t('Revert'), 'admin/config/user-interface/sweaver/editor/revert/' . $object_type . '/' . $object_name);
       }
 
       // Disable - enable.
@@ -147,10 +147,10 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
           unset($operations['edit']);
           unset($operations['export']);
           unset($operations['delete']);
-          $operations['status'] = l(t('Enable'), 'admin/config/user-interface/sweaver/editor/enable/'. $object_type .'/'. $object_name);
+          $operations['status'] = l(t('Enable'), 'admin/config/user-interface/sweaver/editor/enable/' . $object_type . '/' . $object_name);
         }
         else {
-          $operations['status'] = l(t('Disable'), 'admin/config/user-interface/sweaver/editor/disable/'. $object_type .'/'. $object_name);
+          $operations['status'] = l(t('Disable'), 'admin/config/user-interface/sweaver/editor/disable/' . $object_type . '/' . $object_name);
         }
       }
       // Exception for allids.
@@ -224,7 +224,7 @@ function theme_sweaver_plugin_editor_objects_list(&$vars) {
 
   $output = drupal_render($form['info']);
   $output .= drupal_render($form['add_link']);
-  drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.css');
+  drupal_add_css(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.css');
 
   if (!empty($form['#objects'])) {
 
@@ -307,7 +307,7 @@ function theme_sweaver_plugin_editor_objects_list(&$vars) {
  */
 function sweaver_object_form($form_state, $object_type, $object = NULL) {
   $form = array();
-  $function = 'sweaver_'. $object_type .'_form';
+  $function = 'sweaver_' . $object_type . '_form';
   return $function($form, $object);
 }
 
@@ -546,7 +546,7 @@ function sweaver_property_form(&$form, $property = NULL) {
   sweaver_export_check_serialized_keys($property);
   if (is_array($property->property_options)) {
     foreach ($property->property_options as $key => $value) {
-      $property_options .= $key .'|'. $value ."\n";
+      $property_options .= $key . '|' . $value . "\n";
     }
   }
   $form['property_options'] = array(
@@ -651,7 +651,7 @@ function sweaver_type_form(&$form, $type = NULL) {
     '#description' => t('Description of this type only to be used for administration forms.'),
   );
 
-  $type_options = sweaver_ctools_object_list('property', -1);
+  $type_options = sweaver_ctools_object_list('property', -1, TRUE);
   sweaver_export_check_serialized_keys($type);
   $form['type_options'] = array(
     '#title' => t('Options'),
@@ -721,10 +721,10 @@ function sweaver_object_delete(&$form_state, $redirect, $object_type, $object, $
     $form['#object_type'] = $object_type;
     $form['#object_redirect'] = $redirect;
     $form['#action_message'] = $action_message;
-    return confirm_form($form, t('Are you sure you want to @action @type %object?', array('@action' => $action, '@type' => $object_type , '%object' => $object->name)), 'admin/config/user-interface/sweaver/'. $redirect);
+    return confirm_form($form, t('Are you sure you want to @action @type %object?', array('@action' => $action, '@type' => $object_type , '%object' => $object->name)), 'admin/config/user-interface/sweaver/' . $redirect);
   }
   else {
-    drupal_goto('admin/config/user-interface/sweaver/editor/'. $redirect);
+    drupal_goto('admin/config/user-interface/sweaver/editor/' . $redirect);
   }
 }
 
@@ -739,7 +739,7 @@ function sweaver_object_delete_submit(&$form, &$form_state) {
   $action_message = $form['#action_message'];
   db_query("DELETE FROM {sweaver_%s} WHERE oid = %d", $object_type, $object->oid);
   drupal_set_message(t('Selector %selector has been @action_message.', array('@action_message' => $action_message, '%selector' => $object->name)));
-  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/'. $redirect;
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/' . $redirect;
 }
 
 /**
@@ -749,7 +749,7 @@ function sweaver_object_status($redirect, $object, $status) {
   ctools_include('export');
   ctools_export_set_object_status($object, $status);
   cache_clear_all('sweaver', 'cache');
-  drupal_goto('admin/config/user-interface/sweaver/editor/'. $redirect);
+  drupal_goto('admin/config/user-interface/sweaver/editor/' . $redirect);
 }
 
 /**
@@ -767,7 +767,7 @@ function sweaver_plugin_editor_config_editor(&$form_state) {
   $order = array();
   foreach ($sweaver_editor_form_configuration as $container => $settings) {
 
-    $form['container_form_'. $container] = array(
+    $form['container_form_' . $container] = array(
       '#type' => 'textfield',
       '#default_value' => $settings['title'],
       '#size' => 15,
@@ -803,7 +803,7 @@ function sweaver_plugin_editor_config_editor(&$form_state) {
       '#type' => 'weight',
       '#delta' => 50,
       '#attributes' => array(
-        'class' => array('property-weight', 'property-weight-'. $container),
+        'class' => array('property-weight', 'property-weight-' . $container),
       ),
       '#default_value' => $weight,
     );
@@ -811,7 +811,7 @@ function sweaver_plugin_editor_config_editor(&$form_state) {
       '#type' => 'select',
       '#options' => $sweaver->sweaver_containers(),
       '#attributes' => array(
-        'class' => array('property-container-select', 'property-container-'. $container),
+        'class' => array('property-container-select', 'property-container-' . $container),
       ),
       '#default_value' => $container,
     );
@@ -843,7 +843,7 @@ function sweaver_plugin_editor_config_editor_submit(&$form, &$form_state) {
 
   // Containers title and properties order.
   foreach ($form['#containers'] as $container_key => $container) {
-    $editor_form_configuration[$container_key]['title'] = $values['container_form_'. $container_key];
+    $editor_form_configuration[$container_key]['title'] = $values['container_form_' . $container_key];
     if (isset($editor_form_configuration[$container_key]['properties'])) {
       ksort($editor_form_configuration[$container_key]['properties']);
     }

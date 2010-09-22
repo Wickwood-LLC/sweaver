@@ -37,9 +37,9 @@ class sweaver_plugin_kb extends sweaver_plugin {
    * Frontend css and js.
    */
   function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/jquery.hotkeys.js');
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/sweaver_plugin_kb.js');
-    $first_key = (variable_get('sweaver_plugin_kb_firstkey', '') != '') ? variable_get('sweaver_plugin_kb_firstkey', '') .'+': '';
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_kb/jquery.hotkeys.js');
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_kb/sweaver_plugin_kb.js');
+    $first_key = (variable_get('sweaver_plugin_kb_firstkey', '') != '') ? variable_get('sweaver_plugin_kb_firstkey', '') . '+': '';
     $bindings = $this->sweaver_kb_bindings();
 
     foreach ($bindings as $key => $value) {
@@ -50,7 +50,7 @@ class sweaver_plugin_kb extends sweaver_plugin {
       }
 
       // Get keyboard key. Make sure it's not empty.
-      $keyboard_key = variable_get('sweaver_plugin_kb_'. $key, $value['default']);
+      $keyboard_key = variable_get('sweaver_plugin_kb_' . $key, $value['default']);
       if (!empty($keyboard_key)) {
         $inline_settings['sweaver']['kb'][$key] = array(
           'combination' => $value['double'] ? $first_key . $keyboard_key : $keyboard_key,
@@ -82,11 +82,11 @@ class sweaver_plugin_kb extends sweaver_plugin {
     );
 
     foreach ($bindings as $key => $value) {
-      $form['sweaver_plugin_kb_'. $key] = array(
+      $form['sweaver_plugin_kb_' . $key] = array(
         '#type' => 'select',
         '#options' => $binding_options,
         '#title' => $value['title'],
-        '#default_value' => variable_get('sweaver_plugin_kb_'. $key, $value['default']),
+        '#default_value' => variable_get('sweaver_plugin_kb_' . $key, $value['default']),
       );
     }
 
@@ -101,26 +101,26 @@ class sweaver_plugin_kb extends sweaver_plugin {
       'save' => array(
         'title' => t('Save style popup'),
         'default' => 's',
-        'element' => '.save-style-popup',
+        'element' => ' .save-style-popup',
         'double' => TRUE,
       ),
       'load' => array(
         'title' => t('Load style popup'),
         'default' => 'l',
-        'element' => '.load-style-popup',
+        'element' => ' .load-style-popup',
         'double' => TRUE,
       ),
       'publish' => array(
         'title' => t('Publish style popup'),
         'default' => 'p',
-        'element' => '.publish-style-popup',
+        'element' => ' .publish-style-popup',
         'double' => TRUE,
       ),
       'delete' => array(
         'title' => t('Delete style popup'),
         'default' => 'd',
         'variable' => 'sweaver_styles_delete_tab',
-        'element' => '.delete-style-popup',
+        'element' => ' .delete-style-popup',
         'double' => TRUE,
       ),
       'close' => array(

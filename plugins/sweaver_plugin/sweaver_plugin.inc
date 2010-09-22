@@ -44,8 +44,8 @@ class sweaver_plugin {
     $theme_functions = array();
 
     $skin = variable_get('sweaver_skin', SWEAVER_SKIN);
-    $plugin_path = drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin';
-    $skin_path = drupal_get_path('module', 'sweaver') .'/skins/'. $skin;
+    $plugin_path = drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin';
+    $skin_path = drupal_get_path('module', 'sweaver') . '/skins/' . $skin;
     $theme_functions = array(
       'sweaver_plugin' => array(
         'template' => $skin,
@@ -112,8 +112,8 @@ class sweaver_plugin {
    */
   function sweaver_form_css_js(&$inline_settings) {
     $skin = variable_get('sweaver_skin', SWEAVER_SKIN);
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.js');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/skins/'. $skin .'/'. $skin .'.css');
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin/sweaver_plugin.js');
+    drupal_add_css(drupal_get_path('module', 'sweaver') . '/skins/' . $skin . '/' . $skin . '.css');
   }
 
   /**
@@ -168,7 +168,7 @@ class sweaver_plugin {
         $values = $_SESSION[$session_key];
         if (count($values) > 1) {
           foreach ($values as $key => $value) {
-            $return .= $value ."\n";
+            $return .= $value . "\n";
           }
         }
         elseif (isset($values[0])) {
@@ -206,7 +206,7 @@ class sweaver_plugin {
       }
       elseif ($this->sweaver_session(NULL, 'draft_mode')) {
         $table = ($this->sweaver_session(NULL, 'loaded_table') == 'live') ? 'sweaver_style' : 'sweaver_style_draft';
-        $css = db_query("SELECT * FROM {". $table ."} where style_id = :style_id", array(':style_id' => $this->sweaver_session(NULL, 'loaded_style')))->fetchObject();
+        $css = db_query("SELECT * FROM {" . $table . "} where style_id = :style_id", array(':style_id' => $this->sweaver_session(NULL, 'loaded_style')))->fetchObject();
         $css->type = 'draft';
       }
       else {
@@ -273,7 +273,7 @@ class sweaver_plugin {
     $plugins_order = variable_get('sweaver_plugins_weight', array());
     cache_clear_all('plugins:sweaver:plugins', 'cache');
     cache_clear_all('sweaver_plugins', 'cache');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin/sweaver_plugin.admin.css');
+    drupal_add_css(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin/sweaver_plugin.admin.css');
 
     foreach (sweaver_get_plugin() as $plugin) {
       $plugin_name = $plugin['name'];
@@ -288,9 +288,9 @@ class sweaver_plugin {
       $form['#plugins'][$plugin_name] = $default_weight;
 
       // Status - editor can not be disabled.
-      $status = variable_get('sweaver_plugin_status_'. $plugin_name, FALSE);
+      $status = variable_get('sweaver_plugin_status_' . $plugin_name, FALSE);
       if ($plugin_name == 'sweaver_plugin_editor') {
-       $form[$plugin_name]['status'] = array(
+        $form[$plugin_name]['status'] = array(
           '#type' => 'checkbox',
           '#value' => 1,
           '#access' => FALSE,
@@ -350,7 +350,7 @@ class sweaver_plugin {
 
     $plugins_order = array();
     foreach ($form['#plugins'] as $plugin_name => $weight) {
-      variable_set('sweaver_plugin_status_'. $plugin_name, $form_state['values'][$plugin_name]['status']);
+      variable_set('sweaver_plugin_status_' . $plugin_name, $form_state['values'][$plugin_name]['status']);
       $plugins_order[$plugin_name] = $form_state['values'][$plugin_name]['weight'];
     }
     variable_set('sweaver_plugins_weight', $plugins_order);
