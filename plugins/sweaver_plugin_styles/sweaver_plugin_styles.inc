@@ -155,8 +155,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     // Publish popup. Make sure we don't save the temporary one.
     if (isset($current_style->style_id) && !empty($current_style->style_id)) {
       $form['publish_style_popup']['publish_style'] = array(
-        '#type' => 'markup',
-        '#value' => t('Set style %stylename visible for your visitors. Any unsaved changes will also be saved when publishing.', array('%stylename' => $current_style->style))
+        '#markup' => t('Set style %stylename visible for your visitors. Any unsaved changes will also be saved when publishing.', array('%stylename' => $current_style->style))
       );
       $form['publish_style_popup']['publish_id'] = array(
         '#type' => 'hidden',
@@ -170,24 +169,22 @@ class sweaver_plugin_styles extends sweaver_plugin {
 
     // Delete popup.
     if ($existing_styles && variable_get('sweaver_styles_delete_tab', FALSE)) {
-
       // Question.
       $form['delete_style_popup']['question']['delete_style'] = array(
         '#type' => 'select',
         '#options' => $existing_styles_options,
       );
-      $form['delete_style_popup']['question']['delete_confirm'] = array(
+      /*$form['delete_style_popup']['question']['delete_confirm'] = array(
         '#type' => 'button',
         '#value' => t('Delete'),
-      );
-      $form['delete_style_popup']['question']['#prefix'] = '<div class="delete-style-confirm">';
-      $form['delete_style_popup']['question']['#suffix'] = '</div>';
+      );*/
+      /*$form['delete_style_popup']['question']['#prefix'] = '<div class="delete-style-confirm">';
+      $form['delete_style_popup']['question']['#suffix'] = '</div>';*/
 
       // Confirmation.
-      $form['delete_style_popup']['warning'] = array(
-        '#type' => 'item',
-        '#value' => '<div>' . t('Are you sure you want to delete the style ? All changes and files will be lost. If the style is also active, your visitors will see the default theming.') . '</div>',
-      );
+      /*$form['delete_style_popup']['warning'] = array(
+        '#markup' => '<div>' . t('Are you sure you want to delete the style ? All changes and files will be lost. If the style is also active, your visitors will see the default theming.') . '</div>',
+      );*/
       $form['delete_style_popup']['warning']['delete_submit'] = array(
         '#type' => 'submit',
         '#value' => t('Delete style'),
@@ -196,7 +193,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
         '#type' => 'button',
         '#value' => t('Cancel'),
       );
-      $form['delete_style_popup']['warning']['#prefix'] = '<div class="delete-style-question display-none clearfix">';
+      $form['delete_style_popup']['warning']['#prefix'] = '<div class="delete-style-question clearfix">';
       $form['delete_style_popup']['warning']['#suffix'] = '</div>';
     }
 
@@ -249,7 +246,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     if (variable_get('sweaver_styles_autosave', 10) > 0) {
       $inline_settings['sweaver']['autosave'] = variable_get('sweaver_styles_autosave', 10);
     }
-    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_styles/sweaver_plugin_styles.js', 'module');
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_styles/sweaver_plugin_styles.js');
   }
 
   /**
@@ -431,7 +428,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $mask = '/(.*)' . $style->theme . '_' . $style->style_id . '_(.*)/';
     $files = file_scan_directory($dir, $mask);
     foreach ($files as $key => $file) {
-      file_unmanaged_delete($file->filename);
+      file_unmanaged_delete($file->uri);
     }
   }
 

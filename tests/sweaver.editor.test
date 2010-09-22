@@ -4,8 +4,6 @@
 /**
  * @file
  * Basic tests for sweaver frontend editor.
- * Note: run this patch on D6 to allow posts to hidden fields:
- * http://drupal.org/node/488810#comment-1693662.
  */
 
 class sweaverEditor extends DrupalWebTestCase {

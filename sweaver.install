@@ -132,7 +132,7 @@ function sweaver_install() {
     'sweaver_plugin_themeclasses' => -43,
     'sweaver_plugin_fontface' => -42,
     'sweaver_plugin_ds' => -41,
-    'sweaver_plugin_ds' => -40,
+    'sweaver_plugin_kb' => -40,
   );
   variable_set('sweaver_plugins_weight', $plugins_weight);
 

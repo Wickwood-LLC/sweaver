@@ -395,7 +395,7 @@ Drupal.Sweaver.bindClicks = function() {
       }
 
       // clear the old paths.
-      $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clearfix"></div><div id="selected-path" class="clear-block"></div>');
+      $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clearfix"></div><div id="selected-path" class="clearfix"></div>');
 
       $('#follow-link').hide();
 
