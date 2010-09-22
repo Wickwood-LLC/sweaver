@@ -58,7 +58,7 @@ function sweaver_plugin_editor_updateCss() {
         $.each(properties, function(i, property) {
           // Don't write anything if the value is empty.
           // 0 is not empty!
-          if (target[prop] == '' && target[prop] != 0) {
+          if (target[prop] == '' && target[prop] != '0') {
             cssContent += '';
           }
           // Don't add a prefix and suffix for these exceptions.
@@ -750,8 +750,8 @@ Drupal.Sweaver.writeChanges = function() {
     var target = Drupal.Sweaver.css[key];
     for (prop in target) {
       // 0 is not empty too!
-      if (Drupal.Sweaver.properties[prop] && target[prop] != '' && target[prop] != '0') {
-      // Special case for transparent.
+      if (Drupal.Sweaver.properties[prop] && (target[prop] != '' || target[prop] == '0')) {
+        // Special case for transparent.
         if ((prop == 'background-color' && target[prop] == 'transparent') || (prop == 'background-image' && target[prop] == 'none')) {
           $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
         }
