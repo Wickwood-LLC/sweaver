@@ -193,8 +193,8 @@ class sweaver_plugin {
    *   The css definition for this theme.
    */
   function sweaver_get_current_style($theme = NULL, $reset = FALSE) {
-    $run = &ctools_static('run', FALSE);
-    $css = &ctools_static('css', FALSE);
+    $run = &drupal_static('run', FALSE);
+    $css = &drupal_static('css', FALSE);
 
     if (!$run || $reset) {
 
@@ -238,7 +238,7 @@ class sweaver_plugin {
    * Return all enabled themes.
    */
   function sweaver_get_all_themes() {
-    $all_themes = &ctools_static('all_themes', array());
+    $all_themes = &drupal_static('all_themes', array());
     if (empty($themes)) {
       $all_themes = array();
       $themes = db_query("SELECT filename, name, status, info FROM {system} WHERE type = 'theme' AND status = '1' ORDER BY name ASC")->fetchAll();

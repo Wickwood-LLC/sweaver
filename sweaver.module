@@ -307,10 +307,10 @@ function sweaver_get_plugin($plugin_name = NULL, $enabled = NULL) {
  * Implements hook_init().
  */
 function sweaver_init() {
-  // We use the ctools_static here instead of a session, because
+  // We use the drupal_static here instead of a session, because
   // pressflow doesn't allow us to start a session without breaking
   // the page cache.
-  $load_style = &ctools_static('load_style', TRUE);
+  $load_style = &drupal_static('load_style', TRUE);
   if (sweaver_show_editor()) {
     $load_style = FALSE;
     $inline_js_settings = array('sweaver' => array('invokes' => array()));
@@ -338,7 +338,7 @@ function sweaver_preprocess_page(&$vars) {
     global $theme_key;
     $sweaver = sweaver_get_plugin('sweaver_plugin');
     $sweaver_style = $sweaver->sweaver_get_current_style($theme_key);
-    if (isset($sweaver_style->css) && ctools_static('load_style')) {
+    if (isset($sweaver_style->css) && drupal_static('load_style')) {
       $css = $vars['css'];
       $css_path = file_default_scheme() .'://sweaver/sweaver_'. $theme_key . '_'. $sweaver_style->style_id .'_'. $sweaver_style->type .'.css';
       drupal_add_css($css_path, 'theme');

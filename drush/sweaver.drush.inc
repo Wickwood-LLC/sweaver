@@ -103,7 +103,7 @@ function sweaver_drush_edit_style($style) {
   $css = (!empty($css)) ? sweaver_drush_json_to_css($css) : '';
 
   // Create a static $data variable with CTools.
-  $data = &ctools_static('sweaver_drush_style_data' , array());
+  $data = &drupal_static('sweaver_drush_style_data' , array());
   $data = array(
     'style' => $style,
     'editor' => $editor,

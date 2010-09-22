@@ -57,15 +57,16 @@ function sweaver_plugin_editor_updateCss() {
         var properties = Drupal.Sweaver.properties[prop]['property'].split(' ');
         $.each(properties, function(i, property) {
           // Don't write anything if the value is empty.
-          if (target[prop] == '') {
+          // 0 is not empty!
+          if (target[prop] == '' && target[prop] != 0) {
             cssContent += '';
           }
           // Don't add a prefix and suffix for these exceptions.
           else if ((property == 'background-color' && target[prop] == 'transparent') || (property == 'background-image' && target[prop] == 'none')) {
-              cssContent += '  '+ property + ': ' + target[prop] + ';\n';
+            cssContent += '  '+ property + ': ' + target[prop] + ';\n';
           }
           else {
-              cssContent += '  '+ property + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
+            cssContent += '  '+ property + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
           }
         });
       }
@@ -748,7 +749,8 @@ Drupal.Sweaver.writeChanges = function() {
   for (key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
     for (prop in target) {
-      if (Drupal.Sweaver.properties[prop] && target[prop] != '') {
+      // 0 is not empty too!
+      if (Drupal.Sweaver.properties[prop] && target[prop] != '' && target[prop] != '0') {
       // Special case for transparent.
         if ((prop == 'background-color' && target[prop] == 'transparent') || (prop == 'background-image' && target[prop] == 'none')) {
           $('#editor-changes').prepend($('<p onclick="var event = arguments[0] || window.event; event.stopPropagation(); Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
