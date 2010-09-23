@@ -113,7 +113,6 @@ class sweaverThemeSettings extends DrupalWebTestCase {
         'sweaver_plugin_custom_css' => '',
         'save_style' => 'Bartik ' . $style_id,
         'save_type' => $save_type,
-        'save_keep_draft' => TRUE,
 
         // Theme settings.
         'toggle_name' => FALSE,

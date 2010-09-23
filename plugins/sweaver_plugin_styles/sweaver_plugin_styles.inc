@@ -292,7 +292,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
       $style_name = $form_state['values']['save_style'];
       $keep_working = ($submit_type == SWEAVER_STYLE_PUBLISH) ? FALSE : TRUE;
       $save_type = ($submit_type == SWEAVER_STYLE_PUBLISH) ? TRUE : $form_state['values']['save_type'];
-       $style_existing_id = ($submit_type == SWEAVER_STYLE_PUBLISH) ? $form_state['values']['publish_id'] : $form_state['values']['style_existing_id'];
+      $style_existing_id = ($submit_type == SWEAVER_STYLE_PUBLISH) ? $form_state['values']['publish_id'] : $form_state['values']['style_existing_id'];
 
       if ($save_type) {
         $update = array('style_id');

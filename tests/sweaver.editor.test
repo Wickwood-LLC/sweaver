@@ -206,14 +206,14 @@ class sweaverEditor extends DrupalWebTestCase {
       'css' => '{"#center ":{"font-size":30}}',
       'css_rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
       'sweaver_plugin_custom_css' => '#header { background-color: blue; }',
-      'save_style' => 'Garland 5',
+      'save_style' => 'Bartik 5',
       'save_type' => '0',
     );
     $this->drupalPost('node', $edit, t('Save and publish'));
-    $this->assertRaw(t('The style Garland 5 has been saved and published. You can keep working on your style.'), t('New styles saved and published.'), $editor_tests);
-    $css = db_query("SELECT * FROM {sweaver_style_draft} where style_id = %d AND theme = '%s'", 5, 'bartik')->fetchObject();
-    $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->style_id .'_draft.css'), 'Draft filename written', $editor_tests);
-    $this->assertTrue(file_exists(file_directory_path() .'/sweaver/sweaver_garland_'. $css->style_id .'_live.css'), 'Live filename written', $editor_tests);
+    $this->assertRaw(t('The style Bartik 5 has been saved and published. You can keep working on your style.'), t('New styles saved and published.'), $editor_tests);
+    $css = db_query("SELECT * FROM {sweaver_style_draft} where style_id = 5 AND theme = 'bartik'")->fetchObject();
+    $this->assertTrue(file_exists($this->sweaver_public_path() . '/sweaver/sweaver_bartik_' . $css->style_id . '_draft.css'), 'Draft filename written', $editor_tests);
+    $this->assertTrue(file_exists($this->sweaver_public_path() . '/sweaver/sweaver_bartik_' . $css->style_id . '_live.css'), 'Live filename written', $editor_tests);
     $this->assertEqual($css->style_id, 5, t('New style saved and published in database with id 5'), $editor_tests);
   }
 }
