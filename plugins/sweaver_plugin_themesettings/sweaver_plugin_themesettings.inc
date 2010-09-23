@@ -355,7 +355,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         '#description' => t('If toggled on, the following logo will be displayed.'),
         '#attributes' => array('class' => array('theme-settings-bottom')),
       );
-      $form['logo']["default_logo"] = array(
+      $form['logo']['default_logo'] = array(
         '#type' => 'checkbox',
         '#title' => t('Use the default logo'),
         '#default_value' => $this->sweaver_has_theme_setting('default_logo', $key, $revision_theme_settings),

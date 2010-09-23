@@ -2,15 +2,17 @@
 
 (function ($) {
 
+$(document).bind('updateCSS', function(event) {
+  Drupal.Sweaver.sweaver_plugin_customcss_updateCss();
+});
+
 /**
  * Implementation of HOOK_updateCss().
  *
  * Return custom css.
  */
-sweaver_plugin_customcss_updateCss = function() {
-  var fullCss = '';
-  fullCss = $('#edit-sweaver-plugin-custom-css').val();
-  return fullCss;
+Drupal.Sweaver.sweaver_plugin_customcss_updateCss = function() {
+  Drupal.Sweaver.CSSdata += $('#edit-sweaver-plugin-custom-css').val();
 }
 
 /**

@@ -8,21 +8,18 @@ Drupal.Sweaver.messageTimer = null;
 
 Drupal.Sweaver.changed = false;
 
+Drupal.Sweaver.CSSdata = '';
+
 Drupal.Sweaver.writeCss = function(context) {
 
-  var fullCss = '';
+  Drupal.Sweaver.CSSdata = '';
 
-  /*$.each(Drupal.settings.sweaver['invokes'], function(index, module) {
-    var invoke_function = module +'_updateCss';
-    css = window[invoke_function].apply(this);
-    if (css != '') {
-      fullCss += css;
-    }
-  });
-  $('head style[title="sweaver"]').html(fullCss);
-  $('#edit-css-rendered').val(fullCss);
+  $.event.trigger('updateCSS');
 
-  Drupal.Sweaver.changed = true;*/
+  $('head style[title="sweaver"]').html(Drupal.Sweaver.CSSdata);
+  $('#edit-css-rendered').val(Drupal.Sweaver.CSSdata);
+
+  Drupal.Sweaver.changed = true;
 };
 
 $(document).ready(function() {

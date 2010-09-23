@@ -80,19 +80,23 @@ class sweaver_plugin_images extends sweaver_plugin {
         'file_validate_is_image' => array(),
       );
 
-      $path = file_create_path('sweaver');
-      file_check_directory($path, FILE_CREATE_DIRECTORY);
-      $image = file_save_upload('image_image', $validators, file_directory_path() . '/sweaver');
+      $sweaver_directory = file_default_scheme() . '://sweaver';
+      file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+      $image = file_save_upload('image_image', $validators, file_default_scheme() . '://sweaver');
 
       if ($image && !empty($form_state['values']['image_description'])) {
         $image->description = $form_state['values']['image_description'];
-        $image_parts = explode('.', $image->filepath);
+        $image_parts = explode('.', $image->uri);
         $extension = array_pop($image_parts);
-        $new_image_name = file_directory_path() . '/sweaver/sweaver_image_' . $image->fid . '.' . $extension;
-        rename($image->filepath, $new_image_name);
 
-        db_query("UPDATE {files} set filepath = '%s' WHERE fid = %d", $new_image_name, $image->fid);
-        file_set_status($image, FILE_STATUS_PERMANENT);
+        $new_image_name = file_default_scheme() . '://sweaver/sweaver_image_' . $image->fid . '.' . $extension;
+        file_unmanaged_move($image->uri, $new_image_name);
+
+        // Save permanent.
+        $image->uri = $new_image_name;
+        $image->status = FILE_STATUS_PERMANENT;
+        file_save($image);
+
         drupal_write_record('sweaver_image', $image);
         $this->sweaver_session(t('Image @image has been uploaded.', array('@image' => t($image->description))));
       }

@@ -152,7 +152,7 @@ function sweaver_install() {
 function sweaver_uninstall() {
   cache_clear_all('sweaver', 'cache');
   cache_clear_all('plugins:sweaver:plugins', 'cache');
-  db_query("DELETE FROM {variable} WHERE name LIKE 'sweaver_%%'");
+  db_query("DELETE FROM {variable} WHERE name LIKE 'sweaver_%%'")->execute();
 }
 
 /**

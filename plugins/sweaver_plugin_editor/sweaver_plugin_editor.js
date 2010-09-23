@@ -39,12 +39,16 @@ $(document).ready(function() {
 
 });
 
+$(document).bind('updateCSS', function(event) {
+  Drupal.Sweaver.sweaver_plugin_editor_updateCss();
+});
+
 /**
  * Implementation of HOOK_updateCss().
  *
  * Return editor css.
  */
-function sweaver_plugin_editor_updateCss() {
+Drupal.Sweaver.sweaver_plugin_editor_updateCss = function() {
   var css = '';
   var fullCss = '';
   var cssContent = '';
@@ -88,7 +92,7 @@ function sweaver_plugin_editor_updateCss() {
   // Add inline css
   $("#sweaver-form #edit-css").val(fullCss);
 
-  return fullCss;
+  Drupal.Sweaver.CSSdata += fullCss;
 }
 
 /**
