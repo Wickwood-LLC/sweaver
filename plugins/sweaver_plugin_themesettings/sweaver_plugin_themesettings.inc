@@ -113,7 +113,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     $clicked_button = $form_state['clicked_button']['#value'];
 
     // Save style.
-    if (($clicked_button == t('Save style') || $clicked_button == t('Publish style')) && isset($form_state['style_id'])) {
+    if (($clicked_button == t('Save and continue') || $clicked_button == t('Save and publish') || $clicked_button == t('Publish style')) && isset($form_state['style_id'])) {
 
       $style_id = $form_state['style_id'];
 

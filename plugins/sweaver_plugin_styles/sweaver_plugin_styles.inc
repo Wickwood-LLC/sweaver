@@ -7,7 +7,8 @@
  */
 
 define('SWEAVER_STYLE_SAVE', 0);
-define('SWEAVER_STYLE_PUBLISH', 1);
+define('SWEAVER_STYLE_SAVE_PUBLISH', 1);
+define('SWEAVER_STYLE_PUBLISH', 2);
 
 class sweaver_plugin_styles extends sweaver_plugin {
 
@@ -119,16 +120,21 @@ class sweaver_plugin_styles extends sweaver_plugin {
         '#value' => 0,
       );
     }
-    $form['save_style_popup']['save_keep_draft'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Keep working on this style after saving.'),
-      '#weight' => 3,
-    );
-    $form['save_style_popup']['save_submit'] = array(
+
+    // Save buttons for save popup.
+    $form['save_style_popup']['save']['save_continue'] = array(
       '#type' => 'submit',
-      '#value' => t('Save style'),
+      '#value' => t('Save and continue'),
       '#weight' => 4,
     );
+    $form['save_style_popup']['save']['save_publish'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save and publish'),
+      '#weight' => 5,
+    );
+    $form['save_style_popup']['save']['#weight'] = 10;
+    $form['save_style_popup']['save']['#prefix'] = '<div class="clear-block"></div><div class="save-publish-buttons">';
+    $form['save_style_popup']['save']['#suffix'] = '</div><div class="clear-block"></div>';
 
     // Load popup.
     if ($existing_styles) {
@@ -203,7 +209,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $form['#popups_styles'] = array(
       'save_style_popup' => array(
         'title' => t('Save'),
-        'description' => 'Save a style for yourself. It will only be visible for your visitors after publishing. ',
+        'description' => t('Save and keep working on your style. You can also publish it immediately for your visitors.'),
       ),
       'load_style_popup' => array(
         'title' => t('Load'),
@@ -260,20 +266,33 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $clicked_button = $form_state['clicked_button']['#value'];
 
     // Save style.
-    if ($clicked_button == t('Save style') || $clicked_button == t('Publish style')) {
+    if ($clicked_button == t('Save and continue') || $clicked_button == t('Save and publish') || $clicked_button == t('Publish style')) {
+
       // Reset session.
       $this->sweaver_reset_style_session();
 
       $update = array();
       $style = new stdClass;
       $theme_key = $form['#current_theme'];
-      $submit_type = ($clicked_button == t('Save style')) ? SWEAVER_STYLE_SAVE : SWEAVER_STYLE_PUBLISH;
+      $form_state['publish'] = TRUE;
+
+      // Submit type.
+      if ($clicked_button == t('Save and publish')) {
+        $submit_type = SWEAVER_STYLE_SAVE_PUBLISH;
+      }
+      elseif ($clicked_button == t('Publish style')) {
+        $submit_type = SWEAVER_STYLE_PUBLISH;
+      }
+      else {
+        $form_state['publish'] = FALSE;
+        $submit_type = SWEAVER_STYLE_SAVE;
+      }
 
       // Create variables from form_state, easier to re-use them in the flow.
-      $save_type = ($submit_type == SWEAVER_STYLE_SAVE) ? $form_state['values']['save_type'] : TRUE;
-      $save_keep_draft = ($submit_type == SWEAVER_STYLE_SAVE) ? $form_state['values']['save_keep_draft'] : FALSE;
-      $style_name = ($submit_type == SWEAVER_STYLE_SAVE) ? $form_state['values']['save_style'] : '';
-      $style_existing_id = ($submit_type == SWEAVER_STYLE_SAVE) ? $form_state['values']['style_existing_id'] : $form_state['values']['publish_id'];
+      $style_name = $form_state['values']['save_style'];
+      $keep_working = ($submit_type == SWEAVER_STYLE_PUBLISH) ? FALSE : TRUE;
+      $save_type = ($submit_type == SWEAVER_STYLE_PUBLISH) ? TRUE : $form_state['values']['save_type'];
+       $style_existing_id = ($submit_type == SWEAVER_STYLE_PUBLISH) ? $form_state['values']['publish_id'] : $form_state['values']['style_existing_id'];
 
       if ($save_type) {
         $update = array('style_id');
@@ -283,6 +302,8 @@ class sweaver_plugin_styles extends sweaver_plugin {
       else {
         $style->style = $style_name;
         if (empty($style->style)) {
+          // Reset the clicked button
+          $form_state['clicked_button']['#value'] = t('Unknown Sweaver button.');
           $this->sweaver_session(t('You need to enter a name for your style.'));
           return;
         }
@@ -294,7 +315,6 @@ class sweaver_plugin_styles extends sweaver_plugin {
       drupal_write_record('sweaver_style_draft', $style, $update);
       $this->sweaver_export_file($form_state['values']['css_rendered'], $style);
       $form_state['style_id'] = $style->style_id;
-      $form_state['publish'] = $submit_type;
 
       // Publish style.
       if ($submit_type == SWEAVER_STYLE_PUBLISH) {
@@ -308,18 +328,18 @@ class sweaver_plugin_styles extends sweaver_plugin {
         }
         drupal_write_record('sweaver_style', $style, $update);
       }
-      else {
-        // Keep working in draft mode.
-        if ($save_keep_draft) {
-          $this->sweaver_session(TRUE, 'draft_mode');
-          $this->sweaver_session($style->style_id, 'loaded_style');
-          $this->sweaver_session('draft', 'loaded_table');
-          $message = 'The style @style has been saved. You can keep working on your style. ';
-        }
-        // Leave draft mode.
-        else {
-          $message = 'The style @style has been saved. To work on the style again, you need to load it. ';
-        }
+
+      // Draft only save.
+      if ($submit_type != SWEAVER_STYLE_PUBLISH) {
+        $this->sweaver_session(TRUE, 'draft_mode');
+        $this->sweaver_session($style->style_id, 'loaded_style');
+        $this->sweaver_session('draft', 'loaded_table');
+        $message = 'The style @style has been saved. You can keep working on your style.';
+      }
+
+      // Draft & published save.
+      if ($submit_type == SWEAVER_STYLE_SAVE_PUBLISH)  {
+        $message = 'The style @style has been saved and published. You can keep working on your style.';
       }
 
       $this->sweaver_session(t($message, array('@style' => $style->style)));

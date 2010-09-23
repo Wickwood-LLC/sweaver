@@ -310,7 +310,8 @@ body.sweaver {
   margin-top: 15px;
 }
 
-#sweaver-popup .delete-style-question input {
+#sweaver-popup .delete-style-question input,
+#sweaver-popup .save-publish-buttons input {
   float: left !important;
   margin-right: 15px !important;
   clear: none !important;

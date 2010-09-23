@@ -231,7 +231,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
 
     $form_state['values'] = $configuration['edit'];
     $form = $configuration['form'];
-    $this->performStyleAction('Save style', $form_state, $form);
+    $this->performStyleAction('Save and continue', $form_state, $form);
     $css = $this->getCSS($style_id);
 
     // Assert CSS is equal.
