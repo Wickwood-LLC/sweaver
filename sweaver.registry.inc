@@ -781,6 +781,59 @@ function _sweaver_default_sweaver_property() {
   );
   $propertys['border-style'] = $property;
 
+  // Table extras.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'border-collapse';
+  $property->description = 'Border collapse';
+  $property->property = 'border-collapse';
+  $property->property_parent = '';
+  $property->property_type = 'select';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+        'collapse' => 'Collapse',
+        'separate' => 'Separate',
+  );
+  $propertys['border-collapse'] = $property;
+
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'border-spacing';
+  $property->description = 'Border spacing';
+  $property->property = 'border-spacing';
+  $property->property_parent = '';
+  $property->property_type = 'slider';
+  $property->property_prefix = '';
+  $property->property_suffix = 'px';
+  $property->property_slider_min = 0;
+  $property->property_slider_max = 500;
+  $property->property_options = array();
+  $propertys['border-spacing'] = $property;
+
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'vertical-align';
+  $property->description = 'Vertical align';
+  $property->property = 'vertical-align';
+  $property->property_parent = '';
+  $property->property_type = 'select';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+        'top' => 'Top',
+        'bottom' => 'Bottom',
+        'middle' => 'Middle',
+  );
+  $propertys['vertical-align'] = $property;
+
   // Width.
   $property = new stdClass;
   $property->api_version = 1;
@@ -915,6 +968,204 @@ function _sweaver_default_sweaver_type() {
     'height' => 'height',
   );
   $types['list-item'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'run-in';
+  $type->description = 'Run in';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'color' => 'color',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+    'padding-top' => 'padding-top',
+    'padding-left' => 'padding-left',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
+    'margin-top' => 'margin-top',
+    'margin-left' => 'margin-left',
+    'margin-right' => 'margin-right',
+    'margin-bottom' => 'margin-bottom',
+    'border-top-width' => 'border-top-width',
+    'border-left-width' => 'border-left-width',
+    'border-right-width' => 'border-right-width',
+    'border-bottom-width' => 'border-bottom-width',
+    'border-style' => 'border-style',
+    'border-color' => 'border-color',
+    'width' => 'width',
+    'height' => 'height',
+  );
+  $types['run-in'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'table';
+  $type->description = 'Table';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'color' => 'color',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+    'margin-top' => 'margin-top',
+    'margin-left' => 'margin-left',
+    'margin-right' => 'margin-right',
+    'margin-bottom' => 'margin-bottom',
+    'border-top-width' => 'border-top-width',
+    'border-left-width' => 'border-left-width',
+    'border-right-width' => 'border-right-width',
+    'border-bottom-width' => 'border-bottom-width',
+    'border-style' => 'border-style',
+    'border-color' => 'border-color',
+    'border-collapse' => 'border-collapse',
+    'border-spacing' => 'border-spacing',
+    'width' => 'width',
+    'height' => 'height',
+  );
+  $types['table'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'table-caption';
+  $type->description = 'Table caption';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'color' => 'color',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+    'padding-top' => 'padding-top',
+    'padding-left' => 'padding-left',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
+    'margin-top' => 'margin-top',
+    'margin-left' => 'margin-left',
+    'margin-right' => 'margin-right',
+    'margin-bottom' => 'margin-bottom',
+    'border-top-width' => 'border-top-width',
+    'border-left-width' => 'border-left-width',
+    'border-right-width' => 'border-right-width',
+    'border-bottom-width' => 'border-bottom-width',
+    'border-style' => 'border-style',
+    'border-color' => 'border-color',
+    'width' => 'width',
+    'height' => 'height',
+  );
+  $types['table-caption'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'table-cell';
+  $type->description = 'Table cell';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'vertical-align' => 'vertical-align',
+    'color' => 'color',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+    'padding-top' => 'padding-top',
+    'padding-left' => 'padding-left',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
+    'height' => 'height',
+  );
+  $types['table-cell'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'table-header-group';
+  $type->description = 'Table header';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'vertical-align' => 'vertical-align',
+    'color' => 'color',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+    'padding-top' => 'padding-top',
+    'padding-left' => 'padding-left',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
+    'height' => 'height',
+  );
+  $types['table-header-group'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'table-footer-group';
+  $type->description = 'Table footer';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'vertical-align' => 'vertical-align',
+    'color' => 'color',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+    'padding-top' => 'padding-top',
+    'padding-left' => 'padding-left',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
+    'height' => 'height',
+  );
+  $types['table-footer-group'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'table-row';
+  $type->description = 'Table row';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'vertical-align' => 'vertical-align',
+    'color' => 'color',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+  );
+  $types['table-row'] = $type;
 
   return $types;
 }

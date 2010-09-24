@@ -70,7 +70,8 @@ function sweaver_install() {
         2 => 'font-weight',
         3 => 'font-size-wrapper',
         4 => 'text-align',
-        5 => 'color'
+        5 => 'color',
+        6 => 'vertical-align'
       ),
     ),
     'two' => array(
@@ -89,6 +90,8 @@ function sweaver_install() {
         2 => 'border',
         3 => 'border-style',
         4 => 'border-color',
+        5 => 'border-collapse',
+        6 => 'border-spacing',
       ),
     ),
     'four' => array(
