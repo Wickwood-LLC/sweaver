@@ -200,13 +200,13 @@ Drupal.Sweaver.initForm = function() {
     var type = Drupal.Sweaver.activeElement.type;
     $.each(Drupal.Sweaver.properties, function(index, object){
       if(object.name in Drupal.Sweaver.types[type]) {
-        $('#sweaver #edit-' + object.name + '-wrapper').parent('.form-item').show();
+        $('#sweaver #edit-' + object.name + '-wrapper').show();
         // From the moment that we have an visible element in a group, we need to show that group.
         $('#sweaver #edit-' + object.name + '-wrapper').parents('.sweaver-group').show();
         // From the moment that we have an visible element in a container, we need to show that container.
         $('#sweaver #edit-' + object.name + '-wrapper').parents('.container').show();
       } else {
-        $('#sweaver #edit-' + object.name + '-wrapper').parent('.form-item').hide();
+        $('#sweaver #edit-' + object.name + '-wrapper').hide();
       }
     });
   }
@@ -866,6 +866,11 @@ Drupal.Sweaver.buildSweaverObject = function(object) {
   tempObject.classes = trim(object.attr('class')).split(' ');
   tempObject.tag = object.get(0).tagName.toLowerCase();
   tempObject.type = object.css('display');
+
+  // Fallback to block if an unknow type is detected.
+  if (!(tempObject.type in Drupal.Sweaver.types)) {
+    tempObject.type = 'block';
+  }
 
   // Generate a human-readable name and a css selector.
   Drupal.Sweaver.objectToReadable(tempObject);
