@@ -109,11 +109,15 @@ class sweaver_plugin_images extends sweaver_plugin {
           unset($_SESSION['messages']['error']);
         }
 
+        // Messages for Sweaver.
         if (empty($form_state['values']['image_description'])) {
           $this->sweaver_session(t('You need to enter a description for the image.'));
         }
-        if (!$image || !empty($errors)) {
-          $this->sweaver_session(t('The image is empty or invalid. Only JPG, PNG and GIF images are allowed.'));
+        if (!empty($errors)) {
+          $this->sweaver_session(t('The image is invalid. Only JPG, PNG and GIF images are allowed.'));
+        }
+        elseif (!$image) {
+          $this->sweaver_session(t('The image is empty.'));
         }
       }
     }
