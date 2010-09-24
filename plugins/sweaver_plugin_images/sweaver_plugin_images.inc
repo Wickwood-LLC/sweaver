@@ -101,7 +101,20 @@ class sweaver_plugin_images extends sweaver_plugin {
         $this->sweaver_session(t('Image @image has been uploaded.', array('@image' => t($image->description))));
       }
       else {
-        $this->sweaver_session(t('An error occured while uploading the image.'));
+        
+        // Reset error messages.
+        $errors = form_get_errors();
+        if (!empty($errors)) {
+          // Reset messages error.
+          unset($_SESSION['messages']['error']);
+        }
+
+        if (empty($form_state['values']['image_description'])) {
+          $this->sweaver_session(t('You need to enter a description for the image.'));
+        }
+        if (!$image || !empty($errors)) {
+          $this->sweaver_session(t('The image is empty or invalid. Only JPG, PNG and GIF images are allowed.'));
+        }
       }
     }
   }
