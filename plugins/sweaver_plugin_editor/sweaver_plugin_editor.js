@@ -144,34 +144,36 @@ Drupal.Sweaver.updateForm = function() {
       var type = Drupal.Sweaver.activeElement.type;
       if (Drupal.Sweaver.types[type]) {
         $.each(Drupal.Sweaver.types[type], function (index, object){
-          var properties = Drupal.Sweaver.properties[object]['property'].split(' ');
-          var tempValue = '';
-          var value = '';
-          $.each(properties, function(i, property) {
-            value = $(Drupal.Sweaver.activePath).css(property);
-            if (tempValue == '') {
-              tempValue = value;
+          if (Drupal.Sweaver.properties[object]) {
+            var properties = Drupal.Sweaver.properties[object]['property'].split(' ');
+            var tempValue = '';
+            var value = '';
+            $.each(properties, function(i, property) {
+              value = $(Drupal.Sweaver.activePath).css(property);
+              if (tempValue == '') {
+                tempValue = value;
+              }
+              else {
+                if (tempValue != value) {
+                  value = '';
+                  return false;
+                }
+              }
+            });
+            if(value != '' && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'color') {
+              $('#' + object + ' .colorSelector div').css('backgroundColor', value);
+            }
+            else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'image') {
+              // Remove the url() from around the image url.
+              // Mozilla browsers wrap in url(""), while webkit browsers wrap in url()
+              // so we need two replacements.
+              stripped = value.replace('url("', '').replace('")', '').replace('url(', '').replace(')', '');
+              $("#sweaver_plugin_editor #edit-" + object).val(stripped);
             }
             else {
-              if (tempValue != value) {
-                value = '';
-                return false;
+              if (value) {
+                $("#sweaver_plugin_editor #edit-" + object).val(value.replace('px', ''));
               }
-            }
-          });
-          if(value != '' && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'color') {
-            $('#' + object + ' .colorSelector div').css('backgroundColor', value);
-          }
-          else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'image') {
-            // Remove the url() from around the image url.
-            // Mozilla browsers wrap in url(""), while webkit browsers wrap in url()
-            // so we need two replacements.
-            stripped = value.replace('url("', '').replace('")', '').replace('url(', '').replace(')', '');
-            $("#sweaver_plugin_editor #edit-" + object).val(stripped);
-          }
-          else {
-            if (value) {
-              $("#sweaver_plugin_editor #edit-" + object).val(value.replace('px', ''));
             }
           }
         });
