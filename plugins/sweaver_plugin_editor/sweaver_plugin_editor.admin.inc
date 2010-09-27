@@ -46,6 +46,7 @@ function sweaver_settings($form, &$form_state) {
     '#title' => t('Exclude paths'),
     '#default_value' => variable_get('sweaver_paths', SWEAVER_PATHS_EXCLUDE),
     '#description' => t('Exclude the editor on some pages, usually administration pages. Enter one page per line as Drupal paths. The \'*\' character is a wildcard. &lt;front&gt; is the front page.'),
+    '#wysiwyg' => FALSE,    
   );
 
   $form['sweaver_selectors_exclude'] = array(
@@ -53,6 +54,7 @@ function sweaver_settings($form, &$form_state) {
     '#title' => t('Exclude selectors'),
     '#default_value' => variable_get('sweaver_selectors_exclude', SWEAVER_SELECTORS_EXCLUDE),
     '#description' => t('Define on which items the style editor should not be applicable. Enter one selector per line.'),
+    '#wysiwyg' => FALSE,
   );
 
   $form['sweaver_classes_exclude'] = array(
@@ -60,6 +62,7 @@ function sweaver_settings($form, &$form_state) {
     '#title' => t('Exclude classes'),
     '#default_value' => variable_get('sweaver_classes_exclude', SWEAVER_CLASSES_EXCLUDE),
     '#description' => t('Define which classes should never be displayed in the css path. Enter one selector per line.'),
+    '#wysiwyg' => FALSE,
   );
 
   $form = system_settings_form($form);

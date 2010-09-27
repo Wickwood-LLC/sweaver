@@ -96,6 +96,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
       '#title' => t('Theme groups'),
       '#description' => t('Enter a group which is available in your theme(s) info file. This plugin will try to fetch all classes from it and make them available in a separate tab. Enter one group per line. This is inspired by the skinr way of theming, so we need to find a key called \'class\' to get a list of styles. If you have added new classes and the editor does not pick them up yet, click on submit button to reset the cache.'),
       '#default_value' => variable_get('sweaver_themeclasses_groups', SWEAVER_PLUGIN_THEMECLASSES_DEFAULT),
+      '#wysiwyg' => FALSE,
     );
 
     $form['sweaver_themeclasses_submit'] = array(
