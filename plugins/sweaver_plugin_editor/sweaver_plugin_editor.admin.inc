@@ -557,6 +557,7 @@ function sweaver_property_form(&$form, $property = NULL) {
     '#type' => 'textarea',
     '#default_value' => $property_options,
     '#description' => t('Options for this property. Enter options per line and separate key and value by |.'),
+    '#wysiwyg' => FALSE,
   );
 
   $form['submit'] = array(
