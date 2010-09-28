@@ -367,7 +367,7 @@ class sweaver_plugin {
       'one' => t('Font'),
       'two' => t('Background'),
       'three' => t('Spacing'),
-      'four' => t('Empty'),
+      'four' => t('Other'),
     );
   }
 }
