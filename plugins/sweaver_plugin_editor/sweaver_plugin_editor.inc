@@ -324,7 +324,40 @@ class sweaver_plugin_editor extends sweaver_plugin {
     drupal_add_css(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor/colorpicker/css/colorpicker.css');
     drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor/colorpicker/js/colorpicker.js');
 
-    // Selectors.
+    // Selectors can either come from the database or from the theme info file.
+    // Depending on the setting we'll decide from which source/ we'll be adding
+    // the selectors into the inline javascript.
+    $selectors = array();
+    $default_source = TRUE;
+    $theme_key = variable_get('theme_default', 'garland');
+    // Check with themeswitch.
+    if ($theme_switch = $this->sweaver_session(NULL, 'sweaver_plugin_switch_theme')) {
+      $theme_key = $theme_switch;
+    }
+    if (variable_get('sweaver_selectors_source', FALSE)) {
+      $theme_info = $this->sweaver_get_theme_info($theme_key);
+      if (isset($theme_info['sweaver'])) {
+        foreach ($theme_info['sweaver'] as $selector_name => $selector_description) {
+          $selector = new stdClass;
+          $name = str_replace(array('', '.', '-'), array(''), $selector_name);
+          $selector->name = $name;
+          $selector->description = $selector_description;
+          $selector->selector_selector = $selector_name;
+          $selector->selector_highlight = FALSE;
+          $selectors[$name] = $selector;
+        }
+
+        if (!empty($selectors)) {
+          $default_source = FALSE;
+        }
+      }
+    }
+
+    if ($default_source) {
+      $selectors = sweaver_object_load(NULL, 'selector');
+      $order = variable_get('sweaver_selector_order', array());
+    }
+
     $new_weight = 100;
     $js_selectors = array();
     $selectors = sweaver_object_load(NULL, 'selector');

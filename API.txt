@@ -15,6 +15,7 @@ Table of contents
 10. General JS functions.
 11. General CSS styles.
 12. Skins
+13. Theme extensions.
 
 ------------------------------------------------------
 1. Hook for cTools
@@ -346,4 +347,20 @@ are found in default, rename them to the name of your new skin
 and adjust them to your likings. On the general configuration screen, 
 you can select the skin you like.
 
-The variable in the database is 'sweaver_skin' .
+The variable in the database is 'sweaver_skin'.
+
+------------------------------------------------------
+13. Theme info selectors.
+------------------------------------------------------
+You can define selectors per theme in the info file, eg:
+
+sweaver[body] = Body
+sweaver[h1] = Heading 1
+...
+
+The order is how you define it in the info file.
+In the backend you can select if these selectors
+are to be used instead of those in the database.
+
+Note: if you add new selectors but they don't show up,
+then you need to clear the theme registry.

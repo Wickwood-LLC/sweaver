@@ -46,7 +46,7 @@ function sweaver_settings($form, &$form_state) {
     '#title' => t('Exclude paths'),
     '#default_value' => variable_get('sweaver_paths', SWEAVER_PATHS_EXCLUDE),
     '#description' => t('Exclude the editor on some pages, usually administration pages. Enter one page per line as Drupal paths. The \'*\' character is a wildcard. &lt;front&gt; is the front page.'),
-    '#wysiwyg' => FALSE,    
+    '#wysiwyg' => FALSE,
   );
 
   $form['sweaver_selectors_exclude'] = array(
@@ -93,7 +93,22 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
 
   if ($object_type == 'selector') {
     $form['info'] = array(
-      '#markup' => t('<p>Only the selectors enabled in the list below will be available when using Sweaver. The higher a selector is placed, the more important it is.</p><p>Example: if you have a \'div\' with the class \'block\', then the path in the Sweaver frontend can either show \'a region\' or \'a block\', depending or the weight of these selectors.</p>'),
+      '#type' => 'markup',
+      '#value' => t('<p>Only the selectors enabled in the list below will be available when using Sweaver. The higher a selector is placed, the more important it is.</p><p>Example: if you have a \'div\' with the class \'block\', then the path in the Sweaver frontend can either show \'a region\' or \'a block\', depending or the weight of these selectors.</p>'),
+    );
+    $form['checkbox'] = array(
+      '#type' => 'fieldset',
+      '#description' => 'Themes can define selectors in the info file. If none are found, the selectors underneath will be used. Toggle the checkbox underneath so Sweaver will look into the theme info file.',
+    );
+    $form['checkbox']['sweaver_selectors_source'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Look for selectors in theme info file'),
+      '#default_value' => variable_get('sweaver_selectors_source', FALSE),
+    );
+    $form['checkbox']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save setting'),
+      '#suffix' => '<div class="clear-block"></div><br />'
     );
   }
 
@@ -206,6 +221,9 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
  * Submit callback. Save objects lists, only used for selectors.
  */
 function sweaver_plugin_editor_objects_list_submit($form, &$form_state) {
+  // Save selectors source.
+  variable_set('sweaver_selectors_source', $form_state['values']['checkbox']['sweaver_selectors_source']);
+
   $selectors_order = variable_get('sweaver_selector_order', array());
 
   foreach ($form['#objects_enabled'] as $key => $object) {
@@ -225,7 +243,8 @@ function sweaver_plugin_editor_objects_list_submit($form, &$form_state) {
 function theme_sweaver_plugin_editor_objects_list(&$vars) {
   $form = &$vars['form'];
 
-  $output = drupal_render($form['info']);
+  $output = drupal_render($form['checkbox']);
+  $output .= drupal_render($form['info']);
   $output .= drupal_render($form['add_link']);
   drupal_add_css(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.css');
 
