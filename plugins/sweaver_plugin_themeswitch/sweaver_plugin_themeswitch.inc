@@ -108,6 +108,13 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
         $this->sweaver_session(NULL, 'sweaver_plugin_switch_theme', TRUE);
       }
 
+      // Let other modules act on the themeswitch.
+      $arguments = array(
+        'switched_theme' => $theme,
+        'default_theme' => $theme_default,
+      );
+      module_invoke_all('sweaver_action', 'theme_switch', $arguments);
+
       $this->sweaver_session(t('You have switched to @switched_theme.', array('@switched_theme' => $all_themes[$theme]->info['name'])));
     }
 

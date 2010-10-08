@@ -14,8 +14,9 @@ Table of contents
 9. General methods.
 10. General JS functions.
 11. General CSS styles.
-12. Skins
+12. Skins.
 13. Theme extensions.
+14. hook_sweaver_action().
 
 ------------------------------------------------------
 1. Hook for cTools
@@ -364,3 +365,13 @@ are to be used instead of those in the database.
 
 Note: if you add new selectors but they don't show up,
 then you need to clear the theme registry.
+
+------------------------------------------------------
+14. hook_sweaver_action($action, $arguments).
+------------------------------------------------------
+
+If you want other modules to act on certain actions happening in sweaver use
+module_invoke_all('sweaver', 'action_name', $arguments);
+
+Currently the Theme switch plugin is the first plugin calling this
+so other modules can perform actions when switching theme.
