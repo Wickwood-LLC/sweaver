@@ -123,13 +123,13 @@ function hook_sweaver_plugins() {
   
   $plugins['yourpluginname'] = array(
     'handler' => array(
-      'tab' => t('Tab name'), // If you want todo something in the frontend of course.
-      'tab_description' => t('Description of your plugin in frontend'),
-      'path' => drupal_get_path('module', 'yourmodulename') . '/plugins/yourpluginname',
-      'file' => 'yourpluginname.inc',
       'class' => 'yourclassnameusuallythesameasyourpluginname',
       'parent' => 'sweaver_plugin', // This is required.
     ),
+    'tab' => t('Tab name'), // If you want todo something in the frontend of course.
+    'tab_description' => t('Description of your plugin in frontend'),
+    'path' => drupal_get_path('module', 'yourmodulename') . '/plugins/yourpluginname',
+    'file' => 'yourpluginname.inc',
   );
   
   return $plugins;

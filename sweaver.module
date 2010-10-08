@@ -57,22 +57,24 @@ function sweaver_theme() {
 }
 
 /**
+ * Implementation of hook_ctools_plugin_type().
+ */
+function sweaver_ctools_plugin_type() {
+  return array(
+    'plugins' => array(
+      'cache' => TRUE,
+      'use hooks' => TRUE,
+    ),
+  );
+}
+
+/**
  * Implements hook_ctools_plugin_api().
  */
 function sweaver_ctools_plugin_api($owner, $api) {
   if ($owner == 'sweaver' && ($api == 'sweaver' || $api == 'plugins')) {
     return array('version' => 1);
   }
-}
-
-/**
- * Implements hook_ctools_plugin_plugins().
- */
-function sweaver_ctools_plugin_plugins() {
-  return array(
-    'cache' => TRUE,
-    'use hooks' => TRUE,
-  );
 }
 
 /**
@@ -291,6 +293,7 @@ function sweaver_get_plugin($plugin_name = NULL, $enabled = NULL) {
       // Cache the plugins ourselves too.
       $sweaver_plugins['sweaver_plugins'] = $cached_plugins;
       $sweaver_plugins['sweaver_plugins_enabled'] = $cached_plugins_enabled;
+
       cache_set('sweaver_plugins', $sweaver_plugins);
     }
     $run = TRUE;
@@ -422,9 +425,9 @@ function sweaver_frontend(&$form_state) {
     $plugin_form = $object->sweaver_form();
     if (!empty($plugin_form)) {
       $form[$plugin['name']]['form'] = $plugin_form;
-      if (isset($plugin['handler']['tab'])) {
-        $form[$plugin['name']]['#tab_name'] = isset($plugin['handler']['tab']) ? $plugin['handler']['tab'] : drupal_ucfirst($plugin_name);
-        $form[$plugin['name']]['#tab_description'] = isset($plugin['handler']['tab_description']) ? $plugin['handler']['tab_description'] : '';
+      if (isset($plugin['tab'])) {
+        $form[$plugin['name']]['#tab_name'] = isset($plugin['tab']) ? $plugin['tab'] : drupal_ucfirst($plugin_name);
+        $form[$plugin['name']]['#tab_description'] = isset($plugin['tab_description']) ? $plugin['tab_description'] : '';
       }
     }
   }
