@@ -426,10 +426,35 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $css_data = ctools_css_disassemble($css);
 
     $empty_array = array();
+    $allowed_properties = $this->sweaver_ctools_allowed_properties();
     $disallowed_values_regex = '/(expression)/';
-    $filtered = ctools_css_filter_css_data($css_data, $empty_array, $empty_array, '', $disallowed_values_regex);
+    $filtered = ctools_css_filter_css_data($css_data, $allowed_properties, $empty_array, '', $disallowed_values_regex);
 
     return $compressed ? ctools_css_compress($filtered) : ctools_css_assemble($filtered);
+  }
+
+  /**
+   * Add more allowed properties.
+   */
+  function sweaver_ctools_allowed_properties() {
+    $allowed = ctools_css_filter_default_allowed_properties();
+    $allowed_sweaver = array(
+      '-moz-border-radius',
+      '-webkit-border-radius',
+      'border-top-right-radius',
+      'border-bottom-right-radius',
+      'border-bottom-left-radius',
+      'border-top-left-radius',
+      'webkit-border-top-right-radius',
+      'webkit-border-bottom-right-radius',
+      'webkit-border-bottom-left-radius',
+      'webkit-border-top-left-radius',
+      'moz-border-radius-topright',
+      'moz-border-radius-bottomright',
+      'moz-border-radius-bottomleft',
+      'moz-border-radius-topleft',
+    );
+    return array_merge($allowed, $allowed_sweaver);
   }
 
   /**
