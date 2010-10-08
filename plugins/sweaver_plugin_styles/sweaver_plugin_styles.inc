@@ -453,6 +453,11 @@ class sweaver_plugin_styles extends sweaver_plugin {
       'moz-border-radius-bottomright',
       'moz-border-radius-bottomleft',
       'moz-border-radius-topleft',
+      'position',
+      'top',
+      'left',
+      'bottom',
+      'right',
     );
     return array_merge($allowed, $allowed_sweaver);
   }
