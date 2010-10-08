@@ -17,6 +17,7 @@ Drupal.Sweaver.pathIndexes = new Array(); // An array with the indexes of all se
 Drupal.Sweaver.activePath = ''; // Currently active path.
 Drupal.Sweaver.activeElement = new Object(); // Currently active element.
 Drupal.Sweaver.updateMode = true; // should the form updates be saved in css?
+Drupal.Sweaver.changesboxcheck = false; // Changes box check.
 
 /**
  * Hook onload behavior
@@ -83,6 +84,10 @@ Drupal.Sweaver.sweaver_plugin_editor_updateCss = function() {
       fullCss += css;
       css = '';
       cssContent = '';
+    }
+    // Remove key from Drupal.Sweaver.css
+    else {
+      delete Drupal.Sweaver.css[key];
     }
   }
 
@@ -242,7 +247,6 @@ Drupal.Sweaver.addColorPicker = function() {
         $(colpkr).fadeIn(500);
         if (object.parents('.sweaver-group-content').length == 0) {
           Drupal.Sweaver.hideOverlays();
-          Drupal.Sweaver.hideChanges();
         }
         return false;
       },
@@ -418,6 +422,12 @@ Drupal.Sweaver.bindClicks = function() {
           event.preventDefault();
         }
 
+        // Initial check for the changesbox.
+        if (Drupal.Sweaver.changesboxcheck == false) {
+          Drupal.Sweaver.ChangesBox(true);
+          Drupal.Sweaver.changesboxcheck = true;
+        }
+        
         // Reset some values.
         Drupal.Sweaver.path.length = 0;
         Drupal.Sweaver.pathIndexes.length = 0;
@@ -435,21 +445,12 @@ Drupal.Sweaver.bindClicks = function() {
   // Toggle changes area.
   $('#changes-toggler').click(function(event){
     event.stopPropagation();
-    toggler = $('#editor-changes');
-    if (parseInt(toggler.css('left')) < 0) {
-      Drupal.Sweaver.writeChanges();
-      toggler.css({'left' : '10px'});
-      $(this).toggleClass('open').html(Drupal.t('Hide changes'));
-    } else {
-      toggler.css({'left' : '-9000px'});
-      $(this).toggleClass('open').html(Drupal.t('Show changes'));
-    }
+    Drupal.Sweaver.ChangesBox(false);
   });
 
   // Hide sliders and close groups when clicking outside of them.
   $("#sweaver").click(function() {
     Drupal.Sweaver.hideOverlays();
-    Drupal.Sweaver.hideChanges();
   });
 
   // Update css when something is changed in the form.
@@ -745,6 +746,11 @@ Drupal.Sweaver.setValue = function(property, value) {
   }
   Drupal.Sweaver.css[Drupal.Sweaver.activePath][property] = value;
   Drupal.Sweaver.writeCss();
+
+  // Check for state of changes box.
+  if (Drupal.Sweaver.cookie('sweaver_changes_box') == 'true') {
+    Drupal.Sweaver.writeChanges();
+  }
 }
 
 /**
@@ -895,11 +901,31 @@ Drupal.Sweaver.hideOverlays = function() {
 }
 
 /**
- * Hide the changes tab.
+ * Open or close the changes box().
  */
-Drupal.Sweaver.hideChanges = function() {
-  $('#editor-changes').css({'left' : '-9000px'});
-  $('#changes-toggler').removeClass('open').html(Drupal.t('Show changes'));
+Drupal.Sweaver.ChangesBox = function(cookie_check) {
+
+  var show_box = false;
+  box = $('#editor-changes');
+  toggler = $('#changes-toggler');
+
+  if (cookie_check == true && Drupal.Sweaver.cookie('sweaver_changes_box') == 'true') {
+    show_box = true;
+  }
+  else if (parseInt(box.css('right')) < 0 && cookie_check == false) {
+    show_box = true;
+  }
+
+  if (show_box == true) {
+    Drupal.Sweaver.writeChanges();
+    box.css({'right' : '10px'});
+    toggler.addClass('open').html(Drupal.t('Hide changes'));
+    Drupal.Sweaver.cookie('sweaver_changes_box', true);
+  } else {
+    box.css({'right' : '-10000px'});
+    toggler.removeClass('open').html(Drupal.t('Show changes'));
+    Drupal.Sweaver.cookie('sweaver_changes_box', false);
+  }
 }
 
 /**

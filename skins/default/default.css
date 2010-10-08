@@ -793,9 +793,9 @@ body.sweaver {
 #editor-changes {
   position: absolute !important;
   bottom: 21px;
-  left: -9000px;
+  right: -10000px;
   padding: 5px !important;
-  width: 600px !important;
+  width: 400px !important;
   background-color: #333 !important;
   color: #fff !important;
   height: 160px;
@@ -812,7 +812,7 @@ body.sweaver {
   background: #333333 url(images/open2.png) no-repeat 95% 50%;
   position: absolute;
   bottom: 0;
-  left: 10px;
+  right: 10px;
   padding: 5px 24px 5px 10px;
   z-index : 1111;
   width: 130px;
