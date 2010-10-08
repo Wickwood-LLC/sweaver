@@ -2,9 +2,9 @@
  *
  * Color picker
  * Author: Stefan Petre www.eyecon.ro
- * 
+ *
  * Dual licensed under the MIT and GPL licenses
- * 
+ *
  */
 (function ($) {
 	var ColorPicker = function () {
@@ -13,7 +13,7 @@
 			inAction,
 			charMin = 65,
 			visible,
-			tpl = '<div class="colorpicker"><div class="colorpicker_color"><div><div></div></div></div><div class="colorpicker_hue"><div></div></div><div class="colorpicker_new_color"></div><div class="colorpicker_current_color"></div><div class="colorpicker_hex"><input type="text" maxlength="6" size="6" /></div><div class="colorpicker_rgb_r colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_g colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_h colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_s colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_transparent"><a href="" title="Make transparent" alt="Make transparent">Transparent</a></div><div class="colorpicker_submit"></div></div>',
+			tpl = '<div class="colorpicker"><div class="colorpicker_color"><div><div></div></div></div><div class="colorpicker_hue"><div></div></div><div class="colorpicker_new_color"></div><div class="colorpicker_current_color"></div><div class="colorpicker_hex"><input type="text" maxlength="6" size="6" /></div><div class="colorpicker_rgb_r colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_g colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_h colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_s colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_transparent"><a href="" title="Make transparent" alt="Make transparent">Transparent</a></div><div class="colorpicker_submit"></div><div class="colorpicker_previous_colors"></div></div>',
 			defaults = {
 				eventName: 'click',
 				onShow: function () {},
@@ -112,7 +112,7 @@
 					y: ev.pageY,
 					field: field,
 					val: parseInt(field.val(), 10),
-					preview: $(this).parent().parent().data('colorpicker').livePreview					
+					preview: $(this).parent().parent().data('colorpicker').livePreview
 				};
 				$(document).bind('mouseup', current, upIncrement);
 				$(document).bind('mousemove', current, moveIncrement);
@@ -139,6 +139,8 @@
 				current.preview = current.cal.data('colorpicker').livePreview;
 				$(document).bind('mouseup', current, upHue);
 				$(document).bind('mousemove', current, moveHue);
+        sweaver_add_colors(ev);
+        return false;
 			},
 			moveHue = function (ev) {
 				change.apply(
@@ -156,6 +158,7 @@
 				fillHexFields(ev.data.cal.data('colorpicker').color, ev.data.cal.get(0));
 				$(document).unbind('mouseup', upHue);
 				$(document).unbind('mousemove', moveHue);
+        sweaver_add_colors(ev);
 				return false;
 			},
 			downSelector = function (ev) {
@@ -167,7 +170,12 @@
 				$(document).bind('mouseup', current, upSelector);
 				$(document).bind('mousemove', current, moveSelector);
 			},
-			// Sweaver addition: do selection also when clicking.
+
+      // ************************
+      // Sweaver additions
+      // ************************
+
+			// Do selection also when clicking.
 			clickSelector = function (ev) {
 				var current = {
 					cal: $(this).parent(),
@@ -179,12 +187,75 @@
 				ev.data.pos = current.pos;
 				moveSelector(ev);
 			},
-			// Sweaver addition: Add a transparent option as background-color.
+
+			// Add a transparent option as background-color.
 			makeTransparent = function(ev) {
 				var cal = $(this).parent().parent(), col;
 				cal.data('colorpicker').onChange.apply(cal, ['transparent', 'transparent', 'transparent']);
 				return false;
-			},			
+			},
+
+      // Select previous color.
+      selectPreviousColor = function(ev) {
+
+        // Create new color.
+        var new_color = {};
+        color = $(this).css('background-color').replace('rgb(', '').replace(')', '').split(',');
+        new_color.r = color[0];
+        new_color.g = color[1];
+        new_color.b = color[2];
+        new_color = fixRGB(new_color);
+        new_color = RGBToHSB(new_color);
+        new_color = fixHSB(new_color);
+
+        var cal = $(this).parent().parent(), col;
+
+        // Set the new color.
+        fillRGBFields(new_color, cal);
+        fillHexFields(new_color, cal);
+        fillHSBFields(new_color, cal);
+        setSelector(new_color, cal);
+        setHue(new_color, cal);
+        setNewColor(new_color, cal);
+        cal.data('colorpicker').onChange.apply(cal, [new_color, HSBToHex(new_color), HSBToRGB(new_color)]);
+
+        // Update pallet.
+        sweaver_add_colors(ev);
+      },
+
+      // Add previous colors.
+      sweaver_add_colors = function (ev) {
+        colors = '';
+        var new_color = '';
+        previous_colors = new Array;
+
+        for (var key in Drupal.Sweaver.css) {
+          var target = Drupal.Sweaver.css[key];
+          for (var prop in target) {
+            if (Drupal.Sweaver.properties[prop]) {
+              var properties = Drupal.Sweaver.properties[prop]['property'].split(' ');
+              $.each(properties, function(i, property) {
+                // Don't add a prefix and suffix for these exceptions.
+                if ((property == 'background-color' || property == 'color') && target[prop] != 'transparent' && $.inArray(target[prop], previous_colors) < 0) {
+                  previous_colors.push(target[prop]);
+                  colors += '<div class="colorpicker_previous_colors_color" style="background-color: #'+ target[prop] +';"></div>';
+                }
+              });
+            }
+          }
+        }
+
+        var cal = $(this).parent().parent(), col;
+
+        $('.colorpicker_previous_colors').html(colors);
+        // Bind on colorpicker_previous_colors_color.
+        $('.colorpicker_previous_colors_color').bind('click', selectPreviousColor);
+      },
+
+      // ************************
+      // End of sweaver additions
+      // ************************
+
 			moveSelector = function (ev) {
 				change.apply(
 					ev.data.cal.data('colorpicker')
@@ -204,6 +275,7 @@
 				fillHexFields(ev.data.cal.data('colorpicker').color, ev.data.cal.get(0));
 				$(document).unbind('mouseup', upSelector);
 				$(document).unbind('mousemove', moveSelector);
+        sweaver_add_colors(ev);
 				return false;
 			},
 			enterSubmit = function (ev) {
@@ -237,6 +309,7 @@
 					cal.show();
 				}
 				$(document).bind('mousedown', {cal: cal}, hide);
+        sweaver_add_colors(ev);
 				return false;
 			},
 			hide = function (ev) {
@@ -280,7 +353,7 @@
 					s: Math.min(100, Math.max(0, hsb.s)),
 					b: Math.min(100, Math.max(0, hsb.b))
 				};
-			}, 
+			},
 			fixRGB = function (rgb) {
 				return {
 					r: Math.min(255, Math.max(0, rgb.r)),
@@ -299,7 +372,7 @@
 					hex = o.join('');
 				}
 				return hex;
-			}, 
+			},
 			HexToRGB = function (hex) {
 				var hex = parseInt(((hex.indexOf('#') > -1) ? hex.substring(1) : hex), 16);
 				return {r: hex >> 16, g: (hex & 0x00FF00) >> 8, b: (hex & 0x0000FF)};
@@ -318,7 +391,7 @@
 				var delta = max - min;
 				hsb.b = max;
 				if (max != 0) {
-					
+
 				}
 				hsb.s = max != 0 ? 255 * delta / max : 0;
 				if (hsb.s != 0) {
@@ -338,6 +411,12 @@
 				}
 				hsb.s *= 100/255;
 				hsb.b *= 100/255;
+
+        // Sweaver : round to avoid minor differences when re-selecting colors.
+        hsb.h = Math.round(hsb.h);
+        hsb.s = Math.round(hsb.s);
+        hsb.b = Math.round(hsb.b);
+
 				return hsb;
 			},
 			HSBToRGB = function (hsb) {
