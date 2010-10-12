@@ -458,6 +458,8 @@ class sweaver_plugin_styles extends sweaver_plugin {
       'left',
       'bottom',
       'right',
+      'border-collapse',
+      'border-spacing',
     );
     return array_merge($allowed, $allowed_sweaver);
   }
