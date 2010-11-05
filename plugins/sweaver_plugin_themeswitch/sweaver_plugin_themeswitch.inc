@@ -17,21 +17,13 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
     // Theme classes groups administration.
     $base['access arguments'] = array('use editor');
     $items['sweaver_themeswitch'] = $base + array(
-      'title' => 'Styles',
+      'title' => 'Theme switch',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
       'weight' => $weight++,
     );
 
     return $items;
-  }
-
-  /**
-   * Init
-   */
-  public function sweaver_init() {
-    global $custom_theme;
-    $custom_theme = Sweaver::get_instance()->get_theme_key();
   }
 
   /**
@@ -94,7 +86,6 @@ class sweaver_plugin_themeswitch extends sweaver_plugin {
    */
   public function sweaver_form_css_js(&$inline_settings) {
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.js', 'module');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch/sweaver_plugin_themeswitch.css', 'module');
   }
 
   /**

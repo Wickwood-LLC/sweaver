@@ -30,15 +30,15 @@ Drupal.Sweaver.AutoSave = function(context) {
     Drupal.Sweaver.changed = false;
 	  
     // Get values for css, customcss & palette (if available)
-    var css = $('#edit-css').val();
+    var css = $('[name=sweaver-css]').val();
     if ($('#edit-sweaver-plugin-custom-css').length) {
       var customcss = $('#edit-sweaver-plugin-custom-css').val();      
     }
     else {
       var customcss = '';            
     }
-    if ($('#edit-sweaver-plugin-palette').length) {
-      var palette = $('#edit-sweaver-plugin-palette').val();
+    if ($('[name=sweaver-plugin-palette]').length) {
+      var palette = $('[name=sweaver-plugin-palette]').val();
     }
     else {
       var palette = '';

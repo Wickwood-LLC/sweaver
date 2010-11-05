@@ -168,11 +168,11 @@ class sweaver_plugin_editor extends sweaver_plugin {
     $form['#editor_containers'] = array();
 
     $current_style = Sweaver::get_instance()->get_current_style();
-    $form['css'] = array(
+    $form['sweaver-css'] = array(
       '#type' => 'hidden',
       '#default_value' => isset($current_style->css) ? $current_style->css : '',
     );
-    $form['css_rendered'] = array(
+    $form['css-rendered'] = array(
       '#type' => 'hidden',
       '#default_value' => '',
     );

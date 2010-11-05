@@ -312,15 +312,15 @@ class sweaver_plugin_styles extends sweaver_plugin {
       $style->theme = $theme_key;
       $style->css = $form_state['values']['css'];
       drupal_write_record('sweaver_style_draft', $style, $update);
-      $this->sweaver_export_file($form_state['values']['css_rendered'], $style);
+      $this->sweaver_export_file($form_state['values']['css-rendered'], $style);
       $form_state['style_id'] = $style->style_id;
 
       // Publish style.
       if ($submit_type == SWEAVER_STYLE_PUBLISH || $submit_type == SWEAVER_STYLE_SAVE_PUBLISH) {
         $style->active = 1;
-        $this->sweaver_export_file($form_state['values']['css_rendered'], $style, 'live');
+        $this->sweaver_export_file($form_state['values']['css-rendered'], $style, 'live');
         $message = 'The style @style has been published.';
-        db_query("UPDATE {sweaver_style} set active = 0 WHERE theme = '%s'", $style->theme);
+        db_query("UPDATE {sweaver_style} set active = 0 WHERE theme = :theme", array(':theme' => $style->theme));
         // Find out first if this style already exists or not.
         if (db_query("SELECT style_id FROM {sweaver_style} WHERE style_id = :style_id", array(':style_id' => $style->style_id))->fetchField() === FALSE) {
           $update = array();
@@ -560,8 +560,13 @@ class sweaver_plugin_styles extends sweaver_plugin {
         t('Operations'),
       );
 
+      $variables = array(
+        'header' => $header,
+        'rows' => $rows,
+      );
+
       // Styles list.
-      $output = theme('table', $header, $rows);
+      $output = theme('table', $variables);
 
     }
 
@@ -576,7 +581,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
    * Menu callback, delete style.
    */
   public function sweaver_style_confirm_form_delete() {
-    $style_id = arg(5);
+    $style_id = arg(6);
     $style = db_query('SELECT * FROM {sweaver_style_draft} WHERE style_id = :style_id', array(':style_id' => $style_id))->fetchObject();
     if ($style->style_id) {
       $form['#style'] = $style;

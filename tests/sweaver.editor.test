@@ -83,8 +83,8 @@ class sweaverEditor extends DrupalWebTestCase {
 
     // Set some styling for bartik.
     $edit = array(
-      'css' => '{"#center ":{"font-size":30}}',
-      'css_rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
+      'sweaver-css' => '{"#center ":{"font-size":30}}',
+      'css-rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
       'sweaver_plugin_custom_css' => '#header { background-color: blue; }',
       'save_style' => 'Bartik 1',
     );
@@ -101,8 +101,8 @@ class sweaverEditor extends DrupalWebTestCase {
 
     // Set styling for bartik 2.
     $edit = array(
-      'css' => '{"#center ":{"font-size":40}}',
-      'css_rendered' => '<style type="text/css">#center { font-size: 40px; } </style>',
+      'sweaver-css' => '{"#center ":{"font-size":40}}',
+      'css-rendered' => '<style type="text/css">#center { font-size: 40px; } </style>',
       'sweaver_plugin_custom_css' => '#header { background-color: red; }',
       'save_style' => 'Bartik 2',
       'save_type' => '0',
@@ -155,8 +155,8 @@ class sweaverEditor extends DrupalWebTestCase {
 
     // Set styling for bartik 3.
     $edit = array(
-      'css' => '{"#center ":{"font-size":40}}',
-      'css_rendered' => '<style type="text/css">#center { font-size: 40px; } </style>',
+      'sweaver-css' => '{"#center ":{"font-size":40}}',
+      'css-rendered' => '<style type="text/css">#center { font-size: 40px; } </style>',
       'sweaver_plugin_custom_css' => '#header { background-color: red; }',
       'save_style' => 'Bartik 3',
     );
@@ -186,8 +186,8 @@ class sweaverEditor extends DrupalWebTestCase {
 
     // Resave this style as Bartik 4.
     $edit = array(
-      'css' => '{"#center ":{"font-size":30}}',
-      'css_rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
+      'sweavercss' => '{"#center ":{"font-size":30}}',
+      'css-rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
       'sweaver_plugin_custom_css' => '#header { background-color: blue; }',
       'save_style' => 'Bartik 4',
       'save_type' => '0',
@@ -201,8 +201,8 @@ class sweaverEditor extends DrupalWebTestCase {
 
     // Save and publish button style.
     $edit = array(
-      'css' => '{"#center ":{"font-size":30}}',
-      'css_rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
+      'sweaver-css' => '{"#center ":{"font-size":30}}',
+      'css-rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
       'sweaver_plugin_custom_css' => '#header { background-color: blue; }',
       'save_style' => 'Bartik 5',
       'save_type' => '0',

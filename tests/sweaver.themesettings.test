@@ -107,8 +107,8 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     if ($size) {
       $edit = array(
         // Style editor.
-        'css' => '{"#center ":{"font-size":'. $size .'}}',
-        'css_rendered' => '<style type="text/css">#center { font-size: '. $size .'px; } </style>',
+        'sweaver-css' => '{"#center ":{"font-size":'. $size .'}}',
+        'css-rendered' => '<style type="text/css">#center { font-size: '. $size .'px; } </style>',
         'sweaver_plugin_custom_css' => '',
         'save_style' => 'Garland '. $style_id,
         'save_type' => $save_type,

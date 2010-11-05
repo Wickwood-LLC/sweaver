@@ -98,7 +98,7 @@ class sweaver_plugin_images extends sweaver_plugin {
         file_save($image);
 
         drupal_write_record('sweaver_image', $image);
-        $this->sweaver_session(t('Image @image has been uploaded.', array('@image' => t($image->description))));
+        sweaver_session(t('Image @image has been uploaded.', array('@image' => t($image->description))));
       }
       else {
 
@@ -195,8 +195,8 @@ class sweaver_plugin_images extends sweaver_plugin {
       $row = array();
       $row[] = check_plain($image->description);
       $operations = l(t('View'), file_create_url($image->uri)) . ' - ';
-      $operations .= l(t('Edit'), 'admin/config/user-interfac/sweaver/images/edit/' . $image->fid, array('alias' => TRUE)) . ' - ';
-      $operations .= l(t('Delete'), 'admin/config/user-interfac/sweaver/images/delete/' . $image->fid, array('alias' => TRUE));
+      $operations .= l(t('Edit'), 'admin/config/user-interface/sweaver/images/edit/' . $image->fid, array('alias' => TRUE)) . ' - ';
+      $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/images/delete/' . $image->fid, array('alias' => TRUE));
       $row[] = $operations;
       $rows[] = $row;
     }

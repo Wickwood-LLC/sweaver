@@ -336,6 +336,14 @@ function sweaver_init() {
 }
 
 /**
+ * Implements hook_custom_theme().
+ */
+function sweaver_custom_theme() {
+  // @todo this is probably a bit agressive
+  return Sweaver::get_instance()->get_theme_key();
+}
+
+/**
  * Implements hook_preprocess_page().
  */
 function sweaver_preprocess_page(&$vars) {
@@ -345,11 +353,12 @@ function sweaver_preprocess_page(&$vars) {
     $sweaver = Sweaver::get_instance();
     $sweaver_style = $sweaver->get_current_style();
     if (isset($sweaver_style->css) && drupal_static('load_style')) {
-      $css = $vars['css'];
-      $css_path = file_directory_path() .'/sweaver/sweaver_'. $sweaver->get_theme_key() . '_'. $sweaver_style->style_id .'_'. $sweaver_style->type .'.css';
-      drupal_add_css($css_path, 'theme');
-      $vars['css']['all']['theme'][$css_path] = TRUE;
-      $vars['styles'] = drupal_get_css();
+      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $theme_key . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . ' .css';
+      $settings = array(
+        'weight' => 1000,
+        'preprocess' => TRUE,
+      );
+      drupal_add_css($css_path, $settings);
     }
   }
   $sweaver = Sweaver::get_instance();
@@ -392,8 +401,8 @@ function sweaver_get_all_themes() {
   $themes = &drupal_static('all_themes', array());
   if (empty($themes)) {
     $themes = array();
-    $result = db_query("SELECT filename, name, status, info FROM {system} WHERE type = 'theme' AND status = '1' ORDER BY name ASC");
-    while ($theme = db_fetch_object($result)) {
+    $results = db_query("SELECT filename, name, status, info FROM {system} WHERE type = 'theme' AND status = '1' ORDER BY name ASC")->fetchAll();
+    foreach ($results as $theme) {
       if ($theme->status) {
         $theme->info = unserialize($theme->info);
         $theme->prefix = isset($theme->info['engine']) ? $theme->info['engine'] : NULL;

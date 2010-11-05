@@ -21,7 +21,7 @@ Drupal.Sweaver.writeCss = function(context) {
   $style = $('head style[title="sweaver"]');
   $style.remove();
   $('head').append('<style type="text/css" title="sweaver">' + fullCss + '</style>');
-  $('#edit-css-rendered').val(fullCss);
+  $('[name=css-rendered]').val(fullCss);
 
   Drupal.Sweaver.changed = true;
 };
@@ -50,8 +50,8 @@ $(document).ready(function() {
   });
 
   // Print messages if any
-  if ($('#edit-sweaver-editor-messages').val() != '') {
-    Drupal.Sweaver.setMessage($('#edit-sweaver-editor-messages').val(), 5000);
+  if ($('[name=sweaver-editor-messages]').val() != '') {
+    Drupal.Sweaver.setMessage($('[name=sweaver-editor-messages]').val(), 5000);
   }
 
   // toggle vertical tabs

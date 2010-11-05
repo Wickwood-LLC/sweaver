@@ -89,10 +89,10 @@ function sweaver_plugin_editor_updateCss() {
   }
 
   // Store css in hidden field in save form
-  $("#sweaver #edit-css").val($.toJSON(Drupal.Sweaver.css));
+  $("#sweaver [name=sweaver-css]").val($.toJSON(Drupal.Sweaver.css));
 
   // Add inline css
-  $("#sweaver-form #edit-css").val(fullCss);
+  $("#sweaver-form [name=sweaver-css]").val(fullCss);
 
   return fullCss;
 }
@@ -103,7 +103,7 @@ function sweaver_plugin_editor_updateCss() {
 Drupal.Sweaver.init = function() {
 
   // Get previously stored information or create empty object with all targets
-  db_css = $("#edit-css");
+  db_css = $("[name=sweaver-css]");
   if (db_css.val() && db_css.val() != '[]'){
     Drupal.Sweaver.css = $.evalJSON(db_css.val());
     db_css.val('');
