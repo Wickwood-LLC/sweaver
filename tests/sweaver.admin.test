@@ -10,9 +10,9 @@
 
 class sweaverAdministration extends DrupalWebTestCase {
   /**
-   * Implements getInfo().
+   * Implementation of getInfo().
    */
-  function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Sweaver administration'),
       'description' => t('Tests for the administration of sweaver, except for plugins and styles.'),
@@ -21,60 +21,55 @@ class sweaverAdministration extends DrupalWebTestCase {
   }
 
   /**
-   * Implements setUp().
+   * Implementation of setUp().
    */
   function setUp() {
+    parent::setUp('sweaver', 'ctools');
 
     $this->perms = '';
     $this->imagecache_tests = FALSE;
     $this->image_path = 'misc/druplicon.png';
-    $modules = array('ctools', 'sweaver');
+    $modules = array('sweaver', 'ctools');
+
+    $this->admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver'));
+    $this->drupalLogin($this->admin_user);
 
     // Imagecache setups.
+    // @todo preset styles from core.
     $imagecache_tests = FALSE;
     $imagecache = drupal_get_filename('module', 'imagecache');
     $imageapi = drupal_get_filename('module', 'imageapi');
     $imageapi_gd = drupal_get_filename('module', 'imageapi_gd');
-    if (!empty($imagecache) && !empty($imageapi_gd) && !empty($imageapi)) {
+    /*if (!empty($imagecache) && !empty($imageapi_gd) && !empty($imageapi)) {
       $this->imagecache_tests = TRUE;
       $this->perms = 'administer imagecache';
-      parent::setUp('ctools', 'sweaver', 'imageapi', 'imageapi_gd', 'imagecache');
+      parent::setUp('sweaver', 'ctools', 'jquery_ui', 'imageapi', 'imageapi_gd', 'imagecache');
     }
-    else {
-      parent::setUp('ctools', 'sweaver');
-    }
+    else {*/
+    //}
 
-    if ($this->imagecache_tests) {
+    /*if ($this->imagecache_tests) {
       db_query("INSERT INTO {imagecache_preset} (presetname) VALUES ('%s')", 'sweavertest');
       $this->preset_id = db_last_insert_id('imagecache', 'presetid');
       $this->preset_name = 'sweavertest';
       $data = 'a:3:{s:5:"width";s:4:"100%";s:6:"height";s:4:"100%";s:7:"upscale";i:0;}';
       db_query("INSERT INTO {imagecache_action} (presetid, weight, module, action, data) VALUES (%d, 0, 'imagecache', 'imagecache_scale', '%s')", $this->preset_id, $data);
-    }
+    }*/
   }
 
   /**
    * Debug helper function. Writes values away to a text file in the files directory.
    */
   function _debugHelper($value, $writetype = 'a+') {
-    $debug = fopen($this->originalFileDirectory . '/simpletestdebug.txt', 'a+');
-    fwrite($debug, print_r($value, TRUE) . "\n");
+    $debug = fopen($this->originalFileDirectory .'/simpletestdebug.txt', 'a+');
+    fwrite($debug, print_r($value, TRUE) ."\n");
     fclose($debug);
-  }
-
-  /**
-   * Return public path helper function.
-   */
-  function sweaver_public_path() {
-    return variable_get('file_public_path', conf_path() . '/files');
   }
 
   /**
    * Core administration tests for Sweaver.
    */
   function testCoreAdminSweaver() {
-    $this->admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver'));
-    $this->drupalLogin($this->admin_user);
     $editor_tests = t('Basic admin testing');
 
     // Setting screen: test that editor is enabled or disabled with checkbox and path settings.
@@ -126,17 +121,6 @@ class sweaverAdministration extends DrupalWebTestCase {
   function testAdvancedAdminSweaver() {
     $editor_tests = t('Special admin testing');
 
-    if ($this->imagecache_tests) {
-      $perms = array('use editor', 'configure sweaver', 'administer imagecache');
-    }
-    else {
-      $perms = array('use editor', 'configure sweaver');
-    }
-
-    // User login.
-    $this->admin_user = $this->drupalCreateUser($perms);
-    $this->drupalLogin($this->admin_user);
-
     // Public path.
     $public_path = variable_get('file_public_path', conf_path() . '/files');
 
@@ -149,17 +133,17 @@ class sweaverAdministration extends DrupalWebTestCase {
     $this->assertText(t('Image Image test has been saved.'), t('Image uploaded'), $editor_tests);
     $this->assertTrue(file_exists($public_path . '/sweaver/sweaver_image_1.png'), t('Image uploaded'), $editor_tests);
     $this->drupalGet('user');
-    $this->assertRaw('value="' . $GLOBALS['base_url'] . '/' . $public_path . '/sweaver/sweaver_image_1.png"', t('Image found in editor'), $editor_tests);
+    $this->assertRaw('value="'. $GLOBALS['base_url'] . '/' . $public_path.'/sweaver/sweaver_image_1.png"', t('Image found in editor'), $editor_tests);
 
     // Test imagecache if available.
-    if ($this->imagecache_tests) {
+    /*if ($this->imagecache_tests) {
 
       imagecache_presets(TRUE);
 
       $this->drupalGet('user');
 
       $imagecache_url = imagecache_create_url($this->preset_name, 'sites/default/files/sweaver/sweaver_image_1.png');
-      $raw_imagecache = '<option value="' . $imagecache_url . '">Image test (sweavertest)</option>';
+      $raw_imagecache = '<option value="'. $imagecache_url .'">Image test (sweavertest)</option>';
       $this->assertNoRaw($raw_imagecache, t('Imagecache version of image not found'), $editor_tests);
 
       // Enable imagecache.
@@ -169,7 +153,7 @@ class sweaverAdministration extends DrupalWebTestCase {
       $this->drupalPost('admin/config/user-interface/sweaver/images', $edit, t('Save configuration'));
       $this->drupalGet('user');
       $this->assertRaw('imagecache/sweavertest/sweaver/sweaver_image_1.png', t('Imagecache version of image found'), $editor_tests);
-    }
+    }*/
   }
 }
 

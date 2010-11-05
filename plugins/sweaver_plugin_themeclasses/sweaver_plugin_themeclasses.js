@@ -5,8 +5,8 @@
  */
 $(document).ready(function() {
   $('#sweaver_plugin_themeclasses .sweaver-switch-to-style').each(function() {
-    var class = $(this).attr('id').replace('spt-', '');
-    if ($('.'+ class).length == 0) {
+    var className = $(this).attr('id').replace('spt-', '');
+    if ($('.'+ className).length == 0) {
       $(this).hide();
     }
   });

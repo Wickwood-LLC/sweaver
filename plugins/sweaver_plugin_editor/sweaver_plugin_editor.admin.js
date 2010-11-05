@@ -7,8 +7,8 @@
  * This behavior is dependent on the tableDrag behavior, since it uses the
  * objects initialized in that behavior to update the row.
  */
-Drupal.behaviors.propertyDrag =  {
-  attach: function (context) {
+Drupal.behaviors.propertyDrag = {
+  attach: function(context) {
     var table = $('table#properties');
     var tableDrag = Drupal.tableDrag.properties;
 

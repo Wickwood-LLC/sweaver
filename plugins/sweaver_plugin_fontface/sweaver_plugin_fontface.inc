@@ -10,14 +10,14 @@ class sweaver_plugin_fontface extends sweaver_plugin {
   /**
    * Sweaver dependencies.
    */
-  function sweaver_dependencies() {
+  public function sweaver_dependencies() {
     return array('fontyourface');
   }
 
   /**
    * Sweaver objects alter.
    */
-  function sweaver_objects_alter(&$objects) {
+  public function sweaver_objects_alter(&$objects) {
     $extra_fonts = array();
     $used_fonts = fontyourface_get_fonts();
 

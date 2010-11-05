@@ -28,17 +28,29 @@ $(document).ready(function() {
 Drupal.Sweaver.AutoSave = function(context) {
   if (Drupal.Sweaver.changed) {
     Drupal.Sweaver.changed = false;
-
-    // Get values for css & customcss (if available)
+	  
+    // Get values for css, customcss & palette (if available)
     var css = $('#edit-css').val();
-    var customcss = $('#edit-sweaver-plugin-custom-css').val();
+    if ($('#edit-sweaver-plugin-custom-css').length) {
+      var customcss = $('#edit-sweaver-plugin-custom-css').val();      
+    }
+    else {
+      var customcss = '';            
+    }
+    if ($('#edit-sweaver-plugin-palette').length) {
+      var palette = $('#edit-sweaver-plugin-palette').val();
+    }
+    else {
+      var palette = '';
+    }
 
     $.ajax({
       type: "POST",
       url: Drupal.settings.basePath + 'index.php?q=sweaver-autosave',
       data: {
         css: css,
-        customcss: customcss
+        customcss: customcss,
+        palette: palette        
       },
       dataType: 'json',
       timeout: 5000,
@@ -55,14 +67,14 @@ Drupal.Sweaver.AutoSave = function(context) {
       }
     });
     return false;
-  }
+  }	  
 }
 
 /**
  * Behaviors for style actions.
  */
 Drupal.behaviors.StylesActions = {
-  attach: function (context) {
+  attach: function(context) {
     $("#style-actions-data-1 select.radio-style-save-type").change(function() {
       var radio_style_save_type = $("#style-actions-data-1 select.radio-style-save-type option:selected").val();
       if (radio_style_save_type == 1) {
@@ -87,6 +99,6 @@ Drupal.behaviors.StylesActions = {
       return false;
     });
   }
-}
+};
 
 })(jQuery);

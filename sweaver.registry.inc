@@ -13,18 +13,31 @@ function _sweaver_menu() {
   $weight = 0;
   $items = array();
 
+  // The sweaver plugins administration.
+  $items['admin/config/user-interface/sweaver/plugins'] = array(
+    'title' => 'Plugins',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+    'access arguments' => array('configure sweaver'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sweaver_plugin_config_plugins'),
+    'file' => 'sweaver.admin.inc'
+  );
+
   $base = array(
     'access arguments' => array('configure sweaver'),
     'page callback' => 'sweaver_menu_callback',
   );
 
-  foreach (sweaver_get_plugin(NULL, TRUE) as $plugin) {
-    $plugin_name = $plugin['name'];
-    $object = sweaver_get_plugin($plugin_name);
+  $sweaver = Sweaver::get_instance();
+  foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
+    $sweaver_plugin = $sweaver->get_plugin($plugin_name);
     $page_arguments = array(
       'plugin' => $plugin_name,
     );
-    $items += $object->sweaver_menu($weight, $page_arguments, $base);
+    $item = $sweaver_plugin->sweaver_menu($weight, $page_arguments, $base);
+
+    $items += $item;
   }
 
   return $items;
@@ -34,13 +47,30 @@ function _sweaver_menu() {
  * Theming functions.
  */
 function _sweaver_theme() {
-  $theme_functions = array();
 
-  foreach (sweaver_get_plugin(NULL, TRUE) as $plugin) {
-    $plugin_name = $plugin['name'];
-    $object = sweaver_get_plugin($plugin_name);
-    $theme_functions += $object->sweaver_theme();
+  $skin = variable_get('sweaver_skin', SWEAVER_SKIN);
+  $theme_functions = array(
+    'sweaver_plugin' => array(
+      'template' => $skin,
+      'file' => $skin . '.theme.inc',
+      'path' => drupal_get_path('module', 'sweaver') .'/skins/'. $skin,
+      'render element' => 'form',
+    ),
+    'sweaver_plugin_config_plugins' => array(
+      'template' => 'sweaver-plugin-config-plugins',
+      'file' => 'sweaver_plugin.theme.inc',
+      'path' => drupal_get_path('module', 'sweaver'),
+      'render element' => 'form',
+    ),
+  );
+
+  $sweaver = Sweaver::get_instance();
+  foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
+    $sweaver_plugin = $sweaver->get_plugin($plugin_name);
+    $theme_function = $sweaver_plugin->sweaver_theme();
+    $theme_functions += $theme_function;
   }
+
   return $theme_functions;
 }
 
@@ -50,99 +80,91 @@ function _sweaver_theme() {
 function _sweaver_sweaver_plugins() {
   $plugins = array();
 
-  $plugins['sweaver_plugin'] = array(
-    'handler' => array(
-      'class' => 'sweaver_plugin',
-    ),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin',
-    'file' => 'sweaver_plugin.inc',
-  );
   $plugins['sweaver_plugin_editor'] = array(
-    'handler' => array(
+      'tab' => t('Style'),
+      'tab_description' => t('Click on the element you want to theme.'),
+      'handler' => 'sweaver_plugin_editor',
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor',
+      'file' => 'sweaver_plugin_editor.inc',
       'class' => 'sweaver_plugin_editor',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Style'),
-    'tab_description' => t('Click on the element you want to theme.'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor',
-    'file' => 'sweaver_plugin_editor.inc',
   );
   $plugins['sweaver_plugin_styles'] = array(
-    'handler' => array(
+      'tab' => t('Manage styles'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_styles',
+      'handler' => 'sweaver_plugin_styles',
+      'file' => 'sweaver_plugin_styles.inc',
       'class' => 'sweaver_plugin_styles',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Manage styles'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_styles',
-    'file' => 'sweaver_plugin_styles.inc',
   );
   $plugins['sweaver_plugin_customcss'] = array(
-    'handler' => array(
+      'tab' => t('Custom css'),
+      'tab_description' => t('Add custom css.'),
+      'handler' => 'sweaver_plugin_customcss',
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_customcss',
+      'file' => 'sweaver_plugin_customcss.inc',
       'class' => 'sweaver_plugin_customcss',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Custom css'),
-    'tab_description' => t('Add custom css.'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_customcss',
-    'file' => 'sweaver_plugin_customcss.inc',
   );
   $plugins['sweaver_plugin_images'] = array(
-    'handler' => array(
+      'tab' => t('Images'),
+      'tab_description' => t('Upload images to use as a background image.'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_images',
+      'handler' => 'sweaver_plugin_images',
+      'file' => 'sweaver_plugin_images.inc',
       'class' => 'sweaver_plugin_images',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Images'),
-    'tab_description' => t('Upload images to use as a background image.'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_images',
-    'file' => 'sweaver_plugin_images.inc',
   );
   $plugins['sweaver_plugin_themeswitch'] = array(
-    'handler' => array(
+      'tab' => t('Switch theme'),
+      'tab_description' => t('Switch and style another theme.'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch',
+      'handler' => 'sweaver_plugin_themeswitch',
+      'file' => 'sweaver_plugin_themeswitch.inc',
       'class' => 'sweaver_plugin_themeswitch',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Switch theme'),
-    'tab_description' => t('Switch and style another theme.'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_themeswitch',
-    'file' => 'sweaver_plugin_themeswitch.inc',
   );
   $plugins['sweaver_plugin_themesettings'] = array(
-    'handler' => array(
+      'tab' => t('Theme settings'),
+      'tab_description' => t('Configure the settings for this theme.'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings',
+      'handler' => 'sweaver_plugin_themesettings',
+      'file' => 'sweaver_plugin_themesettings.inc',
       'class' => 'sweaver_plugin_themesettings',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Theme settings'),
-    'tab_description' => t('Configure the settings for this theme.'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_themesettings',
-    'file' => 'sweaver_plugin_themesettings.inc',
   );
   $plugins['sweaver_plugin_themeclasses'] = array(
-    'handler' => array(
+      'tab' => t('Theme styles'),
+      'tab_description' => t('Select an item - if any - to style it. Clicking will switch to the style editor form.'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeclasses',
+      'handler' => 'sweaver_plugin_themeclasses',
+      'file' => 'sweaver_plugin_themeclasses.inc',
       'class' => 'sweaver_plugin_themeclasses',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Theme styles'),
-    'tab_description' => t('Select an item - if any - to style it. Clicking will switch to the style editor form.'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_themeclasses',
-    'file' => 'sweaver_plugin_themeclasses.inc',
   );
   $plugins['sweaver_plugin_fontface'] = array(
-    'handler' => array(
+      'tab' => t('Font face'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_fontface',
+      'handler' => 'sweaver_plugin_fontface',
+      'file' => 'sweaver_plugin_fontface.inc',
       'class' => 'sweaver_plugin_fontface',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Font face'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_fontface',
-    'file' => 'sweaver_plugin_fontface.inc',
   );
   $plugins['sweaver_plugin_kb'] = array(
-    'handler' => array(
+      'tab' => t('Key bindings'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb',
+      'handler' => 'sweaver_plugin_kb',
+      'file' => 'sweaver_plugin_kb.inc',
       'class' => 'sweaver_plugin_kb',
       'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Key bindings'),
-    'path' => drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_kb',
-    'file' => 'sweaver_plugin_kb.inc',
+  );
+  $plugins['sweaver_plugin_palettes'] = array(
+      'tab' => t('Palettes'),
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_palettes',
+      'handler' => 'sweaver_plugin_palettes',
+      'file' => 'sweaver_plugin_palettes.inc',
+      'class' => 'sweaver_plugin_palettes',
+      'parent' => 'sweaver_plugin',
   );
 
   return $plugins;
@@ -280,6 +302,51 @@ function _sweaver_default_sweaver_selector() {
   $selector->selector_highlight = FALSE;
   $selectors['p'] = $selector;
 
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'form';
+  $selector->description = 'a form';
+  $selector->selector_selector = 'form';
+  $selector->selector_highlight = FALSE;
+  $selectors['form'] = $selector;
+
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'label';
+  $selector->description = 'a label';
+  $selector->selector_selector = 'label';
+  $selector->selector_highlight = FALSE;
+  $selectors['label'] = $selector;
+
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'input';
+  $selector->description = 'an input field';
+  $selector->selector_selector = '.form-text';
+  $selector->selector_highlight = FALSE;
+  $selectors['input'] = $selector;
+
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'textarea';
+  $selector->description = 'a textarea';
+  $selector->selector_selector = '.form-textarea';
+  $selector->selector_highlight = FALSE;
+  $selectors['textarea'] = $selector;
+
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'submit';
+  $selector->description = 'a submit button';
+  $selector->selector_selector = '.form-submit';
+  $selector->selector_highlight = FALSE;
+  $selectors['submit'] = $selector;
+
   return $selectors;
 }
 
@@ -353,8 +420,8 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        'normal' => 'Normal',
-        'bold' => 'Bold',
+        '400' => 'Normal',
+        '800' => 'Bold',
       );
   $propertys['font-weight'] = $property;
 
@@ -441,6 +508,27 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['color'] = $property;
+
+  // Text-decoration.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'text-decoration';
+  $property->description = 'Text decoration';
+  $property->property = 'text-decoration';
+  $property->property_parent = '';
+  $property->property_type = 'select';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+        'none' => 'None',
+        'underline' => 'Underline',
+        'overline' => 'Overline',
+        'line-through' => 'Line through',
+      );
+  $propertys['text-decoration'] = $property;
 
   // Background.
   $property = new stdClass;
@@ -834,6 +922,7 @@ function _sweaver_default_sweaver_property() {
   );
   $propertys['vertical-align'] = $property;
 
+
   // Width.
   $property = new stdClass;
   $property->api_version = 1;
@@ -888,6 +977,7 @@ function _sweaver_default_sweaver_type() {
     'line-height' => 'line-height',
     'text-align' => 'text-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -922,6 +1012,7 @@ function _sweaver_default_sweaver_type() {
     'font-size' => 'font-size',
     'line-height' => 'line-height',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -937,6 +1028,74 @@ function _sweaver_default_sweaver_type() {
   $type = new stdClass;
   $type->api_version = 1;
   $type->disabled = FALSE;
+  $type->name = 'inline-block';
+  $type->description = 'Inline block';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'color' => 'color',
+    'text-decoration' => 'text-decoration',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+    'padding-top' => 'padding-top',
+    'padding-left' => 'padding-left',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
+    'margin-top' => 'margin-top',
+    'margin-left' => 'margin-left',
+    'margin-right' => 'margin-right',
+    'margin-bottom' => 'margin-bottom',
+    'border-top-width' => 'border-top-width',
+    'border-left-width' => 'border-left-width',
+    'border-right-width' => 'border-right-width',
+    'border-bottom-width' => 'border-bottom-width',
+    'border-style' => 'border-style',
+    'border-color' => 'border-color',
+    'width' => 'width',
+    'height' => 'height',
+  );
+  $types['inline-block'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
+  $type->name = 'inline-table';
+  $type->description = 'Inline table';
+  $type->type_options = array(
+    'font-family' => 'font-family',
+    'font-style' => 'font-style',
+    'font-weight' => 'font-weight',
+    'font-size' => 'font-size',
+    'line-height' => 'line-height',
+    'text-align' => 'text-align',
+    'color' => 'color',
+    'text-decoration' => 'text-decoration',
+    'background-color' => 'background-color',
+    'background-image' => 'background-image',
+    'background-repeat' => 'background-repeat',
+    'margin-top' => 'margin-top',
+    'margin-left' => 'margin-left',
+    'margin-right' => 'margin-right',
+    'margin-bottom' => 'margin-bottom',
+    'border-top-width' => 'border-top-width',
+    'border-left-width' => 'border-left-width',
+    'border-right-width' => 'border-right-width',
+    'border-bottom-width' => 'border-bottom-width',
+    'border-style' => 'border-style',
+    'border-color' => 'border-color',
+    'width' => 'width',
+    'height' => 'height',
+  );
+  $types['inline-table'] = $type;
+
+  $type = new stdClass;
+  $type->api_version = 1;
+  $type->disabled = FALSE;
   $type->name = 'list-item';
   $type->description = 'List item';
   $type->type_options = array(
@@ -947,6 +1106,7 @@ function _sweaver_default_sweaver_type() {
     'line-height' => 'line-height',
     'text-align' => 'text-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -982,6 +1142,7 @@ function _sweaver_default_sweaver_type() {
     'line-height' => 'line-height',
     'text-align' => 'text-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -1017,6 +1178,7 @@ function _sweaver_default_sweaver_type() {
     'line-height' => 'line-height',
     'text-align' => 'text-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -1050,6 +1212,7 @@ function _sweaver_default_sweaver_type() {
     'line-height' => 'line-height',
     'text-align' => 'text-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -1086,6 +1249,7 @@ function _sweaver_default_sweaver_type() {
     'text-align' => 'text-align',
     'vertical-align' => 'vertical-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -1111,6 +1275,7 @@ function _sweaver_default_sweaver_type() {
     'text-align' => 'text-align',
     'vertical-align' => 'vertical-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -1136,6 +1301,7 @@ function _sweaver_default_sweaver_type() {
     'text-align' => 'text-align',
     'vertical-align' => 'vertical-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
@@ -1161,6 +1327,7 @@ function _sweaver_default_sweaver_type() {
     'text-align' => 'text-align',
     'vertical-align' => 'vertical-align',
     'color' => 'color',
+    'text-decoration' => 'text-decoration',
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',

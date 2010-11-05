@@ -25,7 +25,7 @@ function template_preprocess_sweaver_plugin(&$vars) {
       $active_tab = $plugin_name;
       $i++;
     }
-    $object = sweaver_get_plugin($plugin_name);
+    $object = Sweaver::get_instance()->get_plugin($plugin_name);
     $object->sweaver_form_render($vars, $form, $form['#plugins_full'][$plugin_name]);
   }
 

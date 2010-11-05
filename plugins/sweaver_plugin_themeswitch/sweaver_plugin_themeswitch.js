@@ -5,8 +5,6 @@
  * Inspiration from http://jqueryui.com/demos/slider/side-scroll.html
  */
 
-(function ($) {
-
 Drupal.Sweaver = Drupal.Sweaver || {};
 
 $(document).ready(function() {
@@ -25,7 +23,7 @@ Drupal.Sweaver.themeSwitch_init = function() {
       width += $(this).outerWidth(true);
     });
     $('#themeswitch-content').css('width', width +'px');
-
+    
     // scrollpane parts
     var scrollPane = $('#themeswitch-pane');
     var scrollContent = $('#themeswitch-content');
@@ -34,15 +32,17 @@ Drupal.Sweaver.themeSwitch_init = function() {
     var scrollbar = $("#sweaver .scroll-bar").slider({
       slide:function(e, ui){
         if (scrollContent.width() > scrollPane.width()) {
-          scrollContent.css('margin-left', Math.round( ui.value / 100 * ( scrollPane.width() - scrollContent.width() )) + 'px');
+          //scrollContent.css('margin-left', Math.round( ui.value / 100 * ( scrollPane.width() - scrollContent.width() )) + 'px');
+          scrollContent.css('cssText', 'margin-left: ' + Math.round( ui.value / 100 * ( scrollPane.width() - scrollContent.width() )) + 'px !important; width: ' + width + 'px');
         }
         else {
-          scrollContent.css('margin-left', 0);
+          //scrollContent.css('margin-left', 0);
+          scrollContent.css('cssText', 'margin-left: 0px !important; width: ' + width + 'px');
         }
       }
     });
 
-    // append icon to handle
+    // append icon to handle.
     var handleHelper = scrollbar.find('.ui-slider-handle')
     .mousedown(function(){
       scrollbar.width( handleHelper.width() );
@@ -53,13 +53,13 @@ Drupal.Sweaver.themeSwitch_init = function() {
     .append('<span class="ui-icon ui-icon-grip-dotted-vertical"></span>')
     .wrap('<div class="ui-handle-helper-parent"></div>').parent();
 
-    // change overflow to hidden now that slider handles the scrolling
+    // change overflow to hidden now that slider handles the scrolling.
     scrollPane.css('overflow','hidden');
 
-    // size scrollbar and handle proportionally to scroll distance
+    // size scrollbar and handle proportionally to scroll distance.
     function sizeScrollbar(){
       if (scrollContent.width() > scrollPane.width()) {
-        handleHelper.show();
+        handleHelper.parents('.ui-slider').show();
         var remainder = scrollContent.width() - scrollPane.width();
         var proportion = remainder / scrollContent.width();
         var handleSize = scrollPane.width() - (proportion * scrollPane.width());
@@ -69,7 +69,7 @@ Drupal.Sweaver.themeSwitch_init = function() {
         handleHelper.width(scrollbar.width());
       }
       else {
-        handleHelper.hide();
+        handleHelper.parents('.ui-slider').hide();
       }
     }
 
@@ -80,7 +80,7 @@ Drupal.Sweaver.themeSwitch_init = function() {
       var percentage = Math.round(leftVal / remainder * 100);
       scrollbar.slider("value", percentage);
     }
-
+    
     // change handle position on window resize
     $(window)
     .resize(function(){
@@ -89,9 +89,7 @@ Drupal.Sweaver.themeSwitch_init = function() {
         sizeScrollbar();
       }
     });
-
+    
     // init scrollbar size
     setTimeout(sizeScrollbar,10); // safari wants a timeout
 };
-
-})(jQuery);

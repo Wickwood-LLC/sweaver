@@ -10,11 +10,11 @@ class sweaver_plugin_customcss extends sweaver_plugin {
   /**
    * Frontend form.
    */
-  function sweaver_form() {
-    $form = array();
-    global $theme_key;
-    $current_style = $this->sweaver_get_current_style($theme_key);
+  public function sweaver_form() {
 
+    $current_style = Sweaver::get_instance()->get_current_style();
+
+    $form = array();
     $attributes = array();
     $form['sweaver_plugin_custom_css'] = array(
       '#type' => 'textarea',
@@ -44,7 +44,7 @@ class sweaver_plugin_customcss extends sweaver_plugin {
     $clicked_button = $form_state['clicked_button']['#value'];
 
     if (($clicked_button == t('Save and continue') || $clicked_button == t('Save and publish') || $clicked_button == t('Publish style')) && isset($form_state['style_id'])) {
-      db_query("UPDATE {sweaver_style_draft} set customcss = :customcss WHERE style_id = :style_id", array(':customcss' => $form_state['values']['sweaver_plugin_custom_css'], ':style_id' => $form_state['style_id']));
+      db_query("UPDATE {sweaver_style_draft} set customcss = '%s' WHERE style_id = %d", $form_state['values']['sweaver_plugin_custom_css'], $form_state['style_id']);
       if ($form_state['publish']) {
         db_query("UPDATE {sweaver_style} set customcss = :customcss WHERE style_id = :style_id", array(':customcss' => $form_state['values']['sweaver_plugin_custom_css'], ':style_id' => $form_state['style_id']));
       }
@@ -54,8 +54,8 @@ class sweaver_plugin_customcss extends sweaver_plugin {
   /**
    * Frontend css and js.
    */
-  function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_customcss/sweaver_plugin_customcss.js');
+  public function sweaver_form_css_js(&$inline_settings) {
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_customcss/sweaver_plugin_customcss.js');
     $inline_settings['sweaver']['invokes'][] = 'sweaver_plugin_customcss';
   }
 }

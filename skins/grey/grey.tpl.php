@@ -6,7 +6,7 @@
  * Themer editor form.
  */
 ?>
-<div id="sweaver" <?php ($sweaver_open == 'true' || $sweaver_open == NULL) ? '' : print ' style="height:0"'; ?>>
+<div id="sweaver">
 
   <!-- tabs -->
   <div id="sweaver-tabs" class="clearfix">
@@ -26,7 +26,7 @@
     <?php endif; ?>
   </div>
 
-  <div id="sweaver-middle" class="clearfix">
+  <div id="sweaver-middle" class="clearfix" <?php ($sweaver_open == 'true' || $sweaver_open == NULL) ? '' : print ' style="height:0"'; ?>>
     <?php
     foreach ($tabs_data as $key => $tab_data):
     ?>

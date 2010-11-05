@@ -5,9 +5,36 @@
  * Sweaver grey skin CSS.
  */
 
+/******************************************************
+ * Reset all css with !important
+ * so that sweavering doesn't affect the sweaver bar.
+ ******************************************************/
+
+#sweaver-frontend *,
+#sweaver-messages * {
+  background: transparent 0 none !important;
+  color: #fff !important;
+  font-family: "Lucida Grande", Lucida, Verdana, sans-serif !important;
+  font-size: 12px !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  background-image: none !important;
+  line-height: 1.3em !important;
+  text-align: left !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 none !important;
+  width: auto;
+  height: auto;
+  outline: 0;
+}
+
+
 /*****************
-  General theming.
-******************/
+ * General theming.
+ ******************/
 
 /* correct the body so that the Sweaver frontend does not overlap any content */
 
@@ -30,30 +57,23 @@ body.sweaver {
 #sweaver {
   width: 100%;
   background-color: #3E3E3E !important;
-  color: #fff !important;
   position: fixed;
   bottom: 0;
   left: 0;
-  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
-  font-size: 12px !important;
-  font-style: normal !important;
-  font-weight: normal !important;
   z-index: 1000;
-  text-transform: none !important;
-  background-image: none !important;
-  line-height: 1.3em !important;
-  text-align: left !important;
-  padding: 0 !important;
-  margin: 0 !important;
+}
+
+#sweaver #sweaver-middle {
+  overflow: hidden;
 }
 
 #sweaver .sweaver-content {
   padding: 10px !important;
-  margin: 0 !important;
   background-color: #3E3E3E !important;
   position: relative !important;
   height: 180px;
   overflow: hidden;
+  z-index: 1;
 }
 
 /* header region */
@@ -61,8 +81,9 @@ body.sweaver {
 #sweaver .sweaver-header {
    padding: 7px !important;
    clear: both !important;
-   margin: 0 !important;
-   background: transparent url(images/header-bg.png) repeat-x bottom left;
+   background: transparent url(images/header-bg.png) repeat-x bottom left !important;
+   position: relative;
+   z-index: 2;
 }
 
 #sweaver #sweaver-header a.button {
@@ -72,14 +93,12 @@ body.sweaver {
 /* Horizontal tabs */
 
 #sweaver #sweaver-tabs {
-  margin-top: -36px;
-  background-color: #000;
-  padding-top: 3px;
+  background-color: #000 !important;
+  padding-top: 3px !important;
 }
 
 #sweaver .close a,
 #sweaver .tab a {
-  font-weight: normal !important;
   height: 16px !important;
   display: block !important;
   float: left !important;
@@ -90,7 +109,6 @@ body.sweaver {
   -moz-border-radius: 7px 7px 0 0 !important;
   border-radius: 7px 7px 0 0 !important;
   -webkit-border-radius: 7px 7px 0 0 !important;
-  outline: none !important;
 }
 
 #sweaver .close a {
@@ -117,13 +135,11 @@ body.sweaver {
 
 #sweaver-style-actions {
   background-color: #3E3E3E !important;
-  font-weight: normal !important;
   height: 36px !important;
   display: block !important;
   float: right !important;
   padding: 0px 15px !important;
   line-height: 16px !important;
-  margin: 0px !important;
   -moz-border-radius: 7px 0 0 0 !important;
   border-radius: 7px 0 0 0 !important;
   -webkit-border-top-left-radius: 7px !important;
@@ -137,7 +153,6 @@ body.sweaver {
   padding: 10px !important;
   display: block !important;
   font-size: 13px !important;
-  outline: none !important;
 }
 
 /* message region */
@@ -149,19 +164,14 @@ body.sweaver {
   border-radius: 7px !important;
   background: rgb(51,51,51) !important;
   background: rgba(51,51,51,0.9) !important;
-  color: #fff !important;
   display: none;
   padding: 15px !important;
   position: fixed !important;
-  font-size: 11px !important;
   z-index: 1100 !important;
-  text-decoration: none !important;
   top: 7px;
   left: 7px;
   width: 300px;
   min-height: 50px;
-  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
-  font-size: 12px !important;
 }
 
 #sweaver-popup {
@@ -171,11 +181,12 @@ body.sweaver {
 
 #sweaver-messages .close,
 #sweaver-popup .close {
-  background: url(images/close-message.png) no-repeat center center;
+  background: url(images/close-message.png) no-repeat center center !important;
   text-indent: -10000px;
   overflow: hidden;
   width: 16px;
   height: 15px;
+  line-height: 15px;
   position: absolute;
   top: 5px;
   right: 5px;
@@ -187,14 +198,11 @@ body.sweaver {
 }
 
 #sweaver-popup h2 {
-  color: #fff !important;
   font-size: 16px !important;
   margin-bottom: 5px !important;
 }
 
 #sweaver-popup a {
-  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
-  color: #fff !important;
   text-decoration: underline !important;
 }
 
@@ -216,7 +224,6 @@ body.sweaver {
   background: transparent url(images/close.png) no-repeat left center !important;
   padding-left: 25px !important;
   height: 16px !important;
-  margin: 0 !important;
 }
 
 #sweaver-popup fieldset fieldset .fieldset-wrapper {
@@ -225,9 +232,6 @@ body.sweaver {
 
 #sweaver-popup fieldset {
   background: transparent none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: 0 none !important;
 }
 
 #sweaver-popup fieldset .description {
@@ -237,29 +241,25 @@ body.sweaver {
   background: none repeat scroll 0 0 #666666 !important;
   color: #EEEEEE !important;
   padding: 10px !important;
-  margin-left: 0 !important;
+  margin: 0 !important;
 }
 
 #sweaver-popup fieldset fieldset .description {
-  margin-top: 10px;
+  margin-top: 10px !important;
 }
 
 #sweaver-popup fieldset .form-item .description {
-  background: transparent none !important;
-  padding: 0 !important;
   font-size: 0.9em !important;
 }
 
 #sweaver-popup fieldset .form-item {
   padding: 15px 0 !important;
-  margin: 0 !important;
   border-bottom: 1px solid #777 !important;
 }
 
 #sweaver-popup fieldset fieldset {
   background: transparent none !important;
   padding: 5px 0 !important;
-  margin: 0px !important;
 }
 
 #sweaver-frontend #sweaver-popup input,
@@ -273,14 +273,12 @@ body.sweaver {
 /* Popup link */
 
 #sweaver .popup-link {
-  border: 0px;
   float: left;
-  margin-right: 10px;
+  margin-right: 10px !important;
 }
 
 #sweaver .popup-link a {
   background: #999 url(images/popup.png) no-repeat 4px center !important;
-  color: #fff !important;
   font-weight: bold !important;
   padding: 5px 5px 5px 25px !important;
   display: block !important;
@@ -317,12 +315,16 @@ body.sweaver {
 }
 
 #sweaver-popup .delete-style-question {
-  background:none repeat scroll 0 0 #666666;
-  padding:5px;
+  background:none repeat scroll 0 0 #666666 !important;
+  padding:5px !important;
   -moz-border-radius: 7px !important;
   -webkit-border-radius: 7px !important;
   border-radius: 7px !important;
-  margin-top: 15px;
+  margin-top: 15px !important;
+}
+
+#sweaver-popup .save-publish-buttons {
+  clear: both;
 }
 
 #sweaver-popup .delete-style-question input,
@@ -335,24 +337,13 @@ body.sweaver {
 /* general theming */
 
 #sweaver a {
-  color: #fff !important;
-  text-decoration: none !important;
-  background-color: transparent !important;
-  padding: 0 !important;
-  margin: 0 !important;
   display: inline !important;
-  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
-  font-size: 12px !important;
 }
 
 #sweaver h2 {
-  color: #fff !important;
   font-weight: bold !important;
-  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
   font-size: 14px !important;
-  text-transform: none !important;
   padding: 0 0 5px 0 !important;
-  margin: 0 !important;
   line-height: 1.1em !important;
 }
 
@@ -364,43 +355,23 @@ body.sweaver {
   margin: 5px 0 !important;
 }
 
-#sweaver-frontend p,
-#sweaver-frontend span {
-  padding: 0 !important;
-  margin: 0 !important;
-  background: transparent none !important;
-  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
-  font-size: 12px !important;
-  text-align: left !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-}
-
 #sweaver-frontend label {
   width: 115px !important;
   float: left !important;
   clear: left !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  font-weight: normal !important;
-  font-size: 12px !important;
 }
 
 #sweaver-frontend .form-item {
   padding: 5px 0 !important;
-  margin: 0 !important;
 }
 
 #sweaver-frontend input,
 #sweaver-frontend select,
 #sweaver-frontend textarea {
-  text-transform: none !important;
   width: 140px !important;
   border: 1px solid #fff !important;
   padding: 3px !important;
-  margin: 0 !important;
   color: #222 !important;
-  background-image: none !important;
   background-color: #fff !important;
   border-radius: 2px !important;
   -moz-border-radius: 2px !important;
@@ -409,8 +380,11 @@ body.sweaver {
   box-shadow: 1px 1px 2px #000 !important;
   -moz-box-shadow: 1px 1px 2px #000 !important;
   -webkit-box-shadow: 1px 1px 2px #000 !important;
-  font-family: "Lucida Grande",Lucida,Verdana,sans-serif !important;
-  font-size: 12px !important;
+}
+
+#sweaver-frontend option {
+  color: #222 !important;
+  padding: 2px !important;
 }
 
 #sweaver textarea {
@@ -428,40 +402,31 @@ body.sweaver {
   border: 1px solid #fff !important;
   padding: 2px !important;
   color: #222 !important;
-  background-image: none !important;
   background-color: #fff !important;
   display: block !important;
-  font-weight: normal !important;
   text-align: center !important;
   font-size: 13px !important;
-  text-decoration: none !important;
-  text-transform: none !important;
   margin-left: 15px !important;
 }
 
-#sweaver a.button:hover {
-  text-decoration: none !important;
-}
-
-#sweaver-frontend input.form-submit {
+#sweaver-frontend .form-submit,
+#sweaver-popup .form-submit {
   clear: left;
   display: block !important;
   margin: 1em 0 0 0 !important;
   background-color: #efefef !important;
   color: #000 !important;
-  border: 0 none !important;
   width: auto !important;
   padding: 5px 10px !important;
   -moz-border-radius: 15px !important;
   -webkit-border-radius: 15px !important;
   border-radius: 15px !important;
-  font-weight: normal !important;
+  cursor: pointer;
 }
 
 #sweaver-frontend label.option {
   width: auto !important;
   float: none !important;
-  font-weight: normal !important;
 }
 
 #sweaver-frontend input.form-checkbox {
@@ -474,19 +439,12 @@ body.sweaver {
   margin-left: 120px !important;
   font-size: 0.9em !important;
   margin-top: 5px !important;
-  color: #fff !important;
-}
-
-#sweaver-frontend .display-none {
-  display: none;
 }
 
 /* containers */
 
 #sweaver .container {
   float: left !important;
-  padding: 0px !important;
-  margin: 0 !important;
 }
 
 #sweaver .container-inner {
@@ -510,20 +468,17 @@ body.sweaver {
 #sweaver .form-floater .form-item {
   float: left !important;
   clear: none !important;
-  margin: 0 !important;
 }
 
 #sweaver .form-floater .form-item {
-  padding: 0 !important;
   margin: 0 10px 0 0 !important;
 }
 
 /* link for 'theme styles' tab */
 
 #sweaver .sweaver-switch-to-style {
-  border: 0px;
   float: left;
-  margin-right: 10px;
+  margin-right: 10px !important;
 }
 
 #sweaver .sweaver-switch-to-style a {
@@ -541,25 +496,50 @@ body.sweaver {
 
 #sweaver .selected-image {
   -moz-box-shadow: 1px 1px 2px #000;
-  background: #FFFFFF;
-  color: #333333;
+  background: #FFFFFF !important;
+  color: #333333 !important;
   float: left;
-  margin-right: 25px;
-  padding: 5px;
-  text-align: center;
-  margin-top: 10px;
+  margin-right: 25px !important;
+  padding: 5px !important;
+  text-align: center !important;
+  margin-top: 10px !imporant;
+}
+
+#sweaver .selected-image img {
+  width: 150px;
+  height: 90px;
 }
 
 #sweaver .selected-image-default {
-  background: #333333;
-  color: #FFFFFF;
-  margin-top: 0;
-  padding: 15px;
+  background: #333333 !important;
+  color: #FFFFFF !important;
+  margin-top: 0 !important;
+  padding: 15px !important;
 }
 
+#themeswitch-pane {
+  overflow: hidden;
+  width: 100%;
+  height: 170px;
+}
+
+#sweaver_plugin_themeswitch .scroll-bar-wrap {
+  clear: left;
+  padding: 10px 4px 0 2px !important;
+  margin: 0 -1px -1px -1px !important;
+}
+
+#sweaver_plugin_themeswitch .scroll-bar-wrap .ui-handle-helper-parent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto !important;
+}
+
+
 /*****************
-  Editor
-******************/
+ * Editor
+ *****************/
 
 #sweaver_plugin_editor #sweaver-editor {
   display: none;
@@ -580,16 +560,13 @@ body.sweaver {
   margin-bottom: 5px !important;
   padding: 7px !important;
   width: 150px !important;
-  outline: 0 none;
-  font-weight: normal !important;
-  font-style: normal !important;
 }
 
 #sweaver .vertical-tab a.active {
   background-color: transparent !important;
   -moz-border-radius: 7px !important;
   -webkit-border-radius: 7px !important;
-  border-radius: 7px !important;;
+  border-radius: 7px !important;
   background-color: #222 !important;
 }
 
@@ -617,9 +594,14 @@ body.sweaver {
 #sweaver_plugin_editor .form-item,
 #sweaver_plugin_editor .sweaver-group {
   padding: 5px !important;
-  margin: 0 !important;
   clear: both !important;
   position: relative !important;
+  z-index: 1;
+}
+
+#sweaver_plugin_editor .form-item.active,
+#sweaver_plugin_editor .sweaver-group.active {
+  z-index: 2;
 }
 
 /* parent / children */
@@ -669,6 +651,24 @@ body.sweaver {
   z-index: 100 !important;
 }
 
+/* Overwrite of jquery ui css to be able to add !important */
+
+#sweaver-frontend .ui-slider {
+  background: none repeat scroll 0 0 #FFFFFF !important;
+  border: 1px solid #D3D3D3 !important;
+  font-size: 100%;
+  height: 0.8em;
+  line-height: 1.3;
+}
+
+#sweaver-frontend .ui-slider-handle {
+  background:url(images/slider-handle.png) repeat-x scroll 0 50% #FFFFFF !important;
+  border: 1px solid #DDDDDD !important;
+  font-size:100%;
+  height: 1.2em;
+  width: 1.2em;
+  line-height:1.3;
+}
 
 /* selectors path */
 
@@ -682,18 +682,22 @@ body.sweaver {
   padding-bottom: 0 !important;
 }
 
-#sweaver_plugin_editor #selected-path .label,
-#sweaver_plugin_editor #full-path .label {
+#sweaver_plugin_editor .path-label {
   width: 100px !important;
   background-color: transparent !important;
-  clear:left;
-  display:block;
-  float:left;
+  clear: left;
+  display: block;
+  float: left;
   padding: 0px 3px 0px 10px !important;
   font-weight: bold !important;
 }
 
-#sweaver_plugin_editor #selected-path span {
+#sweaver_plugin_editor .path-content {
+  margin-left: 113px !important;
+  display: block;
+}
+
+#sweaver_plugin_editor #selected-path .path-content span {
   padding: 3px 0 !important;
   position: relative;
 }
@@ -702,6 +706,12 @@ body.sweaver {
   padding: 3px 0 !important;
   position: relative;
   float: left;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+#sweaver_plugin_editor #full-path .selector-wrapper.open {
+  z-index: 2;
 }
 
 #sweaver_plugin_editor #full-path .first-selector,
@@ -711,6 +721,7 @@ body.sweaver {
 
 #sweaver_plugin_editor #full-path .first-selector {
   cursor: pointer;
+  white-space: nowrap;
 }
 
 #sweaver_plugin_editor #full-path .active .first-selector a {
@@ -722,31 +733,35 @@ body.sweaver {
 #sweaver_plugin_editor #full-path .selector-popup {
   position: absolute !important;
   top: 0px !important;
-  left: 16px !important;
+  left: -10000px;
   background: #666 !important;
-  padding: 4px 8px !important;
+  padding: 4px 16px 4px 8px !important;
   -moz-border-radius: 3px !important;
   -webkit-border-radius: 3px !important;
   border-radius: 3px !important;
-  display: none;
-  z-index: 2 !important;
-  width: auto !important;
+  z-index: 1113 !important;
   white-space: nowrap !important;
 }
 
 #sweaver_plugin_editor #full-path .selector-popup ul {
-  margin: 0 !important;
-  padding: 0 !important;
+  float: left !important;
+}
+
+#sweaver_plugin_editor #full-path .selector-popup ul.selectors {
+  border-right: 1px solid #555;
+  padding-right: 15px !important;
+}
+
+#sweaver_plugin_editor #full-path .selector-popup ul.pseudoclasses {
+  padding-left: 8px !important;
 }
 
 #sweaver_plugin_editor #full-path .selector-popup li {
   list-style-type: none !important;
   list-style-image: none !important;
   padding: 4px 0 4px 15px !important;
-  margin: 0 !important;
   border-bottom: 1px solid #555;
   border-top: 1px solid #777;
-  background: 0 none !important;
 }
 
 #sweaver_plugin_editor #full-path .selector-popup li.first {
@@ -820,18 +835,18 @@ body.sweaver {
   border-radius: 7px 7px 0 0 !important;
   -moz-border-radius: 7px 7px 0 0 !important;
   -webkit-border-radius: 7px 7px 0 0 !important;
-  background: #000 url(images/open2.png) no-repeat 95% 50%;
+  background: #000 url(images/open2.png) no-repeat 95% 50% !important;
   position: absolute;
   bottom: 0;
   right: 10px;
-  padding: 5px 24px 5px 5px;
+  padding: 5px 24px 5px 5px !important;
   z-index : 1111;
-  width: 100px;
+  width: 100px !important;
   cursor: pointer;
 }
 
 #sweaver_plugin_editor #changes-toggler.open {
-  background-image: url(images/close2.png);
+  background-image: url(images/close2.png) !important;
 }
 
 #sweaver_plugin_editor #editor-changes p {
@@ -846,3 +861,43 @@ body.sweaver {
 #sweaver #sweaver_plugin_editor .colorSelector div {
   -moz-box-shadow:0 0 0 transparent !important;
 }
+
+
+/*****************
+  Palettes
+ ******************/
+
+#sweaver_plugin_palettes .color {
+  width: 15px !important;
+  height: 15px !important;
+  overflow: hidden;
+  text-indent: -10000px;
+  float: left;
+  border: 1px solid #fff !important;
+  margin-left: -1px;
+}
+
+#sweaver_plugin_palettes .name {
+  margin-left: 7px !important;
+  float: left;
+}
+
+#sweaver_plugin_palettes .colors {
+  clear: both;
+  margin-bottom: 5px !important;
+  padding: 7px !important;
+  width: 150px;
+}
+
+#sweaver_plugin_palettes .colors:hover,
+#sweaver_plugin_palettes .colors.active,
+#sweaver_plugin_palettes .colors.active:hover {
+  background: #444 !important;
+  border-radius: 7px;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  cursor: pointer;
+}
+
+#sweaver_plugin_palettes .colors:hover {
+  background-color: #666 !important;

@@ -14,7 +14,6 @@ To submit bug reports and feature suggestions, or to track changes:
 -- REQUIRED --
 
 CTools - http://drupal.org/project/ctools
-jQuery UI - http://drupal.org/project/jquery_ui
 
 -- PLUGINS --
 
@@ -56,6 +55,10 @@ info file to look for classes.
 
 9) Key bindings
 Use the keyboard to popup save, load, publish, delete screens.
+
+10) Palettes
+Define color palettes from your theme info file. More info
+is found in API.txt.
 
 -- MAINTAINERS --
 

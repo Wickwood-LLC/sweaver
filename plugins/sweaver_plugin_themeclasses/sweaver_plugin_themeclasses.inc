@@ -12,7 +12,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
   /**
    * Menu registry.
    */
-  function sweaver_menu(&$weight, $page_arguments, $base) {
+  public function sweaver_menu(&$weight, $page_arguments, $base) {
 
     $items = array();
 
@@ -30,7 +30,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
   /**
    * Frontend form.
    */
-  function sweaver_form() {
+  public function sweaver_form() {
     $form = array();
 
     $class_groups = trim(variable_get('sweaver_themeclasses_groups', SWEAVER_PLUGIN_THEMECLASSES_DEFAULT));
@@ -38,14 +38,14 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
       return $form;
     }
 
-    global $theme_key;
-    $theme_info = $this->sweaver_get_theme_info($theme_key);
+    $theme_key = Sweaver::get_instance()->get_theme_key();
+    $theme_info = sweaver_get_theme_info($theme_key);
     if (empty($theme_info)) {
       return $form;
     }
 
 
-    $cache = variable_get('sweaver_plugin_themeclasses_' . $theme_key, array());
+    $cache = variable_get('sweaver_plugin_themeclasses_'. $theme_key, array());
     if (!empty($cache)) {
       $styles = $cache['styles'];
     }
@@ -60,7 +60,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
       }
 
       // Cache the stuff.
-      variable_set('sweaver_plugin_themeclasses_' . $theme_key, array('checked' => TRUE, 'styles' => $styles));
+      variable_set('sweaver_plugin_themeclasses_'. $theme_key, array('checked' => TRUE, 'styles' => $styles));
     }
 
     if (!empty($styles)) {
@@ -81,14 +81,14 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
   /**
    * Frontend css and js.
    */
-  function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_themeclasses/sweaver_plugin_themeclasses.js', 'module');
+  public function sweaver_form_css_js(&$inline_settings) {
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeclasses/sweaver_plugin_themeclasses.js');
   }
 
   /**
    * Menu callback.
    */
-  function sweaver_menu_callback() {
+  public function sweaver_menu_callback() {
     $form = array();
 
     $form['sweaver_themeclasses_groups'] = array(
@@ -110,20 +110,20 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
   /**
    * Menu callback submit.
    */
-  function sweaver_menu_callback_submit($form, &$form_state) {
+  public function sweaver_menu_callback_submit($form, &$form_state) {
     db_query("DELETE FROM {variable} where name LIKE '%s%%'", 'sweaver_plugin_themeclasses_');
     variable_set('sweaver_themeclasses_groups', $form_state['values']['sweaver_themeclasses_groups']);
     drupal_set_message(t('The configuration options have been saved.'));
   }
 
   /**
-   * Get styles from the group. We look for a key called 'class' .
+   * Get styles from the group. We look for a key called 'class'.
    */
-  function sweaver_get_styles($theme_info, &$styles) {
+  public function sweaver_get_styles($theme_info, &$styles) {
     foreach ($theme_info as $key => $value) {
       if (is_array($value) && isset($value['class'])) {
         $label = isset($value['label']) ? $value['label'] : $value['class'];
-        $styles[] = '<div class="sweaver-switch-to-style " id="spt-' . $value['class'] . '"><a href="javascript:Drupal.Sweaver.ThemeClasses(\'spt-' . $value['class'] . '\', \'spt-' . strip_tags($value['label']) . '\')">' . strip_tags($value['label']) . '</a></div>';
+        $styles[] = '<div class="sweaver-switch-to-style " id="spt-'. $value['class'] .'"><a href="javascript:Drupal.Sweaver.ThemeClasses(\'spt-'. $value['class'] .'\', \'spt-'. strip_tags($value['label']) .'\')">'. strip_tags($value['label']) .'</a></div>';
       }
       if (is_array($value)) {
         $this->sweaver_get_styles($theme_info[$key], $styles);

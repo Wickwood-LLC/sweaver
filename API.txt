@@ -11,10 +11,10 @@ Table of contents
 6. Images handler.
 7. Session handling
 8. Sweaver popups.
-9. General methods.
+9. General functions.
 10. General JS functions.
 11. General CSS styles.
-12. Skins.
+12. Skins
 13. Theme extensions.
 14. hook_sweaver_action().
 
@@ -23,7 +23,7 @@ Table of contents
 ------------------------------------------------------
 
 /**
- * Implements hook_ctools_plugin_api().
+ * Implementation of hook_ctools_plugin_api().
  */
 function hook_ctools_plugin_api($owner, $api) {
   if ($owner == 'sweaver' && $api == 'sweaver') {
@@ -36,7 +36,7 @@ function hook_ctools_plugin_api($owner, $api) {
 ---------------------------------------------------------
 
 /**
- * Implements hook_default_sweaver_selector().
+ * Implementation of hook_default_sweaver_selector().
  */
 function hook_default_sweaver_selector() {
 
@@ -47,7 +47,7 @@ function hook_default_sweaver_selector() {
   $selector->disabled = FALSE; // Set this to true if you want to disable this by default.
   $selector->name = 'machine_name';
   $selector->description = 'Description';
-  $selector->selector_selector = ' .selector'; // css selector.
+  $selector->selector_selector = '.selector'; // css selector.
   $selector->selector_highlight = FALSE; // Whether to highlight the selector in the active path. 
   $selectors['machine_name'] = $selector;
   
@@ -55,7 +55,7 @@ function hook_default_sweaver_selector() {
 }
 
 /**
- * Implements hook_default_sweaver_property().
+ * Implementation of hook_default_sweaver_property().
  */
 function hook_default_sweaver_property() {
 
@@ -89,7 +89,7 @@ function hook_default_sweaver_property() {
 }
 
 /**
- * Implements hook_sweaver_type().
+ * Implementation of hook_sweaver_type().
  */
 function sweaver_default_sweaver_type() {
 
@@ -116,20 +116,20 @@ function sweaver_default_sweaver_type() {
 ---------------------------------------------------------
 
 /**
- * Implements hook_sweaver_plugins().
+ * Implementation of hook_sweaver_plugins().
  */
 function hook_sweaver_plugins() {
   $plugins = array();
   
   $plugins['yourpluginname'] = array(
     'handler' => array(
+      'tab' => t('Tab name'), // If you want todo something in the frontend of course.
+      'tab_description' => t('Description of your plugin in frontend'),
+      'path' => drupal_get_path('module', 'yourmodulename') .'/plugins/yourpluginname',
+      'file' => 'yourpluginname.inc',
       'class' => 'yourclassnameusuallythesameasyourpluginname',
       'parent' => 'sweaver_plugin', // This is required.
     ),
-    'tab' => t('Tab name'), // If you want todo something in the frontend of course.
-    'tab_description' => t('Description of your plugin in frontend'),
-    'path' => drupal_get_path('module', 'yourmodulename') . '/plugins/yourpluginname',
-    'file' => 'yourpluginname.inc',
   );
   
   return $plugins;
@@ -291,15 +291,15 @@ Following things in the sweaver_form method will make sure this happens:
     $form['#popups'][] = $key; // Put a FAPI key in the popups array.
     // Link class: popup-link This will trigger the popup.
     // The link needs an id with at least 'link' in the name. The form
-    // it has to show needs the same id, but with 'link' replaced as 'data' .
+    // it has to show needs the same id, but with 'link' replaced as 'data'.
     
 For inspiration, take a look at plugins/sweaver_plugin_themesettings/sweaver_plugin_themesettings.inc.
 
 ------------------------------------------------------
-9. General methods.
+9. General functions.
 ------------------------------------------------------
 
-- sweaver_get_current_style($theme, $reset = FALSE) {}
+- sweaver_get_current_style($reset = FALSE) {}
   Returns the css for the theme.
 - sweaver_get_theme_info($theme) {}
   Returns the theme info for the theme.
@@ -314,7 +314,7 @@ There are a couple of JS functions you can use in your plugins.
   Must a return CSS definitions to write for the editor.
   Implemented in editor and custom css plugin. You must add the plugin
   in the sweaver_form_css_js method in the inline_settings variable in 
-  key 'invokes' . See plugins/sweaver_custom_css/sweaver_custom_css.inc.
+  key 'invokes'. See plugins/sweaver_custom_css/sweaver_custom_css.inc.
 - Drupal.Sweaver.switchTab(remove_tab, show_tab) {}
   Switch to a tab in the editor
 - Drupal.Sweaver.setMessage(messages) {}
@@ -331,7 +331,6 @@ There are a couple of JS functions you can use in your plugins.
 
 There are several css classes which you can use which will do all kinds of stuff
 
-- display-none: hides an element
 - popup-link: put this on a link and this will trigger a sweaver popup
 - sweaver-switch-to-style: adds a brush icon
 - container: lets a div float
@@ -351,19 +350,38 @@ you can select the skin you like.
 The variable in the database is 'sweaver_skin'.
 
 ------------------------------------------------------
-13. Theme info selectors.
+13. Theme extensions.
 ------------------------------------------------------
-You can define selectors per theme in the info file, eg:
 
-sweaver[body] = Body
-sweaver[h1] = Heading 1
+1. Palettes
+
+Every theme can define color palettes. These palettes are
+extra css files that can be added to your theme and that
+overwrite the default css.
+
+You can add a palette and 5 preview colors in your .info file, e.g.:
+
+sweaver[palettes][pink][name] = Pink
+sweaver[palettes][pink][file] = palettes/pink.css
+sweaver[palettes][pink][colors][] = #f98cf0
+sweaver[palettes][pink][colors][] = #af63a9
+sweaver[palettes][pink][colors][] = #af63a9
+sweaver[palettes][pink][colors][] = #cbb2c9
+sweaver[palettes][pink][colors][] = #cbb2c9 
+
+2. Selectors
+
+You can also define selectors per theme in the info file, eg:
+
+sweaver[selectors][body] = Body
+sweaver[selectors][h1] = Heading 1
 ...
 
 The order is how you define it in the info file.
 In the backend you can select if these selectors
 are to be used instead of those in the database.
 
-Note: if you add new selectors but they don't show up,
+Note: if you add new theme extensions but they don't show up,
 then you need to clear the theme registry.
 
 ------------------------------------------------------

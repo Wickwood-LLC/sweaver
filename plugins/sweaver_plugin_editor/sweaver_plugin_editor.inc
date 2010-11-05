@@ -10,7 +10,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Menu registry.
    */
-  function sweaver_menu(&$weight, $page_arguments, $base) {
+  public function sweaver_menu(&$weight, $page_arguments, $base) {
     $items = array();
 
     $base = array(
@@ -22,7 +22,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     $items['admin/config/user-interface/sweaver'] = array(
       'title' => 'Sweaver',
-      'description' => 'Visual interface for tweaking or building Drupal themes. ',
+      'description' => 'Visual interface for tweaking or building Drupal themes.',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('sweaver_settings'),
       'access arguments' => array('configure sweaver'),
@@ -83,7 +83,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     foreach ($menu_items as $key => $item) {
 
-      $items['admin/config/user-interface/sweaver/editor/' . $item['ctools_collection']] = array(
+      $items['admin/config/user-interface/sweaver/editor/'. $item['ctools_collection']] = array(
         'title' => $item['title'],
         'page callback' => 'drupal_get_form',
         'page arguments' => array('sweaver_plugin_editor_objects_list', $item['ctools_object']),
@@ -92,37 +92,37 @@ class sweaver_plugin_editor extends sweaver_plugin {
         'type' => MENU_LOCAL_TASK,
         'weight' => $weight++,
       );
-      $items['admin/config/user-interface/sweaver/editor/add/' . $item['ctools_object']] = $base + array(
+      $items['admin/config/user-interface/sweaver/editor/add/'. $item['ctools_object']] = $base + array(
         'title' => 'Add new ' . $item['ctools_object'],
         'page callback' => 'drupal_get_form',
         'page arguments' => array('sweaver_object_form', $item['ctools_object']),
       );
-      $items['admin/config/user-interface/sweaver/editor/edit/' . $item['ctools_object'] . '/%sweaver_object'] = $base + array(
+      $items['admin/config/user-interface/sweaver/editor/edit/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Edit ' . $item['ctools_object'],
         'page callback' => 'drupal_get_form',
         'page arguments' => array('sweaver_object_form', $item['ctools_object'], 7),
       );
-      $items['admin/config/user-interface/sweaver/editor/delete/' . $item['ctools_object'] . '/%sweaver_object'] = $base + array(
+      $items['admin/config/user-interface/sweaver/editor/delete/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Delete ' . $item['ctools_object'],
         'page callback' => 'drupal_get_form',
         'page arguments' => array('sweaver_object_delete', $item['ctools_collection'], $item['ctools_object'], 7, 'delete', 'deleted'),
       );
-      $items['admin/config/user-interface/sweaver/editor/revert/' . $item['ctools_object'] . '/%sweaver_object'] = $base + array(
+      $items['admin/config/user-interface/sweaver/editor/revert/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Revert ' . $item['ctools_object'],
         'page callback' => 'drupal_get_form',
         'page arguments' => array('sweaver_object_delete', $item['ctools_collection'], $item['ctools_object'], 7, 'revert', 'reverted'),
       );
-      $items['admin/config/user-interface/sweaver/editor/enable/' . $item['ctools_object'] . '/%sweaver_object'] = $base + array(
+      $items['admin/config/user-interface/sweaver/editor/enable/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Enable ' . $item['ctools_object'],
         'page callback' => 'sweaver_object_status',
         'page arguments' => array($item['ctools_collection'], 7, FALSE),
       );
-      $items['admin/config/user-interface/sweaver/editor/disable/' . $item['ctools_object'] . '/%sweaver_object'] = $base + array(
+      $items['admin/config/user-interface/sweaver/editor/disable/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Disable ' . $item['ctools_object'],
         'page callback' => 'sweaver_object_status',
         'page arguments' => array($item['ctools_collection'], 7, TRUE),
       );
-      $items['admin/config/user-interface/sweaver/editor/export/' . $item['ctools_object'] . '/%sweaver_object'] = $base + array(
+      $items['admin/config/user-interface/sweaver/editor/export/'. $item['ctools_object'] .'/%sweaver_object'] = $base + array(
         'title' => 'Export ' . $item['ctools_object'],
         'page callback' => 'sweaver_object_export',
         'page arguments' => array($item['ctools_object'], 7),
@@ -135,10 +135,10 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Theme registry.
    */
-  function sweaver_theme() {
+  public function sweaver_theme() {
     $theme_functions = array();
 
-    $editor_plugin_path = drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor';
+    $editor_plugin_path = drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor';
     $theme_functions = array(
       'sweaver_plugin_editor_config_editor' => array(
         'template' => 'sweaver-plugin-editor-config-editor',
@@ -163,12 +163,11 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Frontend form.
    */
-  function sweaver_form() {
+  public function sweaver_form() {
     $form = array();
     $form['#editor_containers'] = array();
-    global $theme_key;
 
-    $current_style = $this->sweaver_get_current_style($theme_key);
+    $current_style = Sweaver::get_instance()->get_current_style();
     $form['css'] = array(
       '#type' => 'hidden',
       '#default_value' => isset($current_style->css) ? $current_style->css : '',
@@ -182,16 +181,17 @@ class sweaver_plugin_editor extends sweaver_plugin {
     $sweaver_editor_form_configuration = variable_get('sweaver_editor_form_configuration', array());
 
     // Switcher.
-    $tab_switcher = '<div id="changes-toggler">' . t('Show changes') . '</div>';
+    $tab_switcher = '<div id="changes-toggler">'. t('Show changes') .'</div>';
     $form['editor_switcher'] = array(
-      '#markup' => $tab_switcher,
+      '#type' => 'markup',
+      '#value' => $tab_switcher,
     );
 
     // Images.
     $images = array('' => t('Theme default'), 'none' => t('No image'));
     $image_handler_plugin = variable_get('sweaver_plugin_handle_images', '');
     if (!empty($image_handler_plugin)) {
-      $image_handler = sweaver_get_plugin($image_handler_plugin);
+      $image_handler = Sweaver::get_instance()->get_plugin($image_handler_plugin);
       if (is_object($image_handler) && method_exists($image_handler, 'sweaver_images_handler')) {
         $image_handler->sweaver_images_handler($images);
       }
@@ -226,7 +226,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     // Changes.
     $form['editor_changes'] = array(
-      '#markup' => '<div id="editor-changes"></div>',
+      '#type' => 'markup',
+      '#value' => '<div id="editor-changes"></div>',
     );
 
     return $form;
@@ -235,7 +236,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Frontend form render.
    */
-  function sweaver_form_render(&$vars, &$form, $plugin) {
+  public function sweaver_form_render(&$vars, &$form, $plugin) {
 
     $name = $plugin['name'];
     $vars['tabs'][$name]['#tab_name'] = $form[$name]['#tab_name'];
@@ -260,14 +261,14 @@ class sweaver_plugin_editor extends sweaver_plugin {
       }
 
       // Combine all vertical tabs.
-      $vertical_tabs .= '<div id="tab-' . $key . '" class="vertical-tab"><a href="#" ' . $tab_class . '>' . $container_value['title'] . '</a></div>';
+      $vertical_tabs .= '<div id="tab-'. $key .'" class="vertical-tab"><a href="#" '. $tab_class .'>'. $container_value['title'] .'</a></div>';
 
       // Combine all properties in containers.
       $i = 0;
       $container_count = 1;
       $container_total = ceil(count($container_value['properties'])/5);
 
-      $containers .= '<div id="container-' . $key . '" class="container-wrapper">';
+      $containers .= '<div id="container-'. $key .'" class="container-wrapper">';
       foreach ($container_value['properties'] as $property) {
         if ($i == 0) {
           // Add first/last classes to the containers.
@@ -278,7 +279,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
           if ($container_total == $container_count) {
             $container_class .= ' container-last';
           }
-          $containers .= '<div class="container ' . $container_class . '"><div class="container-inner">';
+          $containers .= '<div class="container '. $container_class .'"><div class="container-inner">';
         }
 
         $containers .= drupal_render($form[$name]['form'][$property]);
@@ -309,7 +310,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
   /**
    * Frontend css and js.
    */
-  function sweaver_form_css_js(&$inline_settings) {
+  public function sweaver_form_css_js(&$inline_settings) {
 
     drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor/sweaver_plugin_editor.js');
 
@@ -329,15 +330,12 @@ class sweaver_plugin_editor extends sweaver_plugin {
     // the selectors into the inline javascript.
     $selectors = array();
     $default_source = TRUE;
-    $theme_key = variable_get('theme_default', 'garland');
-    // Check with themeswitch.
-    if ($theme_switch = $this->sweaver_session(NULL, 'sweaver_plugin_switch_theme')) {
-      $theme_key = $theme_switch;
-    }
+    $theme_key = Sweaver::get_instance()->get_theme_key();
+
     if (variable_get('sweaver_selectors_source', FALSE)) {
-      $theme_info = $this->sweaver_get_theme_info($theme_key);
-      if (isset($theme_info['sweaver'])) {
-        foreach ($theme_info['sweaver'] as $selector_name => $selector_description) {
+      $theme_info = sweaver_get_theme_info($theme_key);
+      if (isset($theme_info['sweaver']['selectors'])) {
+        foreach ($theme_info['sweaver']['selectors'] as $selector_name => $selector_description) {
           $selector = new stdClass;
           $name = str_replace(array('', '.', '-'), array(''), $selector_name);
           $selector->name = $name;
@@ -360,8 +358,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     $new_weight = 100;
     $js_selectors = array();
-    $selectors = sweaver_object_load(NULL, 'selector');
-    $order = variable_get('sweaver_selector_order', array());
     foreach ($selectors as $key => $selector) {
       $weight = isset($order[$selector->name]) ? $order[$selector->name] : $new_weight++;
       $options = array(
@@ -434,6 +430,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
     $inline_settings['sweaver']['exclude_classes'] = $js_excluded_classes;
     $inline_settings['sweaver']['invokes'][] = 'sweaver_plugin_editor';
     $inline_settings['sweaver']['preview_selector'] = variable_get('sweaver_preview_selection', TRUE);
+    $inline_settings['sweaver']['combined_selectors'] = variable_get('sweaver_combined_selectors', FALSE);
   }
 
   /**
@@ -444,7 +441,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
    * @param $images
    *   A collection of images to use for the image type.
    */
-  protected function sweaver_property_element($property, $images) {
+  private function sweaver_property_element($property, $images) {
     switch ($property->property_type) {
 
       case 'slider':
@@ -461,9 +458,10 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       case 'color':
         return array(
-          '#markup' =>  '<div id="edit-' . $property->name . '-wrapper" class="form-item clearfix">
-            <label class="color">' . $property->description . ':</label>
-            <div id="' . $property->name . '" class="colorSelector-wrapper">
+          '#type' => 'markup',
+          '#markup' =>  '<div id="edit-'. $property->name .'-wrapper" class="form-item clearfix">
+            <label class="color">' . $property->description .':</label>
+            <div id="'. $property->name .'" class="colorSelector-wrapper">
             <div class="colorSelector"><div style="background-color: #ffffff"></div>
             </div></div></div>'
         );
@@ -490,7 +488,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       case 'parent':
         return array(
-          '#prefix' => '<div class="sweaver-group clearfix"><label>' . $property->description . ':</label><div class="sweaver-group-content">',
+          '#type' => 'markup',
+          '#prefix' => '<div class="sweaver-group clearfix"><label>'. $property->description .':</label><div class="sweaver-group-content">',
           '#suffix' => '</div></div>',
         );
         break;

@@ -9,7 +9,7 @@
 /**
  * Settings form.
  */
-function sweaver_settings($form, &$form_state) {
+function sweaver_settings($form, $form_state) {
   $form = array();
 
   $form['sweaver_enabled'] = array(
@@ -26,9 +26,16 @@ function sweaver_settings($form, &$form_state) {
     '#description' => t('Enable the preview selector so you see what you are going to change.'),
   );
 
+  $form['sweaver_combined_selectors'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable combined selectors'),
+    '#default_value' => variable_get('sweaver_combined_selectors', FALSE),
+    '#description' => t('Show combined tag and id or class selectors in the selectors dropdown.'),
+  );
+
   $skins = array();
   $ignore = array('.', '..', '.svn', 'CVS', '.git');
-  $directories = scandir(drupal_get_path('module', 'sweaver') . '/skins');
+  $directories = scandir(drupal_get_path('module', 'sweaver') .'/skins');
   foreach ($directories as $directory) {
     if (!in_array($directory, $ignore)) {
       $skins[$directory] = $directory;
@@ -74,7 +81,7 @@ function sweaver_settings($form, &$form_state) {
  * Settings screen submit.
  */
 function sweaver_settings_submit($form, &$form_state) {
-  registry_rebuild();
+  drupal_rebuild_theme_registry();
 }
 
 /**
@@ -82,7 +89,7 @@ function sweaver_settings_submit($form, &$form_state) {
  *
  * Selectors also have weights.
  */
-function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
+function sweaver_plugin_editor_objects_list($form_state, $object_type) {
 
   $form['#tree'] = TRUE;
   $form['#objects'] = array();
@@ -93,8 +100,7 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
 
   if ($object_type == 'selector') {
     $form['info'] = array(
-      '#type' => 'markup',
-      '#value' => t('<p>Only the selectors enabled in the list below will be available when using Sweaver. The higher a selector is placed, the more important it is.</p><p>Example: if you have a \'div\' with the class \'block\', then the path in the Sweaver frontend can either show \'a region\' or \'a block\', depending or the weight of these selectors.</p>'),
+      '#markup' => t('<p>Only the selectors enabled in the list below will be available when using Sweaver. The higher a selector is placed, the more important it is.</p><p>Example: if you have a \'div\' with the class \'block\', then the path in the Sweaver frontend can either show \'a region\' or \'a block\', depending or the weight of these selectors.</p>'),
     );
     $form['checkbox'] = array(
       '#type' => 'fieldset',
@@ -108,17 +114,16 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
     $form['checkbox']['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Save setting'),
-      '#suffix' => '<div class="clear-block"></div><br />'
+      '#suffix' => '<div class="clearfix"></div><br />'
     );
   }
 
   $form['add_link'] = array(
-    '#markup' => l(t('Add new @sweaver_object', array('@sweaver_object' => $object_type)), 'admin/config/user-interface/sweaver/editor/add/' . $object_type),
+    '#markup' => l(t('Add new @sweaver_object', array('@sweaver_object' => $object_type)), 'admin/settings/sweaver/editor/add/'. $object_type),
   );
 
   $new_weight = 100;
   $objects = sweaver_object_load(NULL, $object_type, 'all');
-
   if (!empty($objects)) {
 
     if ($object_type == 'selector') {
@@ -143,18 +148,18 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
 
       // Operations.
       $operations = array();
-      $operations['edit'] = l(t('Edit'), 'admin/config/user-interface/sweaver/editor/edit/' . $object_type . '/' . $object_name);
+      $operations['edit'] = l(t('Edit'), 'admin/settings/sweaver/editor/edit/'. $object_type .'/'. $object_name);
 
       if ($object_export_type != 2) {
-        $operations['export'] = l(t('Export'), 'admin/config/user-interface/sweaver/editor/export/' . $object_type . '/' . $object_name);
+        $operations['export'] = l(t('Export'), 'admin/settings/sweaver/editor/export/'. $object_type .'/'. $object_name);
       }
 
       // Delete - revert.
       if ($object_export_type == 1) {
-        $operations['delete'] = l(t('Delete'), 'admin/config/user-interface/sweaver/editor/delete/' . $object_type . '/' . $object_name);
+        $operations['delete'] = l(t('Delete'), 'admin/settings/sweaver/editor/delete/'. $object_type .'/'. $object_name);
       }
       elseif ($object_export_type == 3) {
-        $operations['delete'] = l(t('Revert'), 'admin/config/user-interface/sweaver/editor/revert/' . $object_type . '/' . $object_name);
+        $operations['delete'] = l(t('Revert'), 'admin/settings/sweaver/editor/revert/'. $object_type .'/'. $object_name);
       }
 
       // Disable - enable.
@@ -165,10 +170,10 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
           unset($operations['edit']);
           unset($operations['export']);
           unset($operations['delete']);
-          $operations['status'] = l(t('Enable'), 'admin/config/user-interface/sweaver/editor/enable/' . $object_type . '/' . $object_name);
+          $operations['status'] = l(t('Enable'), 'admin/settings/sweaver/editor/enable/'. $object_type .'/'. $object_name);
         }
         else {
-          $operations['status'] = l(t('Disable'), 'admin/config/user-interface/sweaver/editor/disable/' . $object_type . '/' . $object_name);
+          $operations['status'] = l(t('Disable'), 'admin/settings/sweaver/editor/disable/'. $object_type .'/'. $object_name);
         }
       }
       // Exception for allids.
@@ -185,7 +190,7 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
           '#type' => 'weight',
           '#delta' => 100,
           '#attributes' => array(
-            'class' => array('selector-weight'),
+            'class' => 'selector-weight',
           ),
           '#default_value' => $weight
         );
@@ -203,12 +208,12 @@ function sweaver_plugin_editor_objects_list($form, &$form_state, $object_type) {
     $form['#objects'] = array_merge($form['#objects_enabled'], $form['#objects_disabled']);
   }
   else {
-    $form['info']['#markup'] .= t('<p>No @object_type available.</p>', array('@object_type' => $object_type));
+    $form['info']['#value'] .= t('<p>No @object_type available.</p>', array('@object_type' => $object_type));
   }
 
   // Add submit button.
   if ($object_type == 'selector') {
-    $form['submit'] = array(
+    $form['save_selector_order'] = array(
       '#type' => 'submit',
       '#value' => t('Save order'),
     );
@@ -233,20 +238,19 @@ function sweaver_plugin_editor_objects_list_submit($form, &$form_state) {
 
   // Save order.
   variable_set('sweaver_selector_order', $selectors_order);
-  drupal_set_message(t('The order of your selectors has been saved.'));
+  drupal_set_message(t('The settings have been saved.'));
 }
 
 
 /**
  * Theme objects list form.
  */
-function theme_sweaver_plugin_editor_objects_list(&$vars) {
-  $form = &$vars['form'];
+function theme_sweaver_plugin_editor_objects_list($form) {
 
   $output = drupal_render($form['checkbox']);
   $output .= drupal_render($form['info']);
   $output .= drupal_render($form['add_link']);
-  drupal_add_css(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.css');
+  drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.css');
 
   if (!empty($form['#objects'])) {
 
@@ -292,30 +296,20 @@ function theme_sweaver_plugin_editor_objects_list(&$vars) {
 
       // Only enabled selectors are draggable.
       if ($object['status']) {
-        $row['class'] = array('draggable');
+        $row['class'] = 'draggable';
         $rows_enabled[] = $row;
       }
       else {
-        $row['class'] = array('disabled');
+        $row['class'] = 'disabled';
         $rows_disabled[] = $row;
       }
     }
 
     // Theme output.
-    $variables_enabled = array(
-      'header' => $header,
-      'rows' => $rows_enabled,
-      'attributes' => array('id' => 'object-list-enabled'),
-    );
-    $output .= theme('table', $variables_enabled);
+    $output .= theme('table', $header, $rows_enabled, array('id' => 'object-list-enabled'));
     $output .= drupal_render($form['submit']);
     if (!empty($rows_disabled)) {
-      $variables_disabled = array(
-        'header' => array(),
-        'rows' => $rows_disabled,
-        'attributes' => array('id' => 'object-list-disabled'),
-      );
-      $output .= theme('table', $variables_disabled);
+      $output .= theme('table', array(), $rows_disabled, array('id' => 'object-list-disabled'));
     }
   }
 
@@ -329,7 +323,7 @@ function theme_sweaver_plugin_editor_objects_list(&$vars) {
  */
 function sweaver_object_form($form_state, $object_type, $object = NULL) {
   $form = array();
-  $function = 'sweaver_' . $object_type . '_form';
+  $function = 'sweaver_'. $object_type .'_form';
   return $function($form, $object);
 }
 
@@ -358,7 +352,7 @@ function sweaver_selector_form(&$form, $selector = NULL) {
   // Deny access to edit form for allids, allclasses and alltags.
   if (isset($selector->name) && in_array($selector->name, array('allids', 'alltags', 'allclasses'))) {
     drupal_set_message(t('This selector cannot be edited.'));
-    drupal_goto('admin/config/user-interface/sweaver/editor/selectors');
+    drupal_goto('admin/settings/sweaver/editor/selectors');
   }
 
   if (empty($selector)) {
@@ -448,7 +442,7 @@ function sweaver_selector_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/selectors';
+  $form_state['redirect'] = 'admin/settings/sweaver/editor/selectors';
 }
 
 /**
@@ -568,7 +562,7 @@ function sweaver_property_form(&$form, $property = NULL) {
   sweaver_export_check_serialized_keys($property);
   if (is_array($property->property_options)) {
     foreach ($property->property_options as $key => $value) {
-      $property_options .= $key . '|' . $value . "\n";
+      $property_options .= $key .'|'. $value ."\n";
     }
   }
   $form['property_options'] = array(
@@ -627,7 +621,7 @@ function sweaver_property_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/properties';
+  $form_state['redirect'] = 'admin/settings/sweaver/editor/properties';
 }
 
 /**
@@ -723,7 +717,7 @@ function sweaver_type_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/types';
+  $form_state['redirect'] = 'admin/settings/sweaver/editor/types';
 }
 
 /**
@@ -744,10 +738,10 @@ function sweaver_object_delete(&$form_state, $redirect, $object_type, $object, $
     $form['#object_type'] = $object_type;
     $form['#object_redirect'] = $redirect;
     $form['#action_message'] = $action_message;
-    return confirm_form($form, t('Are you sure you want to @action @type %object?', array('@action' => $action, '@type' => $object_type , '%object' => $object->name)), 'admin/config/user-interface/sweaver/' . $redirect);
+    return confirm_form($form, t('Are you sure you want to @action @type %object?', array('@action' => $action, '@type' => $object_type , '%object' => $object->name)), 'admin/settings/sweaver/'. $redirect);
   }
   else {
-    drupal_goto('admin/config/user-interface/sweaver/editor/' . $redirect);
+    drupal_goto('admin/settings/sweaver/editor/'. $redirect);
   }
 }
 
@@ -762,7 +756,7 @@ function sweaver_object_delete_submit(&$form, &$form_state) {
   $action_message = $form['#action_message'];
   db_query("DELETE FROM {sweaver_%s} WHERE oid = %d", $object_type, $object->oid);
   drupal_set_message(t('Selector %selector has been @action_message.', array('@action_message' => $action_message, '%selector' => $object->name)));
-  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/' . $redirect;
+  $form_state['redirect'] = 'admin/settings/sweaver/editor/'. $redirect;
 }
 
 /**
@@ -772,7 +766,7 @@ function sweaver_object_status($redirect, $object, $status) {
   ctools_include('export');
   ctools_export_set_object_status($object, $status);
   cache_clear_all('sweaver', 'cache');
-  drupal_goto('admin/config/user-interface/sweaver/editor/' . $redirect);
+  drupal_goto('admin/settings/sweaver/editor/'. $redirect);
 }
 
 /**
@@ -783,14 +777,13 @@ function sweaver_plugin_editor_config_editor(&$form_state) {
   $form['#tree'] = TRUE;
   $form['#properties_tree'] = array();
   $form['#properties_region'] = array();
-  $sweaver = sweaver_get_plugin('sweaver_plugin');
-  $form['#containers'] = $sweaver->sweaver_containers();
+  $form['#containers'] = sweaver_containers();
   $sweaver_editor_form_configuration = variable_get('sweaver_editor_form_configuration', array());
 
   $order = array();
   foreach ($sweaver_editor_form_configuration as $container => $settings) {
 
-    $form['container_form_' . $container] = array(
+    $form['container_form_'. $container] = array(
       '#type' => 'textfield',
       '#default_value' => $settings['title'],
       '#size' => 15,
@@ -826,15 +819,15 @@ function sweaver_plugin_editor_config_editor(&$form_state) {
       '#type' => 'weight',
       '#delta' => 50,
       '#attributes' => array(
-        'class' => array('property-weight', 'property-weight-' . $container),
+        'class' => array('property-weight', 'property-weight-'. $container),
       ),
       '#default_value' => $weight,
     );
     $form[$key]['container'] = array(
       '#type' => 'select',
-      '#options' => $sweaver->sweaver_containers(),
+      '#options' => sweaver_containers(),
       '#attributes' => array(
-        'class' => array('property-container-select', 'property-container-' . $container),
+        'class' => array('property-container-select', 'property-container-'. $container),
       ),
       '#default_value' => $container,
     );
@@ -866,7 +859,7 @@ function sweaver_plugin_editor_config_editor_submit(&$form, &$form_state) {
 
   // Containers title and properties order.
   foreach ($form['#containers'] as $container_key => $container) {
-    $editor_form_configuration[$container_key]['title'] = $values['container_form_' . $container_key];
+    $editor_form_configuration[$container_key]['title'] = $values['container_form_'. $container_key];
     if (isset($editor_form_configuration[$container_key]['properties'])) {
       ksort($editor_form_configuration[$container_key]['properties']);
     }

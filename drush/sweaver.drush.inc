@@ -10,7 +10,7 @@
  */
 
 /**
- * Implements hook_drush_help().
+ * Implementation of hook_drush_help().
  */
 function sweaver_drush_help($section) {
   switch ($section) {
@@ -23,7 +23,7 @@ function sweaver_drush_help($section) {
 
 
 /**
- * Implements hook_drush_command().
+ * Implementation of hook_drush_command().
  */
 function sweaver_drush_command() {
   $items = array();
@@ -104,7 +104,7 @@ function sweaver_drush_edit_style($style) {
   $css = (!empty($css)) ? sweaver_drush_json_to_css($css) : '';
 
   // Create a static $data variable with CTools.
-  $data = &drupal_static('sweaver_drush_style_data' , array());
+  $data = &ctools_static('sweaver_drush_style_data' , array());
   $data = array(
     'style' => $style,
     'editor' => $editor,
@@ -112,8 +112,9 @@ function sweaver_drush_edit_style($style) {
   );
 
   // Get some plugins.
-  $sweaver_cs = sweaver_get_plugin('sweaver_plugin_customcss', TRUE);
-  $sweaver_ts = sweaver_get_plugin('sweaver_plugin_themesettings', TRUE);
+  $sweaver = Sweaver::get_instance();
+  $sweaver_cs = $sweaver->get_plugin('sweaver_plugin_customcss');
+  $sweaver_ts = $sweaver->get_plugin('sweaver_plugin_themesettings');
 
   // Create steps array.
   $steps = array(
@@ -140,7 +141,7 @@ function sweaver_drush_edit_style($style) {
       $temp_file = drush_save_data_to_temp_file($step_value);
       $data['tempfiles'][$step] = $temp_file;
       $data['current_step'] = $step;
-      $edit_command = $editor . ' ' . $temp_file;
+      $edit_command = $editor .' '. $temp_file;
       $pipes = array();
 
       // Opend the editor.
@@ -174,7 +175,7 @@ function sweaver_drush_edit_style($style) {
   // Do we want to save ?
   $message = 'Do you want to save all changes ?';
   if (isset($style->active) && $style->active) {
-    $message = 'Do you want to save all changes ? All changes will be visible for your visitors. ';
+    $message = 'Do you want to save all changes ? All changes will be visible for your visitors.';
   }
   $save = drush_confirm(dt($message));
 
@@ -185,16 +186,15 @@ function sweaver_drush_edit_style($style) {
 
   // Let's save!
   else {
-    // Get sweaver plugin.
-    $sweaver = sweaver_get_plugin('sweaver_plugin');
-    $sweaver_styles = sweaver_get_plugin('sweaver_plugin_styles');
+    // Get sweaver plugin styles.
+    $sweaver_styles = $sweaver->get_plugin('sweaver_plugin_styles');
 
     // Save into database.
     $update = array('style_id');
 
     // Create stylesheet.
     $stylesheet = $style->write_css;
-    $stylesheet .= "\n" . $style->customcss;
+    $stylesheet .= "\n". $style->customcss;
 
     // Save draft version.
     if (!isset($style->active)) {
@@ -213,13 +213,13 @@ function sweaver_drush_edit_style($style) {
     if (isset($style->active)) {
       $sweaver_styles->sweaver_export_file($stylesheet, $style, 'live');
       if ($data['ts_enabled']) {
-        $theme_settings_var = 'theme_' . $style->theme . '_settings';
+        $theme_settings_var = str_replace('/', '_', 'theme_'. $style->theme .'_settings');
         variable_set($theme_settings_var, unserialize($style->themesettings));
       }
     }
 
     // Flush cache.
-    $sweaver->sweaver_clear_cache();
+    sweaver_clear_cache();
   }
 }
 
@@ -240,7 +240,7 @@ function sweaver_drush_print_styles($styles) {
       unset($styles[$key]->themesettings);
       $style->style_id = $key;
       if (isset($style->active)) {
-        $style->style = $style->style . ' ' . dt('(live)');
+        $style->style = $style->style .' '. dt('(live)');
         unset($style->active);
       }
     }
@@ -261,16 +261,16 @@ function sweaver_drush_list_styles() {
     $i = 1;
 
     // Draft versions.
-    $drafts = db_query("SELECT * FROM {sweaver_style_draft}")->fetchAll();
-    foreach ($drafts as $draft) {
-      $styles[$i] = $draft;
+    $result = db_query("SELECT * FROM {sweaver_style_draft}");
+    while ($row = db_fetch_object($result)) {
+      $styles[$i] = $row;
       $i++;
     }
 
     // Live versions.
-    $lives = db_query("SELECT * FROM {sweaver_style} where active = 1")->fetchAll();
-    foreach ($lives as $live) {
-      $styles[$i] = $live;
+    $result = db_query("SELECT * FROM {sweaver_style} where active = 1");
+    while ($row = db_fetch_object($result)) {
+      $styles[$i] = $row;
       $i++;
     }
   }
@@ -279,6 +279,7 @@ function sweaver_drush_list_styles() {
     drush_print('Sweaver is not installed.');
     exit();
   }
+
   return $styles;
 }
 
@@ -297,18 +298,18 @@ function sweaver_drush_variables() {
 
   switch ($action) {
     case 'list':
-      drush_print(dt('Your favorite editor is currently @editor. ', array('@editor' => variable_get('sweaver_drush_editor', 'vi'))));
-      drush_print(dt('Warning message currently set to @warning. ', array('@warning' => variable_get('sweaver_drush_warning_edit', 'true'))));
+      drush_print(dt('Your favorite editor is currently @editor.', array('@editor' => variable_get('sweaver_drush_editor', 'vi'))));
+      drush_print(dt('Warning message currently set to @warning.', array('@warning' => variable_get('sweaver_drush_warning_edit', 'true'))));
       break;
 
     case 'save':
       if ($args[0] == 'tmp') {
         variable_set('sweaver_drush_editor', $args[1]);
-        drush_print(dt('Temporary directory set to @tmp. ', array('@tmp' => $args[1])));
+        drush_print(dt('Temporary directory set to @tmp.', array('@tmp' => $args[1])));
       }
       elseif ($args[0] == 'warning') {
         variable_set('sweaver_drush_warning_edit', $args[1]);
-        drush_print(dt('Style warning set to @warning. ', array('@warning' => $args[1])));
+        drush_print(dt('Style warning set to @warning.', array('@warning' => $args[1])));
       }
       else {
         drush_print(dt('The first argument can only be "editor" or "warning"'));
@@ -349,8 +350,8 @@ function sweaver_drush_verify($args, $type = 'styles') {
  */
 function sweaver_drush_verify_edit($style) {
   $write = TRUE;
-  $draft_file = file_directory_path() . '/sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_draft.css';
-  $live_file = file_directory_path() . '/sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_live.css';
+  $draft_file = file_directory_path() .'/sweaver/sweaver_'. $style->theme .'_'. $style->style_id .'_draft.css';
+  $live_file = file_directory_path() .'/sweaver/sweaver_'. $style->theme .'_'. $style->style_id .'_live.css';
   $touch_file = (isset($style->active)) ? $live_file : $draft_file;
   $write = @touch($touch_file);
 
@@ -503,7 +504,7 @@ Step 3
 Edit the themesettings when the themesettings plugin is enabled.
 Some values are booleans in the database. So: 0 = false, set to 1 to become true.
 It will be presented like this. Do not remove the colons.
-$key :: $value
+$key : $value
 
 Step 4
 ------
