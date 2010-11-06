@@ -212,14 +212,21 @@ Drupal.Sweaver.initForm = function() {
     var type = Drupal.Sweaver.activeElement.type;
     $.each(Drupal.Sweaver.properties, function(index, object){
       if(object.name in Drupal.Sweaver.types[type]) {
-        $('#sweaver #edit-' + object.name + '-wrapper').show();
+        // @todo jyve is this ok ? D7 changed output of form items
+        // instead of an id, it is now a class and no more -wrapper
+        // I left the old ones for reference
+        //$('#sweaver #edit-' + object.name + '-wrapper').show();
+        $('#sweaver .form-item-' + object.name).show();
         // From the moment that we have an visible element in a group, we need to show that group.
-        $('#sweaver #edit-' + object.name + '-wrapper').parents('.sweaver-group').show();
+        //$('#sweaver #edit-' + object.name + '-wrapper').parents('.sweaver-group').show();
+        $('#sweaver .form-item-' + object.name).parents('.sweaver-group').show();
         // From the moment that we have an visible element in a container, we need to show that container.
-        $('#sweaver #edit-' + object.name + '-wrapper').parents('.container').show();
+        //$('#sweaver #edit-' + object.name + '-wrapper').parents('.container').show();
+        $('#sweaver .form-item-' + object.name).parents('.container').show();
       }
       else {
-        $('#sweaver #edit-' + object.name + '-wrapper').hide();
+        //$('#sweaver #edit-' + object.name + '-wrapper').hide();
+        $('#sweaver .form-item-' + object.name).hide();
       }
     });
   }

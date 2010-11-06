@@ -455,7 +455,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       case 'color':
         return array(
-          '#type' => 'markup',
           '#markup' =>  '<div id="edit-'. $property->name .'-wrapper" class="form-item clearfix">
             <label class="color">' . $property->description .':</label>
             <div id="'. $property->name .'" class="colorSelector-wrapper">
