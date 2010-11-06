@@ -124,9 +124,9 @@ class sweaver_plugin_palettes extends sweaver_plugin {
     $clicked_button = $form_state['clicked_button']['#value'];
 
     if (($clicked_button == t('Save and continue') || $clicked_button == t('Save and publish') || $clicked_button == t('Publish style')) && isset($form_state['style_id'])) {
-      db_query("UPDATE {sweaver_style_draft} set palette = '%s' WHERE style_id = %d", $form_state['values']['sweaver_plugin_palette'], $form_state['style_id']);
+      db_query("UPDATE {sweaver_style_draft} set palette = :palette WHERE style_id = :style_id", array(':palette' => $form_state['values']['sweaver_plugin_palette'], ':style_id' => $form_state['style_id']));
       if ($form_state['publish']) {
-        db_query("UPDATE {sweaver_style} set palette = '%s' WHERE style_id = %d", $form_state['values']['sweaver_plugin_palette'], $form_state['style_id']);
+        db_query("UPDATE {sweaver_style} set palette = :palette WHERE style_id = :style_id", array(':palette' => $form_state['values']['sweaver_plugin_palette'], ':style_id' => $form_state['style_id']));
       }
     }
   }
