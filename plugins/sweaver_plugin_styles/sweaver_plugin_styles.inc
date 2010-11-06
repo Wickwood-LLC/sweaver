@@ -639,7 +639,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     sweaver_session(TRUE, 'sweaver_temp');
 
     // Exit.
-    exit(drupal_json(array('error' => 0)));
+    exit(drupal_json_encode(array('error' => 0)));
   }
 }
 
