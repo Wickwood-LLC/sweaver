@@ -20,7 +20,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
   /**
    * Implementation of getInfo().
    */
-  function getInfo() {
+  public static function getInfo() {
     return array(
       'name' => t('Sweaver theme settings'),
       'description' => t('Tests for the theme settings.'),
@@ -32,7 +32,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
    * Implementation of setUp().
    */
   function setUp() {
-    parent::setUp('ctools', 'sweaver', 'jquery_ui');
+    parent::setUp('ctools', 'sweaver');
   }
 
   /**
@@ -233,7 +233,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     $css = $this->getCSS($style_id);
 
     // Assert CSS is equal.
-    $this->assertEqual($configuration['edit']['css'], $css->css, t('CSS is equal for style id '. $css->style_id .' in scenario '. $scenario));
+    $this->assertEqual($configuration['edit']['sweaver-css'], $css->css, t('CSS is equal for style id '. $css->style_id .' in scenario '. $scenario));
 
     // Assert draft css is written, live not.
     $this->assertCSSFiles($scenario, $style_id, TRUE, $live, $check, $equal);
@@ -442,8 +442,8 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     else {
       $this->assertNoRaw('/themes/bartik/logo.png', t('Logo is not original garland for style id '. $style_id .' in scenario '. $scenario));
       $this->assertNoRaw('/misc/favicon.ico', t('Favicon is not original druplicon for style id '. $style_id .' in scenario '. $scenario));
-      $live_logo = file_directory_path() .'/sweaver/logo_garland_'. $style_id .'_live.'. $logo;
-      $live_favicon = file_directory_path() .'/sweaver/favicon_garland_'. $style_id .'_live.'. $favicon;
+      $live_logo = '/sweaver/logo_garland_'. $style_id .'_live.'. $logo;
+      $live_favicon = '/sweaver/favicon_garland_'. $style_id .'_live.'. $favicon;
       $this->assertRaw($live_logo, t('Logo is uploaded logo for style id '. $style_id .' in scenario '. $scenario .' ('. $live_logo .')'));
       $this->assertRaw($live_favicon, t('Favicon is uploaded logo for style id '. $style_id .' in scenario '. $scenario .' ('. $live_favicon .')'));
     }

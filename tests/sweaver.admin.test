@@ -31,7 +31,8 @@ class sweaverAdministration extends DrupalWebTestCase {
     $this->image_path = 'misc/druplicon.png';
     $modules = array('sweaver', 'ctools');
 
-    $this->admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver'));
+    // @todo administer nodes & check on node add is not working.
+    $this->admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver', 'administer nodes'));
     $this->drupalLogin($this->admin_user);
 
     // Imagecache setups.

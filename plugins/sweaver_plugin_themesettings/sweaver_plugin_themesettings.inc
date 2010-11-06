@@ -154,27 +154,27 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       // Rename logo / favicon when needed.
       foreach (array('logo_path', 'favicon_path') as $file) {
 
-        $type = str_replace('_path', '', $file);
+        // Create the default variable for this file.
+        $default = 'default_' . str_replace('_path', '', $file);
         $theme_name = $form['#current_theme'];
 
         // Rename when just uploaded.
         if (isset($form['sweaver_plugin_themesettings']['form']['#'. $file])) {
-          $source_path = file_directory_path() .'/'. $form['sweaver_plugin_themesettings']['form']['#'. $file];
-          $dest_draft = 'sweaver/'. $type .'_'. $theme_name .'_'. $style_id .'_draft.'. $form['sweaver_plugin_themesettings']['form']['#'. $file .'_extension'];
-          file_move($source_path, $dest_draft, FILE_EXISTS_REPLACE);
-          $theme_values[$file] = file_directory_path() .'/'. $dest_draft;
+          $type = str_replace('_path', '', $file);
+          $source_path = $form['sweaver_plugin_themesettings']['form']['#' . $file];
+          $dest_draft = file_default_scheme() . '://sweaver/' . $type . '_' . $theme_name . '_' . $style_id . '_draft.' . $form['sweaver_plugin_themesettings']['form']['#' . $file . '_extension'];
+          file_unmanaged_move($source_path, $dest_draft, FILE_EXISTS_REPLACE);
+          $theme_values[$file] = $dest_draft;
+          $theme_values[$default] = 0;
         }
-
-        // Create the default variable for this file.
-        $default = 'default_'. str_replace('_path', '', $file);
 
         // Move temporary if needed.
         if ($style_id != 'temp' && !$theme_values[$default] && !empty($theme_values[$file]) && strpos($theme_values[$file], 'temp_draft') !== FALSE) {
           $parts = pathinfo($theme_values[$file]);
           $temp_path = $theme_values[$file];
-          $dest_draft = 'sweaver/'. $type .'_'. $theme_name .'_'. $style_id .'_draft.'. $parts['extension'];
-          file_move($temp_path, $dest_draft, FILE_EXISTS_REPLACE);
-          $theme_values[$file] = file_directory_path() .'/'. $dest_draft;
+          $dest_draft = file_default_scheme() . '://sweaver/' . $type . '_'. $theme_name . '_' . $style_id . '_draft.' . $parts['extension'];
+          file_unmanaged_move($temp_path, $dest_draft, FILE_EXISTS_REPLACE);
+          $theme_values[$file] = $dest_draft;
         }
 
         // Copy to live if save_live is found. Can either be directly after the upload
@@ -182,7 +182,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         if (isset($form_state['publish']) && $form_state['publish'] && !$theme_values[$default] && !empty($theme_values[$file])) {
           $source_path = $theme_values[$file];
           $dest_live = str_replace('_draft', '_live', $theme_values[$file]);
-          file_copy($source_path, $dest_live, FILE_EXISTS_REPLACE);
+          file_unmanaged_copy($source_path, $dest_live, FILE_EXISTS_REPLACE);
           $theme_values[$file] = $dest_live;
         }
       }

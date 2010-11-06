@@ -56,7 +56,7 @@ class sweaverEditor extends DrupalWebTestCase {
     $editor_tests = t('Editor testing');
 
     // Enable minelli.
-    db_query("UPDATE {system} set status = 1 where type = 'theme' AND name = 'minnelli'");
+    db_query("UPDATE {system} set status = 1 where type = 'theme' AND name = 'garland'");
 
     // Assert custom css plugin is disabled.
     $this->drupalGet('user');
@@ -73,11 +73,11 @@ class sweaverEditor extends DrupalWebTestCase {
 
     // Switch to minnelli.
     $this->assertNoRaw('sweaver_themeswitch/bartik', t('Can not switch to bartik'), $editor_tests);
-    $this->drupalGet('sweaver_themeswitch/minnelli');
-    $this->assertRaw(t('You have switched to Minnelli.'), t('Switch to minnelli success.'), $editor_tests);
+    $this->drupalGet('sweaver_themeswitch/garland');
+    $this->assertRaw(t('You have switched to Garland.'), t('Switch to garland success.'), $editor_tests);
 
     // Switch back to bartik.
-    $this->assertNoRaw('sweaver_themeswitch/minnelli', t('Can not switch to minnelli'), $editor_tests);
+    $this->assertNoRaw('sweaver_themeswitch/garland', t('Can not switch to garland'), $editor_tests);
     $this->drupalGet('sweaver_themeswitch/bartik');
     $this->assertRaw(t('You have switched to Bartik.'), t('Switch to bartik success.'), $editor_tests);
 
@@ -93,7 +93,7 @@ class sweaverEditor extends DrupalWebTestCase {
     $this->drupalPost('node', $edit, t('Save and continue'));
     $this->assertRaw(t('The style Bartik 1 has been saved. You can keep working on your style.'), t('Style has been saved'), $editor_tests);
     $css = db_query("SELECT * FROM {sweaver_style_draft} where style_id = 1 AND theme = 'bartik'")->fetchObject();
-    $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
+    $this->assertEqual($edit['sweaver-css'], $css->css, t('Css has been saved'), $editor_tests);
     $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
     $this->assertTrue(file_exists($this->sweaver_public_path() .'/sweaver/sweaver_bartik_'. $css->style_id .'_draft.css'), 'Draft filename written', $editor_tests);
     $this->assertFalse(file_exists($this->sweaver_public_path() .'/sweaver/sweaver_bartik_'. $css->style_id .'_live.css'), 'Live filename not written', $editor_tests);
@@ -113,7 +113,7 @@ class sweaverEditor extends DrupalWebTestCase {
     $this->drupalPost('node', $edit, t('Save and continue'));
     $this->assertRaw(t('The style Bartik 2 has been saved. You can keep working on your style.'), t('Style has been saved'), $editor_tests);
     $css = db_query("SELECT * FROM {sweaver_style_draft} where style_id = 2 AND theme = 'bartik'")->fetchObject();
-    $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
+    $this->assertEqual($edit['sweaver-css'], $css->css, t('Css has been saved'), $editor_tests);
     $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
     $this->assertTrue(file_exists($this->sweaver_public_path() .'/sweaver/sweaver_bartik_'. $css->style_id .'_draft.css'), 'Draft filename written', $editor_tests);
     $this->assertFalse(file_exists($this->sweaver_public_path() .'/sweaver/sweaver_bartik_'. $css->style_id .'_live.css'), 'Live filename not written', $editor_tests);
@@ -166,7 +166,7 @@ class sweaverEditor extends DrupalWebTestCase {
     $this->drupalPost('node', $edit, t('Save and continue'));
     $this->assertRaw(t('The style Bartik 3 has been saved. You can keep working on your style.'), t('Style has been saved'), $editor_tests);
     $css = db_query("SELECT * FROM {sweaver_style_draft} where style_id = 3 AND theme = 'bartik'")->fetchObject();
-    $this->assertEqual($edit['css'], $css->css, t('Css has been saved'), $editor_tests);
+    $this->assertEqual($edit['sweaver-css'], $css->css, t('Css has been saved'), $editor_tests);
     $this->assertEqual($edit['sweaver_plugin_custom_css'], $css->customcss, t('Custom css saved'), $editor_tests);
     $this->assertTrue(file_exists($this->sweaver_public_path() .'/sweaver/sweaver_bartik_'. $css->style_id .'_draft.css'), 'Draft filename written', $editor_tests);
     $this->assertFalse(file_exists($this->sweaver_public_path() .'/sweaver/sweaver_bartik_'. $css->style_id .'_live.css'), 'Live filename not written', $editor_tests);
@@ -186,7 +186,7 @@ class sweaverEditor extends DrupalWebTestCase {
 
     // Resave this style as Bartik 4.
     $edit = array(
-      'sweavercss' => '{"#center ":{"font-size":30}}',
+      'sweaver-css' => '{"#center ":{"font-size":30}}',
       'css-rendered' => '<style type="text/css">#center { font-size: 30px; } </style>',
       'sweaver_plugin_custom_css' => '#header { background-color: blue; }',
       'save_style' => 'Bartik 4',

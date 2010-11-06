@@ -309,7 +309,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
 
       // Always save the draft version.
       $style->theme = $theme_key;
-      $style->css = $form_state['values']['css'];
+      $style->css = $form_state['values']['sweaver-css'];
       drupal_write_record('sweaver_style_draft', $style, $update);
       $this->sweaver_export_file($form_state['values']['css-rendered'], $style);
       $form_state['style_id'] = $style->style_id;
