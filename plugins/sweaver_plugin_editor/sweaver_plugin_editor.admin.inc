@@ -190,7 +190,7 @@ function sweaver_plugin_editor_objects_list($form_state, $object_type) {
           '#type' => 'weight',
           '#delta' => 100,
           '#attributes' => array(
-            'class' => 'selector-weight',
+            'class' => array('selector-weight'),
           ),
           '#default_value' => $weight
         );

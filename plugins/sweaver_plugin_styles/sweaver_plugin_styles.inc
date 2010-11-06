@@ -96,7 +96,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
           1 => t('Existing style'),
         ),
         '#default_value' => 1,
-        '#attributes' => array('class' => 'radio-style-save-type'),
+        '#attributes' => array('class' => array('radio-style-save-type')),
         '#weight' => 0,
       );
 
@@ -622,6 +622,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $style->css = $_POST['css'];
     $style->customcss = $_POST['customcss'];
     $style->palette = $_POST['palette'];
+    watchdog('save', 'autosave baby' . print_r($style, true));
 
     // Get the themesettings if applicable and overwrite style id & style name.
     $sweaver = Sweaver::get_instance();

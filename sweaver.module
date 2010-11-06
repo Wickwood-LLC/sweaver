@@ -355,7 +355,7 @@ function sweaver_preprocess_page(&$vars) {
     $sweaver = Sweaver::get_instance();
     $sweaver_style = $sweaver->get_current_style();
     if (isset($sweaver_style->css) && drupal_static('load_style')) {
-      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $theme_key . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . ' .css';
+      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $sweaver->get_theme_key() . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . ' .css';
       $settings = array(
         'weight' => 1000,
         'preprocess' => TRUE,

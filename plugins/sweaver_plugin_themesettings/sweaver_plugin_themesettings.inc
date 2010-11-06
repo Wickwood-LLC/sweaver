@@ -365,8 +365,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     );
     foreach ($toggles as $name => $title) {
       if ((!$key) || in_array($name, $features)) {
-        $form['theme_settings']['toggle_'. $name] = array('#type' => 'checkbox', '#title' => check_plain($title), '#default_value' => $settings['toggle_'. $name]);
-        // Disable checkboxes for features not supported in the current configuration.
+        $form['theme_settings']['toggle_' . $name] = array('#type' => 'checkbox', '#title' => check_plain($title), '#default_value' => $this->sweaver_has_theme_setting('toggle_' . $name, $key, $revision_theme_settings));        // Disable checkboxes for features not supported in the current configuration.
         if (isset($disabled['toggle_'. $name])) {
           $form['theme_settings']['toggle_'. $name]['#disabled'] = TRUE;
         }
@@ -386,19 +385,19 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         '#type' => 'fieldset',
         '#title' => t('Logo image settings'),
         '#description' => t('If toggled on, the following logo will be displayed.'),
-        '#attributes' => array('class' => 'theme-settings-bottom'),
+        '#attributes' => array('class' => array('theme-settings-bottom')),
       );
       $form['logo']['default_logo'] = array(
         '#type' => 'checkbox',
         '#title' => t('Use the default logo'),
-        '#default_value' => $settings['default_logo'],
+        '#default_value' => $this->sweaver_has_theme_setting('default_logo', $key, $revision_theme_settings),
         '#tree' => FALSE,
         '#description' => t('Check here if you want the theme to use the logo supplied with it.')
       );
       $form['logo']['logo_path'] = array(
         '#type' => 'textfield',
         '#title' => t('Path to custom logo'),
-        '#default_value' => $settings['logo_path'],
+        '#default_value' => $this->sweaver_has_theme_setting('logo_path', $key, $revision_theme_settings),
         '#description' => t('The path to the file you would like to use as your logo file instead of the default logo.'));
 
       $form['logo']['logo_upload'] = array(
@@ -418,13 +417,13 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       $form['favicon']['default_favicon'] = array(
         '#type' => 'checkbox',
         '#title' => t('Use the default shortcut icon.'),
-        '#default_value' => $settings['default_favicon'],
+        '#default_value' => $this->sweaver_has_theme_setting('default_favicon', $key, $revision_theme_settings),
         '#description' => t('Check here if you want the theme to use the default shortcut icon.')
       );
       $form['favicon']['favicon_path'] = array(
         '#type' => 'textfield',
         '#title' => t('Path to custom icon'),
-        '#default_value' => $settings['favicon_path'],
+        '#default_value' => $this->sweaver_has_theme_setting('favicon_path', $key, $revision_theme_settings),
         '#description' => t('The path to the image file you would like to use as your custom shortcut icon.')
       );
 
