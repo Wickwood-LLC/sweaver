@@ -300,7 +300,7 @@ function sweaver_init() {
     $sweaver = Sweaver::get_instance();
 
     $load_style = FALSE;
-    $inline_js_settings = array('sweaver' => array('invokes' => array()));
+    $inline_js_settings = array('sweaver' => array());
     $skin = variable_get('sweaver_skin', SWEAVER_SKIN);
 
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/sweaver_plugin.js');

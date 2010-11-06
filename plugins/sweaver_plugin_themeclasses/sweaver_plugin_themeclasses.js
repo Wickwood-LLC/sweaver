@@ -1,5 +1,7 @@
 /* $Id$ */
 
+(function ($) {
+
 /**
  * See if the classes are found on the page.
  */
@@ -28,3 +30,5 @@ Drupal.Sweaver.ThemeClasses = function(class_name, class_label) {
   class_label = class_label.replace('spt-', '');  
   Drupal.Sweaver.updateStyleTab(class_name, class_label);
 }
+
+})(jQuery);

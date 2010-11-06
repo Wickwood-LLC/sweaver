@@ -428,7 +428,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
     $inline_settings['sweaver']['properties'] = $js_properties;
     $inline_settings['sweaver']['exclude_selectors'] = $js_excluded_selectors;
     $inline_settings['sweaver']['exclude_classes'] = $js_excluded_classes;
-    $inline_settings['sweaver']['invokes'][] = 'sweaver_plugin_editor';
     $inline_settings['sweaver']['preview_selector'] = variable_get('sweaver_preview_selection', TRUE);
     $inline_settings['sweaver']['combined_selectors'] = variable_get('sweaver_combined_selectors', FALSE);
   }

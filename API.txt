@@ -310,11 +310,9 @@ For inspiration, take a look at plugins/sweaver_plugin_themesettings/sweaver_plu
 
 There are a couple of JS functions you can use in your plugins.
 
-- HOOK_updateCss() {} 
+- Drupal.Sweaver.invokes.processCSS()
   Must a return CSS definitions to write for the editor.
-  Implemented in editor and custom css plugin. You must add the plugin
-  in the sweaver_form_css_js method in the inline_settings variable in 
-  key 'invokes'. See plugins/sweaver_custom_css/sweaver_custom_css.inc.
+  Implemented in editor and custom css plugin. 
 - Drupal.Sweaver.switchTab(remove_tab, show_tab) {}
   Switch to a tab in the editor
 - Drupal.Sweaver.setMessage(messages) {}

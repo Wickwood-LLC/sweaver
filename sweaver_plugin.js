@@ -3,6 +3,7 @@
 (function ($) {
 
 Drupal.Sweaver = Drupal.Sweaver || {};
+Drupal.Sweaver.invokes = Drupal.Sweaver.invokes || {};
 
 Drupal.Sweaver.messageTimer = null;
 Drupal.Sweaver.changed = false;
@@ -11,13 +12,12 @@ Drupal.Sweaver.popup = '';
 Drupal.Sweaver.writeCss = function(context) {
 
   var fullCss = '';
-  /*$.each(Drupal.settings.sweaver['invokes'], function(index, module) {
-    var invoke_function = module +'_updateCss';
-    var css = window[invoke_function].apply(this);
+  $.each(Drupal.Sweaver.invokes, function(func) {
+    var css = this.execute();
     if (css != '') {
       fullCss += css;
     }
-  });*/
+  });
   $style = $('head style[title="sweaver"]');
   $style.remove();
   $('head').append('<style type="text/css" title="sweaver">' + fullCss + '</style>');

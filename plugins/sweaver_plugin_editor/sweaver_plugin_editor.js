@@ -42,60 +42,60 @@ $(document).ready(function() {
 });
 
 /**
- * Implementation of HOOK_updateCss().
- *
- * Return editor css.
+ * Implements Drupal.Sweaver.invokes.processCSS().
  */
-function sweaver_plugin_editor_updateCss() {
-  var css = '';
-  var fullCss = '';
-  var cssContent = '';
+Drupal.Sweaver.invokes.editor = {
+  execute: function (context, settings) {
+    var css = '';
+    var fullCss = '';
+    var cssContent = '';
 
-  for (var key in Drupal.Sweaver.css) {
-    var target = Drupal.Sweaver.css[key];
-    for (var prop in target) {
-      if (Drupal.Sweaver.properties[prop]) {
+    for (var key in Drupal.Sweaver.css) {
+      var target = Drupal.Sweaver.css[key];
+      for (var prop in target) {
+        if (Drupal.Sweaver.properties[prop]) {
 
-        var properties = Drupal.Sweaver.properties[prop]['property'].split(' ');
-        $.each(properties, function(i, property) {
-          // Don't write anything if the value is empty.
-          // 0 is not empty!
-          if (target[prop] == '' && target[prop] != '0') {
-            cssContent += '';
-          }
-          // Don't add a prefix and suffix for these exceptions.
-          else if ((property == 'background-color' && target[prop] == 'transparent') || (property == 'background-image' && target[prop] == 'none')) {
-            cssContent += '  ' + property + ': ' + target[prop] + ';\n';
-          }
-          else {
-            cssContent += '  ' + property + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
-          }
-        });
+          var properties = Drupal.Sweaver.properties[prop]['property'].split(' ');
+          $.each(properties, function(i, property) {
+            // Don't write anything if the value is empty.
+            // 0 is not empty!
+            if (target[prop] == '' && target[prop] != '0') {
+              cssContent += '';
+            }
+            // Don't add a prefix and suffix for these exceptions.
+            else if ((property == 'background-color' && target[prop] == 'transparent') || (property == 'background-image' && target[prop] == 'none')) {
+              cssContent += '  ' + property + ': ' + target[prop] + ';\n';
+            }
+            else {
+              cssContent += '  ' + property + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
+            }
+          });
+        }
+      }
+
+      if (cssContent != '') {
+        css += key + '{\n';
+        css += cssContent;
+        css += '}\n';
+        fullCss += css;
+        css = '';
+        cssContent = '';
+      }
+      // Remove key from Drupal.Sweaver.css
+      else {
+        delete Drupal.Sweaver.css[key];
       }
     }
 
-    if (cssContent != '') {
-      css += key + '{\n';
-      css += cssContent;
-      css += '}\n';
-      fullCss += css;
-      css = '';
-      cssContent = '';
-    }
-    // Remove key from Drupal.Sweaver.css
-    else {
-      delete Drupal.Sweaver.css[key];
-    }
+    // Store css in hidden field in save form
+    $("#sweaver [name=sweaver-css]").val($.toJSON(Drupal.Sweaver.css));
+
+    // Add inline css
+    $("#sweaver-form [name=sweaver-css]").val(fullCss);
+
+    return fullCss;
   }
-
-  // Store css in hidden field in save form
-  $("#sweaver [name=sweaver-css]").val($.toJSON(Drupal.Sweaver.css));
-
-  // Add inline css
-  $("#sweaver-form [name=sweaver-css]").val(fullCss);
-
-  return fullCss;
-}
+};
 
 /**
  * Initialize member variables and properties.

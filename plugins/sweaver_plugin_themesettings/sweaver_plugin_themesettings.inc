@@ -191,10 +191,10 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       // save_live key is found also update the live table.
       if ($style_id != 'temp') {
         $theme_values_serialized = serialize($theme_values);
-        db_query("UPDATE {sweaver_style_draft} set themesettings = '%s' WHERE style_id = %d", $theme_values_serialized, $style_id);
+        db_query("UPDATE {sweaver_style_draft} set themesettings = :themesettings WHERE style_id = :style_id", array(':themesettings' => $theme_values_serialized, ':style_id' => $style_id));
         if ($form_state['publish']) {
           variable_set($theme_key, $theme_values);
-          db_query("UPDATE {sweaver_style} set themesettings = '%s' WHERE style_id = %d", $theme_values_serialized, $style_id);
+          db_query("UPDATE {sweaver_style} set themesettings = :themesettings WHERE style_id = :style_id", array(':themesettings' => $theme_values_serialized, ':style_id' => $style_id));
         }
 
         // Fire other submit functions on the theme settings form.

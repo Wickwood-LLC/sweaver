@@ -3,15 +3,15 @@
 (function ($) {
 
 /**
- * Implementation of HOOK_updateCss().
- * 
- * Return custom css.
+ * Implements Drupal.Sweaver.invokes.processCSS().
  */
-sweaver_plugin_customcss_updateCss = function() {
-  var fullCss = '';
-  fullCss = $('#edit-sweaver-plugin-custom-css').val();
-  return fullCss;
-}
+Drupal.Sweaver.invokes.customcss = {
+  execute: function (context, settings) {
+    var fullCss = '';
+    fullCss = $('#edit-sweaver-plugin-custom-css').val();
+    return fullCss;
+  }
+};
 
 /**
  * Preview button onclick behavior.
