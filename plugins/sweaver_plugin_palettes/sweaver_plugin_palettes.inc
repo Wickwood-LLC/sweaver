@@ -110,7 +110,7 @@ class sweaver_plugin_palettes extends sweaver_plugin {
       );
 
       $form['markup'] = array(
-        '#markup' => 'markup',
+        '#markup' => $containers,
       );
     }
 
