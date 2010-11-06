@@ -298,11 +298,11 @@ Drupal.Sweaver.addSliders = function() {
   });
 
   $("#sweaver .slider").each(function() {
-    minSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_min;
+    var minSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_min;
     if (minSlider == null) {
       minSlider = 0;
     }
-    maxSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_max;
+    var maxSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_max;
     if (maxSlider == null) {
       maxSlider = 2000;
     }

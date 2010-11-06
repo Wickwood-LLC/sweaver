@@ -98,8 +98,8 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     $sweaver_style = Sweaver::get_instance()->get_plugin('sweaver_plugin_styles');
     $sweaver_ts = Sweaver::get_instance()->get_plugin('sweaver_plugin_themesettings');
 
-    $form['#current_theme'] = 'garland';
-    $form['sweaver_plugin_themesettings']['form'] = $sweaver_ts->sweaver_get_theme_settings_form('garland', array());
+    $form['#current_theme'] = 'bartik';
+    $form['sweaver_plugin_themesettings']['form'] = $sweaver_ts->sweaver_get_theme_settings_form('bartik', array());
     $form['sweaver_plugin_themesettings']['form']['#sweaver_other_themesettings'] = array();
     $form['sweaver_plugin_styles']['form'] = $sweaver_style->sweaver_form();
 
@@ -110,13 +110,13 @@ class sweaverThemeSettings extends DrupalWebTestCase {
         'sweaver-css' => '{"#center ":{"font-size":'. $size .'}}',
         'css-rendered' => '<style type="text/css">#center { font-size: '. $size .'px; } </style>',
         'sweaver_plugin_custom_css' => '',
-        'save_style' => 'Garland '. $style_id,
+        'save_style' => 'Bartik '. $style_id,
         'save_type' => $save_type,
 
         // Theme settings.
         'toggle_name' => FALSE,
         'style_existing_id' => ($save_type) ? $style_id : 0,
-        'var' => 'theme_garland_settings',
+        'var' => 'theme_bartik_settings',
       );
     }
     else {
@@ -279,7 +279,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
    */
   function sweaverDeleteStyle($scenario, $configuration, $style_id) {
     $form_state['values']['delete_style'] = $style_id;
-    $form_state['values']['var'] = 'theme_garland_settings';
+    $form_state['values']['var'] = 'theme_bartik_settings';
     $this->performStyleAction('Delete style', $form_state, $configuration['form']);
 
     // Assert no entries are found in database.
@@ -436,14 +436,14 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     }
 
     if ($original) {
-      $this->assertRaw('/themes/bartick/logo.png', t('Logo is original garland for style id '. $style_id .' in scenario '. $scenario));
+      $this->assertRaw('/themes/bartick/logo.png', t('Logo is original bartik for style id '. $style_id .' in scenario '. $scenario));
       $this->assertRaw('/misc/favicon.ico', t('Favicon is original druplicon for style id '. $style_id .' in scenario '. $scenario));
     }
     else {
-      $this->assertNoRaw('/themes/bartik/logo.png', t('Logo is not original garland for style id '. $style_id .' in scenario '. $scenario));
+      $this->assertNoRaw('/themes/bartik/logo.png', t('Logo is not original bartik for style id '. $style_id .' in scenario '. $scenario));
       $this->assertNoRaw('/misc/favicon.ico', t('Favicon is not original druplicon for style id '. $style_id .' in scenario '. $scenario));
-      $live_logo = '/sweaver/logo_garland_'. $style_id .'_live.'. $logo;
-      $live_favicon = '/sweaver/favicon_garland_'. $style_id .'_live.'. $favicon;
+      $live_logo = '/sweaver/logo_bartik_'. $style_id .'_live.'. $logo;
+      $live_favicon = '/sweaver/favicon_bartik_'. $style_id .'_live.'. $favicon;
       $this->assertRaw($live_logo, t('Logo is uploaded logo for style id '. $style_id .' in scenario '. $scenario .' ('. $live_logo .')'));
       $this->assertRaw($live_favicon, t('Favicon is uploaded logo for style id '. $style_id .' in scenario '. $scenario .' ('. $live_favicon .')'));
     }
