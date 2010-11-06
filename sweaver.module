@@ -340,7 +340,9 @@ function sweaver_init() {
  */
 function sweaver_custom_theme() {
   // @todo this is probably a bit agressive
-  return Sweaver::get_instance()->get_theme_key();
+  if (arg(0) != 'admin') {
+    return Sweaver::get_instance()->get_theme_key();
+  }
 }
 
 /**
