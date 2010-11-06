@@ -622,7 +622,6 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $style->css = $_POST['css'];
     $style->customcss = $_POST['customcss'];
     $style->palette = $_POST['palette'];
-    watchdog('save', 'autosave baby' . print_r($style, true));
 
     // Get the themesettings if applicable and overwrite style id & style name.
     $sweaver = Sweaver::get_instance();
