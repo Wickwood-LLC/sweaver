@@ -183,8 +183,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
     // Switcher.
     $tab_switcher = '<div id="changes-toggler">'. t('Show changes') .'</div>';
     $form['editor_switcher'] = array(
-      '#type' => 'markup',
-      '#value' => $tab_switcher,
+      '#markup' => $tab_switcher,
     );
 
     // Images.
@@ -226,8 +225,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     // Changes.
     $form['editor_changes'] = array(
-      '#type' => 'markup',
-      '#value' => '<div id="editor-changes"></div>',
+      '#markup' => '<div id="editor-changes"></div>',
     );
 
     return $form;

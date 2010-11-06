@@ -104,7 +104,7 @@ function sweaver_drush_edit_style($style) {
   $css = (!empty($css)) ? sweaver_drush_json_to_css($css) : '';
 
   // Create a static $data variable with CTools.
-  $data = &ctools_static('sweaver_drush_style_data' , array());
+  $data = &drupal_static('sweaver_drush_style_data' , array());
   $data = array(
     'style' => $style,
     'editor' => $editor,
@@ -261,15 +261,15 @@ function sweaver_drush_list_styles() {
     $i = 1;
 
     // Draft versions.
-    $result = db_query("SELECT * FROM {sweaver_style_draft}");
-    while ($row = db_fetch_object($result)) {
+    $results = db_query("SELECT * FROM {sweaver_style_draft}")->fetchAll();
+    foreach ($results as $row) {
       $styles[$i] = $row;
       $i++;
     }
 
     // Live versions.
-    $result = db_query("SELECT * FROM {sweaver_style} where active = 1");
-    while ($row = db_fetch_object($result)) {
+    $results = db_query("SELECT * FROM {sweaver_style} where active = 1")->fetchAll();
+    foreach ($results as $row) {
       $styles[$i] = $row;
       $i++;
     }
@@ -350,8 +350,9 @@ function sweaver_drush_verify($args, $type = 'styles') {
  */
 function sweaver_drush_verify_edit($style) {
   $write = TRUE;
-  $draft_file = file_directory_path() .'/sweaver/sweaver_'. $style->theme .'_'. $style->style_id .'_draft.css';
-  $live_file = file_directory_path() .'/sweaver/sweaver_'. $style->theme .'_'. $style->style_id .'_live.css';
+  $public_path = variable_get('file_public_path', conf_path() . '/files');
+  $draft_file = $public_path . '/sweaver/sweaver_' . $style->theme .'_' . $style->style_id . '_draft.css';
+  $live_file = $public_path . '/sweaver/sweaver_' . $style->theme .'_' . $style->style_id . '_live.css';
   $touch_file = (isset($style->active)) ? $live_file : $draft_file;
   $write = @touch($touch_file);
 

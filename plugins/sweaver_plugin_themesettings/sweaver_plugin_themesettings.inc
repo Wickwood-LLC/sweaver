@@ -181,7 +181,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         // or when setting a style live after the uploads were done already.
         if (isset($form_state['publish']) && $form_state['publish'] && !$theme_values[$default] && !empty($theme_values[$file])) {
           $source_path = $theme_values[$file];
-          $dest_live = str_replace('_draft', '_live', $theme_values[$file]);
+          $dest_live = str_replace('_draft', '_lidve', $theme_values[$file]);
           file_unmanaged_copy($source_path, $dest_live, FILE_EXISTS_REPLACE);
           $theme_values[$file] = $dest_live;
         }
