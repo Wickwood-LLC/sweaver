@@ -187,9 +187,6 @@ class sweaver_plugin_styles extends sweaver_plugin {
       $form['delete_style_popup']['question']['#suffix'] = '</div>';
 
       // Confirmation.
-      $form['delete_style_popup']['warning'] = array(
-        '#markup' => '<div>'. t('Are you sure you want to delete the style ? All changes and files will be lost. If the style is also active, your visitors will see the default theming.') .'</div>',
-      );
       $form['delete_style_popup']['warning']['delete_submit'] = array(
         '#type' => 'submit',
         '#value' => t('Delete style'),
@@ -199,6 +196,8 @@ class sweaver_plugin_styles extends sweaver_plugin {
         '#value' => t('Cancel'),
       );
       $form['delete_style_popup']['warning']['#prefix'] = '<div class="delete-style-question clearfix" style="display:none">';
+      $form['delete_style_popup']['warning']['#prefix'] .= '<div>'. t('Are you sure you want to delete the style ? All changes and files will be lost. If the style is also active, your visitors will see the default theming.') .'</div>';
+
       $form['delete_style_popup']['warning']['#suffix'] = '</div>';
     }
 
