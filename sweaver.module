@@ -339,8 +339,7 @@ function sweaver_init() {
  * Implements hook_custom_theme().
  */
 function sweaver_custom_theme() {
-  // @todo this is probably a bit agressive
-  if (arg(0) != 'admin') {
+  if (sweaver_show_editor() && $theme_key = sweaver_session(NULL, 'sweaver_theme')) {
     return Sweaver::get_instance()->get_theme_key();
   }
 }
