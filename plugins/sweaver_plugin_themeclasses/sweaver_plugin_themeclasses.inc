@@ -44,12 +44,11 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
       return $form;
     }
 
-
-    $cache = variable_get('sweaver_plugin_themeclasses_'. $theme_key, array());
+    /*$cache = variable_get('sweaver_plugin_themeclasses_'. $theme_key, array());
     if (!empty($cache)) {
       $styles = $cache['styles'];
     }
-    else {
+    else {*/
       $styles = array();
       $groups = explode("\n", $class_groups);
       foreach ($groups as $group) {
@@ -60,8 +59,8 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
       }
 
       // Cache the stuff.
-      variable_set('sweaver_plugin_themeclasses_'. $theme_key, array('checked' => TRUE, 'styles' => $styles));
-    }
+      //variable_set('sweaver_plugin_themeclasses_'. $theme_key, array('checked' => TRUE, 'styles' => $styles));
+    //}
 
     if (!empty($styles)) {
       $content = t('<h2>Styles</h2>!styles', array('!styles' => implode(' ', $styles)));
@@ -111,7 +110,10 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
    * Menu callback submit.
    */
   public function sweaver_menu_callback_submit($form, &$form_state) {
-    db_query("DELETE FROM {variable} where name LIKE '%s%%'", 'sweaver_plugin_themeclasses_');
+    // @todo does this work ?
+    db_delete('variable')
+      ->condition('name', 'sweaver_plugin_themeclasses_', 'LIKE')
+      ->execute();
     variable_set('sweaver_themeclasses_groups', $form_state['values']['sweaver_themeclasses_groups']);
     drupal_set_message(t('The configuration options have been saved.'));
   }

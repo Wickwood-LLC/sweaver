@@ -4,7 +4,7 @@
  * Add an extra color css
  */
 
-Drupal.Sweaver = Drupal.Sweaver || {};
+(function ($) {
 
 /**
  * Hook onload behavior
@@ -14,7 +14,7 @@ $(document).ready(function() {
     Drupal.Sweaver.changed = true;
     
     var $this = $(this); 
-
+    
     // Remove the stylesheet that was added through jQuery.
     if ($('head link#sweaver-palette').length > 0) {
       $('head link#sweaver-palette').remove();
@@ -30,7 +30,7 @@ $(document).ready(function() {
       $this.removeClass('active'); 
       
       // Reset the active palette.
-      $('#sweaver_plugin_palettes #edit-sweaver-plugin-palette').val('');
+      $('#sweaver_plugin_palettes [name=sweaver_plugin_palette]').val('');
     }
     else {
 	    // Add a external stylesheet container in the head section.
@@ -44,7 +44,9 @@ $(document).ready(function() {
 	    $this.addClass('active'); 
 	    
 	    // Set the active palette.
-      $('#sweaver_plugin_palettes #edit-sweaver-plugin-palette').val($this.children('.key').text());
+      $('#sweaver_plugin_palettes [name=sweaver_plugin_palette]').val($this.children('.key').text());
 	  }
   });
 });
+
+})(jQuery);

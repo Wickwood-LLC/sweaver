@@ -11,7 +11,7 @@ class sweaver_plugin_palettes extends sweaver_plugin {
    * Frontend css and js.
    */
   public function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_palettes/sweaver_plugin_palettes.js', 'module');
+    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_palettes/sweaver_plugin_palettes.js');
   }
 
   /**
