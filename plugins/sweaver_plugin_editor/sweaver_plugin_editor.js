@@ -190,7 +190,6 @@ Drupal.Sweaver.updateForm = function() {
         });
       }
     }
-    Drupal.Sweaver.updateSliders();
   }
 
   Drupal.Sweaver.updateMode = true;
@@ -212,20 +211,13 @@ Drupal.Sweaver.initForm = function() {
     var type = Drupal.Sweaver.activeElement.type;
     $.each(Drupal.Sweaver.properties, function(index, object){
       if(object.name in Drupal.Sweaver.types[type]) {
-        // @todo jyve is this ok ? D7 changed output of form items
-        // instead of an id, it is now a class and no more -wrapper
-        // I left the old ones for reference
-        //$('#sweaver #edit-' + object.name + '-wrapper').show();
         $('#sweaver .form-item-' + object.name).show();
         // From the moment that we have an visible element in a group, we need to show that group.
-        //$('#sweaver #edit-' + object.name + '-wrapper').parents('.sweaver-group').show();
         $('#sweaver .form-item-' + object.name).parents('.sweaver-group').show();
         // From the moment that we have an visible element in a container, we need to show that container.
-        //$('#sweaver #edit-' + object.name + '-wrapper').parents('.container').show();
         $('#sweaver .form-item-' + object.name).parents('.container').show();
       }
       else {
-        //$('#sweaver #edit-' + object.name + '-wrapper').hide();
         $('#sweaver .form-item-' + object.name).hide();
       }
     });
@@ -291,18 +283,20 @@ Drupal.Sweaver.addSliders = function() {
     $(this).after('<div class="slider-wrapper"><div id="' + $(this).attr('id').substr(5, $(this).attr('id').length - 5) + '-slider" class="slider"></div></div>');
   });
 
+  // Move the slider to the right position on show.
   $("#sweaver .slider-value").click(function() {
     Drupal.Sweaver.updateMode = false;
-    $(this).siblings('.slider-wrapper').children().slider("moveTo", $(this).val());
+    $(this).siblings('.slider-wrapper').children().slider("option", "value", $(this).val());
     Drupal.Sweaver.updateMode = true;
   });
 
   $("#sweaver .slider").each(function() {
-    var minSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_min;
+    id = $(this).attr('id').replace('-slider', '');
+    var minSlider = Drupal.Sweaver.properties[id].slider_min;
     if (minSlider == null) {
       minSlider = 0;
     }
-    var maxSlider = Drupal.Sweaver.properties[$(this).attr('id').replace('-slider', '')].slider_max;
+    var maxSlider = Drupal.Sweaver.properties[id].slider_max;
     if (maxSlider == null) {
       maxSlider = 2000;
     }
@@ -310,25 +304,13 @@ Drupal.Sweaver.addSliders = function() {
       min: minSlider,
       max: maxSlider,
       slide: function(event, ui) {
-        $('#edit-' + $(this).attr("id").replace('-slider','')).val(ui.value);
-        // TODO: can I trigger onchange event here?
+        id = $(this).attr("id").replace('-slider','');
+        $('#edit-' + id).val(ui.value);
         if (Drupal.Sweaver.updateMode) {
-          Drupal.Sweaver.setValue($(this).attr("id").replace('-slider',''), ui.value);
+          Drupal.Sweaver.setValue(id, ui.value);
         }
       }
     });
-  });
-}
-
-/*
- * Update sliders value
- */
-Drupal.Sweaver.updateSliders = function() {
-  $('#sweaver .slider').each(function() {
-    var object = $(this);
-    name = object.attr('id').substr(0, object.attr('id').length - 7);
-    val = $("#edit-" + name).val() == '' ? 0 : $("#edit-" + name).val();
-    $(object).slider("moveTo", val);
   });
 }
 
@@ -488,7 +470,7 @@ Drupal.Sweaver.bindClicks = function() {
     event.stopPropagation();
     $slider = $(this).siblings('.slider-wrapper');
 
-    if ($slider.is(':visible')) {
+    if ($slider.css('visibility') == 'visible') {
       // Add an active class for IE position issues.
       $slider.parent().removeClass('active');
       $slider.parents('.sweaver-group').removeClass('active');
