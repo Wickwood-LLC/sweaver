@@ -214,7 +214,7 @@ function sweaver_export_check_serialized_keys($object) {
  *   The machine name of the object.
  * @param $map
  *   Can be an array passed on by the load arguments of the menu or a string.
- *   In case of array, object_type will be index 5.
+ *   In case of array, object_type will be in $map[6]
  * @param $status
  *   Whether to return all objects or only enabled.
  * @return
