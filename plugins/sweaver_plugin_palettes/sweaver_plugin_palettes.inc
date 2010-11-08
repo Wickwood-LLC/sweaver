@@ -29,13 +29,13 @@ class sweaver_plugin_palettes extends sweaver_plugin {
       $theme_info = unserialize($info);
 
       if (isset($theme_info['sweaver']['palettes'][$active_palette])) {
-        $css = drupal_get_path('theme', $theme_key) .'/'. $theme_info['sweaver']['palettes'][$active_palette]['file'];
-        // Add the css.
-        drupal_add_css($css, 'theme');
-        // Update $variables['css'].
-        $vars['css']['all']['theme'][$css] = TRUE;
-        // Update $variables['styles'].
-        $vars['styles'] = drupal_get_css();
+        $css = drupal_get_path('theme', $theme_key) . '/' . $theme_info['sweaver']['palettes'][$active_palette]['file'];
+        $settings = array(
+          'weight' => 1000,
+          'preprocess' => TRUE,
+          'group' => CSS_THEME,
+        );
+        drupal_add_css($css, $settings);
       }
     }
   }
