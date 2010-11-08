@@ -300,7 +300,6 @@ Drupal.Sweaver.addSliders = function() {
     if (maxSlider == null || maxSlider == '') {
       maxSlider = 2000;
     }
-    console.log(id + ' ' + minSlider + ' ' + maxSlider);
     $(this).slider({
       min: minSlider,
       max: maxSlider,
