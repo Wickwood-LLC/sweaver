@@ -278,25 +278,17 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     $has_theme = FALSE;
     $form_state = array();
 
-    // Default settings are defined in theme_get_settings() in includes/theme.inc
     $features = array();
     // Default settings are defined in theme_get_setting() in includes/theme.inc
     if ($key) {
       $var = 'theme_' . $key . '_settings';
-      $themes = system_rebuild_theme_data(); // @todo is this nice ??
-      $features = $themes[$key]->info['features'];
+      $all_themes = sweaver_get_all_themes();
+      $theme_info = $all_themes[$key];
+      $features = $theme_info->info['features'];
     }
     else {
       $var = 'theme_settings';
     }
-
-    /*if (!$has_theme) {
-      $settings = theme_get_settings('');
-      $var = 'theme_settings';
-    }
-    if (!empty($revision_theme_settings)) {
-      $settings = $revision_theme_settings;
-    }*/
 
     $form['var'] = array('#type' => 'hidden', '#value' => $var);
 
@@ -438,7 +430,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
 
     if ($key) {
       // Call engine-specific settings.
-      $function = $themes[$key]->prefix . '_engine_settings';
+      $function = $theme_info->prefix . '_engine_settings';
       if (function_exists($function)) {
         $form['engine_specific'] = array(
           '#type' => 'fieldset',
@@ -466,7 +458,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       // Process the theme and all its base themes.
       foreach ($theme_keys as $theme) {
         // Include the theme-settings.php file.
-        $filename = DRUPAL_ROOT . '/' . str_replace("/$theme.info", '', $themes[$theme]->filename) . '/theme-settings.php';
+        $filename = DRUPAL_ROOT . '/' . str_replace("/$theme.info", '', $theme_info->filename) . '/theme-settings.php';
         if (file_exists($filename)) {
           require_once $filename;
         }

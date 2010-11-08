@@ -110,10 +110,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
    * Menu callback submit.
    */
   public function sweaver_menu_callback_submit($form, &$form_state) {
-    // @todo does this work ?
-    db_delete('variable')
-      ->condition('name', 'sweaver_plugin_themeclasses_', 'LIKE')
-      ->execute();
+    db_query("DELETE FROM {variable} WHERE name LIKE 'sweaver_plugin_themeclasses_%%'")->execute();
     variable_set('sweaver_themeclasses_groups', $form_state['values']['sweaver_themeclasses_groups']);
     drupal_set_message(t('The configuration options have been saved.'));
   }

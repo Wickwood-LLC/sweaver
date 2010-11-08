@@ -33,10 +33,6 @@
  *     Submit handler that can perform extra save actions if needed.
  * - [callback_method]
  *     Swappable method that can be implemented and invoked.
- *     TODO fix the fact that there is no exception thrown when the callback is not valid.
- *     This should be done in a clever way instead of loading a hardcoded function call.
- *
- *
  */
 abstract class sweaver_plugin {
 

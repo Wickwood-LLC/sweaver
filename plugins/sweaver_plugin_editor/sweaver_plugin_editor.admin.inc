@@ -364,7 +364,7 @@ function sweaver_selector_form(&$form, $selector = NULL) {
   // Deny access to edit form for allids, allclasses and alltags.
   if (isset($selector->name) && in_array($selector->name, array('allids', 'alltags', 'allclasses'))) {
     drupal_set_message(t('This selector cannot be edited.'));
-    drupal_goto('admin/settings/sweaver/editor/selectors');
+    drupal_goto('admin/config/user-interface/sweaver/editor/selectors');
   }
 
   if (empty($selector)) {
@@ -454,7 +454,7 @@ function sweaver_selector_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/settings/sweaver/editor/selectors';
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/selectors';
 }
 
 /**
@@ -633,7 +633,7 @@ function sweaver_property_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/settings/sweaver/editor/properties';
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/properties';
 }
 
 /**
@@ -729,7 +729,7 @@ function sweaver_type_form_submit(&$form, &$form_state) {
 
   // Message and redirect.
   drupal_set_message($message);
-  $form_state['redirect'] = 'admin/settings/sweaver/editor/types';
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/types';
 }
 
 /**
@@ -744,13 +744,13 @@ function sweaver_object_export($object_type, $object) {
 /**
  * Delete object form.
  */
-function sweaver_object_delete(&$form_state, $redirect, $object_type, $object, $action, $action_message) {
+function sweaver_object_delete($form, &$form_state, $redirect, $object_type, $object, $action, $action_message) {
   if ($object->export_type != 2) {
     $form['#object'] = $object;
     $form['#object_type'] = $object_type;
     $form['#object_redirect'] = $redirect;
     $form['#action_message'] = $action_message;
-    return confirm_form($form, t('Are you sure you want to @action @type %object?', array('@action' => $action, '@type' => $object_type , '%object' => $object->name)), 'admin/settings/sweaver/'. $redirect);
+    return confirm_form($form, t('Are you sure you want to @action @type %object?', array('@action' => $action, '@type' => $object_type , '%object' => $object->name)), 'admin/config/user-interface/sweaver/editor/'. $redirect);
   }
   else {
     drupal_goto('admin/config/user-interface/sweaver/editor/'. $redirect);
@@ -766,7 +766,7 @@ function sweaver_object_delete_submit(&$form, &$form_state) {
   $redirect = $form['#object_redirect'];
   $object_type = $form['#object_type'];
   $action_message = $form['#action_message'];
-  db_query("DELETE FROM {sweaver_%s} WHERE oid = %d", $object_type, $object->oid);
+  db_query("DELETE FROM {sweaver_" . $object_type . "} WHERE oid = :oid", array(':oid' => $object->oid));
   drupal_set_message(t('Selector %selector has been @action_message.', array('@action_message' => $action_message, '%selector' => $object->name)));
   $form_state['redirect'] = 'admin/config/user-interface/sweaver/editor/'. $redirect;
 }

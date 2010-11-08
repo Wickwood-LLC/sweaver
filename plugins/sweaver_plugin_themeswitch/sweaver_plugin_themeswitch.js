@@ -8,7 +8,6 @@
 Drupal.Sweaver = Drupal.Sweaver || {};
 
 $(document).ready(function() {
-  // TODO: need to install a 'behavior' system that kicks in when a tab is clicked.
   Drupal.Sweaver.themeSwitch_init();
   $('#tab-sweaver_plugin_themeswitch a').click(function() {
     Drupal.Sweaver.themeSwitch_init();
@@ -23,7 +22,7 @@ Drupal.Sweaver.themeSwitch_init = function() {
       width += $(this).outerWidth(true);
     });
     $('#themeswitch-content').css('width', width +'px');
-    
+
     // scrollpane parts
     var scrollPane = $('#themeswitch-pane');
     var scrollContent = $('#themeswitch-content');
@@ -80,7 +79,7 @@ Drupal.Sweaver.themeSwitch_init = function() {
       var percentage = Math.round(leftVal / remainder * 100);
       scrollbar.slider("value", percentage);
     }
-    
+
     // change handle position on window resize
     $(window)
     .resize(function(){
@@ -89,7 +88,7 @@ Drupal.Sweaver.themeSwitch_init = function() {
         sizeScrollbar();
       }
     });
-    
+
     // init scrollbar size
     setTimeout(sizeScrollbar,10); // safari wants a timeout
 };
