@@ -3,6 +3,8 @@
  * Administration javascript for Sweaver.
  */
 
+(function ($) {
+
 /**
  * This behavior is dependent on the tableDrag behavior, since it uses the
  * objects initialized in that behavior to update the row.
@@ -23,3 +25,5 @@ Drupal.behaviors.propertyDrag = {
     };
   }
 };
+
+})(jQuery);

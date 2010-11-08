@@ -97,4 +97,5 @@ function sweaver_plugin_config_plugins_submit(&$form, &$form_state) {
   drupal_flush_all_caches();
 
   drupal_set_message(t('The configuration options have been saved.'));
+  $form_state['redirect'] = 'admin/config/user-interface/sweaver/plugins';
 }
