@@ -653,8 +653,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['padding-top'] = $property;
 
@@ -670,8 +668,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['padding-left'] = $property;
 
@@ -687,8 +683,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['padding-right'] = $property;
 
@@ -704,8 +698,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['padding-bottom'] = $property;
 
@@ -737,8 +729,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['margin-top'] = $property;
 
@@ -754,8 +744,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['margin-left'] = $property;
 
@@ -771,8 +759,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['margin-right'] = $property;
 
@@ -788,8 +774,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['margin-bottom'] = $property;
 
