@@ -31,22 +31,27 @@ $(document).ready(function() {
   // Add sweaver class for extra margin at bottom.
   $('body').addClass('sweaver');
 
+  // Avoid overlap with the localization client.
+  if ($('#l10n-client').length > 0) {
+    $('#sweaver').css({'bottom': $('#l10n-client .labels').height()});
+  }
+
   // Gather open/close state and tab information
   Drupal.Sweaver.activeTab = Drupal.Sweaver.cookie('sweaver_active_tab') ? Drupal.Sweaver.cookie('sweaver_active_tab') : $('#sweaver-tabs .tab:first').attr('id');
   $('#' + Drupal.Sweaver.activeTab).addClass('active-tab');
   Drupal.Sweaver.cookie('sweaver_active_tab', Drupal.Sweaver.activeTab);
-  Drupal.Sweaver.open = Drupal.Sweaver.cookie('sweaver_open') ? Drupal.Sweaver.cookie('sweaver_open') : 'true'; 
+  Drupal.Sweaver.open = Drupal.Sweaver.cookie('sweaver_open') ? Drupal.Sweaver.cookie('sweaver_open') : 'true';
   Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
 
   // Open/close the Sweaver bar.
-  $('#sweaver-tabs .close a').click(function(){ 
-    Drupal.Sweaver.toggleBar($(this).parent()); 
+  $('#sweaver-tabs .close a').click(function(){
+    Drupal.Sweaver.toggleBar($(this).parent());
   });
 
   // Toggle the horizontal tabs.
   Drupal.Sweaver.container = Drupal.Sweaver.activeTab.substr(4, Drupal.Sweaver.activeTab.length - 4);
   $('#sweaver-tabs .tab a').click(function(){
-    Drupal.Sweaver.toggleTabs($(this).parent());   
+    Drupal.Sweaver.toggleTabs($(this).parent());
   });
 
   // Print messages if any
@@ -87,7 +92,7 @@ Drupal.Sweaver.toggleBar = function (tab) {
   }
   // Hide the extra margin at the bottom of the screen.
   $('body').toggleClass('sweaver');
-  
+
   Drupal.Sweaver.toggleClicked();
   Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
 }
@@ -96,10 +101,10 @@ Drupal.Sweaver.toggleBar = function (tab) {
  * Separate toggle tabs function.
  */
 Drupal.Sweaver.toggleTabs = function (tab) {
-  // Get the container that has to be shown. 
+  // Get the container that has to be shown.
   var container = tab.attr('id').replace('tab-', '');
   if (container != Drupal.Sweaver.container) {
-    //Drupal.Sweaver.toggleBar(tab);  
+    //Drupal.Sweaver.toggleBar(tab);
     if (Drupal.Sweaver.open == 'false') {
       $('#sweaver-middle').css("height", 'auto');
       Drupal.Sweaver.open = 'true';
@@ -112,7 +117,7 @@ Drupal.Sweaver.toggleTabs = function (tab) {
     Drupal.Sweaver.container = container;
   }
   else {
-    Drupal.Sweaver.toggleBar(tab);   
+    Drupal.Sweaver.toggleBar(tab);
   }
   Drupal.Sweaver.activeTab =  tab.attr('id');
   Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
@@ -363,7 +368,7 @@ Drupal.Sweaver.cookie = function(name, value, options) {
       if (typeof options.expires == 'number') {
         date = new Date();
         date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000));
-      } 
+      }
       else {
         date = options.expires;
       }
@@ -376,7 +381,7 @@ Drupal.Sweaver.cookie = function(name, value, options) {
     var domain = options.domain ? '; domain=' + (options.domain) : '';
     var secure = options.secure ? '; secure' : '';
     document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
-  } 
+  }
   else { // only name given, get cookie
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {

@@ -19,7 +19,7 @@ define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver-frontend\n#admin-menu\n.colorpicke
 /**
  * Default classes to exclude from not being themed.
  */
-define('SWEAVER_CLASSES_EXCLUDE', "clear\nclearfix\nclearfix\nsweaver\nsweaver-hovered\nsweaver-clicked\nsweaver-clicked-temp");
+define('SWEAVER_CLASSES_EXCLUDE', "clear\nclearfix\nsweaver\nsweaver-hovered\nsweaver-clicked\nsweaver-clicked-temp");
 
 /**
  * Default skin.
