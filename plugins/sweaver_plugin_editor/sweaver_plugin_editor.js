@@ -293,13 +293,14 @@ Drupal.Sweaver.addSliders = function() {
   $("#sweaver .slider").each(function() {
     id = $(this).attr('id').replace('-slider', '');
     var minSlider = Drupal.Sweaver.properties[id].slider_min;
-    if (minSlider == null) {
+    if (minSlider == null || minSlider == '') {
       minSlider = 0;
     }
     var maxSlider = Drupal.Sweaver.properties[id].slider_max;
-    if (maxSlider == null) {
+    if (maxSlider == null || maxSlider == '') {
       maxSlider = 2000;
     }
+    console.log(id + ' ' + minSlider + ' ' + maxSlider);
     $(this).slider({
       min: minSlider,
       max: maxSlider,

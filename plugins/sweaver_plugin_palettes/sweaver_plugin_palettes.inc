@@ -77,7 +77,7 @@ class sweaver_plugin_palettes extends sweaver_plugin {
         }
         // Add the actual content.
         $extra_class = ($active_palette == $key ? ' active' : '');
-        $containers .= '<div class="colors clearfix'. $extra_class .'">';
+        $containers .= '<div id="palette-' . $key .'" class="colors clearfix'. $extra_class .'">';
 
         foreach ($palette['colors'] as $color) {
           $containers .= '<div class="color" style="background-color:'. $color .' !important">'. $color .'</div>';

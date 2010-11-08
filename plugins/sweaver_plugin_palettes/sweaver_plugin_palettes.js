@@ -10,6 +10,15 @@
  * Hook onload behavior
  */
 $(document).ready(function() {
+
+  // Check if we need to load the stylesheet when the editor is active.
+  var palette = $('#sweaver_plugin_palettes #edit-sweaver-plugin-palette').val(); 
+  if (palette != '') {
+    // Add a external stylesheet container in the head section.
+    var link = '<link id="sweaver-palette" href="' + $('#palette-' + palette + ' .file').text() + '" media="all" rel="stylesheet" />';
+    $('head').append(link);
+  }
+  
   $('#sweaver_plugin_palettes .colors').click(function(event) {
     Drupal.Sweaver.changed = true;
     
@@ -20,11 +29,6 @@ $(document).ready(function() {
       $('head link#sweaver-palette').remove();
     } 
 
-    // Remove the stylesheet if it was already loaded in preprocess_page.
-    if ($('head link[href*=' + $this.children('.file').text() + ']').length > 0) {
-      $('head link[href*=' + $this.children('.file').text() + ']').remove();
-    }
-    
     if ($this.hasClass('active')) {
       // Remove the active class.
       $this.removeClass('active'); 
