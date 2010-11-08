@@ -31,7 +31,7 @@ class sweaver_plugin_palettes extends sweaver_plugin {
       if (isset($theme_info['sweaver']['palettes'][$active_palette])) {
         $css = drupal_get_path('theme', $theme_key) . '/' . $theme_info['sweaver']['palettes'][$active_palette]['file'];
         $settings = array(
-          'weight' => 1000,
+          'weight' => 1001,
           'preprocess' => TRUE,
           'group' => CSS_THEME,
         );

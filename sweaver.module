@@ -317,22 +317,6 @@ function sweaver_init() {
     // JS inline settings.
     drupal_add_js($inline_js_settings, 'setting');
   }
-
-  // Add stylesheet if necessary
-  // @todo check if we need hook_css_alter ? or maybe move to page_alter ?
-  if (variable_get('sweaver_load_style_when_editor_inactive', TRUE) || sweaver_show_editor()) {
-    global $theme_key;
-    $sweaver = Sweaver::get_instance();
-    $sweaver_style = $sweaver->get_current_style($theme_key);
-    if (isset($sweaver_style->css) && drupal_static('load_style')) {
-      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $theme_key . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . ' .css';
-      $settings = array(
-        'weight' => 1000,
-        'preprocess' => TRUE,
-      );
-      drupal_add_css($css_path, $settings);
-    }
-  }
 }
 
 /**
@@ -354,20 +338,20 @@ function sweaver_preprocess_page(&$vars) {
     $sweaver = Sweaver::get_instance();
     $sweaver_style = $sweaver->get_current_style();
     if (isset($sweaver_style->css) && drupal_static('load_style')) {
-      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $sweaver->get_theme_key() . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . ' .css';
       $settings = array(
         'weight' => 1000,
         'preprocess' => TRUE,
+        'group' => CSS_THEME,
       );
+      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $sweaver->get_theme_key() . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . '.css';
       drupal_add_css($css_path, $settings);
-    }
-  }
-  $sweaver = Sweaver::get_instance();
 
-  foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
-    $sweaver_plugin = $sweaver->get_plugin($plugin_name);
-    // Fire preprocess.
-    $sweaver_plugin->sweaver_preprocess_page($vars);
+      foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
+        $sweaver_plugin = $sweaver->get_plugin($plugin_name);
+        // Fire preprocess.
+        $sweaver_plugin->sweaver_preprocess_page($vars);
+      }
+    }
   }
 }
 
