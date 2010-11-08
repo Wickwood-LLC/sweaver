@@ -4,8 +4,6 @@
 /**
  * @file
  * Tests for sweaver backend
- * Note: run this patch on D6 to allow posts to hidden fields:
- * http://drupal.org/node/488810#comment-1693662.
  */
 
 class sweaverAdministration extends DrupalWebTestCase {
@@ -27,35 +25,11 @@ class sweaverAdministration extends DrupalWebTestCase {
     parent::setUp('sweaver', 'ctools');
 
     $this->perms = '';
-    $this->imagecache_tests = FALSE;
     $this->image_path = 'misc/druplicon.png';
     $modules = array('sweaver', 'ctools');
 
-    // @todo administer nodes & check on node add is not working.
-    $this->admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver', 'administer nodes'));
+    $this->admin_user = $this->drupalCreateUser(array('use editor', 'configure sweaver', 'bypass node access', 'administer nodes', 'access administration pages'));
     $this->drupalLogin($this->admin_user);
-
-    // Imagecache setups.
-    // @todo preset styles from core.
-    $imagecache_tests = FALSE;
-    $imagecache = drupal_get_filename('module', 'imagecache');
-    $imageapi = drupal_get_filename('module', 'imageapi');
-    $imageapi_gd = drupal_get_filename('module', 'imageapi_gd');
-    /*if (!empty($imagecache) && !empty($imageapi_gd) && !empty($imageapi)) {
-      $this->imagecache_tests = TRUE;
-      $this->perms = 'administer imagecache';
-      parent::setUp('sweaver', 'ctools', 'jquery_ui', 'imageapi', 'imageapi_gd', 'imagecache');
-    }
-    else {*/
-    //}
-
-    /*if ($this->imagecache_tests) {
-      db_query("INSERT INTO {imagecache_preset} (presetname) VALUES ('%s')", 'sweavertest');
-      $this->preset_id = db_last_insert_id('imagecache', 'presetid');
-      $this->preset_name = 'sweavertest';
-      $data = 'a:3:{s:5:"width";s:4:"100%";s:6:"height";s:4:"100%";s:7:"upscale";i:0;}';
-      db_query("INSERT INTO {imagecache_action} (presetid, weight, module, action, data) VALUES (%d, 0, 'imagecache', 'imagecache_scale', '%s')", $this->preset_id, $data);
-    }*/
   }
 
   /**
@@ -136,25 +110,19 @@ class sweaverAdministration extends DrupalWebTestCase {
     $this->drupalGet('user');
     $this->assertRaw('value="'. $GLOBALS['base_url'] . '/' . $public_path.'/sweaver/sweaver_image_1.png"', t('Image found in editor'), $editor_tests);
 
-    // Test imagecache if available.
-    /*if ($this->imagecache_tests) {
+    $this->drupalGet('user');
 
-      imagecache_presets(TRUE);
+    $style_url = image_style_url('medium', 'public://sweaver/sweaver_image_1.png');
+    $raw_style = '<option value="'. $style_url .'">Image test (sweavertest)</option>';
+    $this->assertNoRaw($raw_style, t('Styled version of image not found'), $editor_tests);
 
-      $this->drupalGet('user');
-
-      $imagecache_url = imagecache_create_url($this->preset_name, 'sites/default/files/sweaver/sweaver_image_1.png');
-      $raw_imagecache = '<option value="'. $imagecache_url .'">Image test (sweavertest)</option>';
-      $this->assertNoRaw($raw_imagecache, t('Imagecache version of image not found'), $editor_tests);
-
-      // Enable imagecache.
-      $edit = array(
-        'sweaver_plugin_images_imagecache' => 1,
-      );
-      $this->drupalPost('admin/config/user-interface/sweaver/images', $edit, t('Save configuration'));
-      $this->drupalGet('user');
-      $this->assertRaw('imagecache/sweavertest/sweaver/sweaver_image_1.png', t('Imagecache version of image found'), $editor_tests);
-    }*/
+    // Enable styles.
+    $edit = array(
+      'sweaver_plugin_images_styles' => 1,
+    );
+    $this->drupalPost('admin/config/user-interface/sweaver/images', $edit, t('Save configuration'));
+    $this->drupalGet('user');
+    $this->assertRaw('styles/medium/public/sweaver/sweaver_image_1.png', t('Styled version of image found'), $editor_tests);
   }
 }
 

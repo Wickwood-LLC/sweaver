@@ -14,7 +14,7 @@ define('SWEAVER_PATHS_EXCLUDE', "admin*\nnode/add*\nnode/*/edit\nnode/*/panel*\n
 /**
  * Default selectors to exclude from selecting.
  */
-define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver-frontend\n#admin-menu\n.colorpicker\n#sweaver-messages\n#sweaver-popup\n#follow-link\n#toolbar");
+define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver-frontend\n#admin-menu\n.colorpicker\n#sweaver-messages\n#sweaver-popup\n#follow-link\n#toolbar\n#l10n-client");
 
 /**
  * Default classes to exclude from not being themed.

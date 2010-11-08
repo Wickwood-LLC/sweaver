@@ -86,7 +86,7 @@ class sweaver_plugin_images extends sweaver_plugin {
 
       if ($image && !empty($form_state['values']['image_description'])) {
         $image->description = $form_state['values']['image_description'];
-        $image_parts = explode('.', $image->filepath);
+        $image_parts = explode('.', $image->uri);
         $extension = array_pop($image_parts);
 
         $new_image_name = file_default_scheme() . '://sweaver/sweaver_image_' . $image->fid . '.' . $extension;
@@ -127,9 +127,9 @@ class sweaver_plugin_images extends sweaver_plugin {
    * Images handler.
    */
   public function sweaver_images_handler(&$images) {
-    $imagecache_presets = array();
-    if (variable_get('sweaver_plugin_images_imagecache', FALSE) && function_exists('imagecache_presets')) {
-      $imagecache_presets = imagecache_presets();
+    $styles = array();
+    if (variable_get('sweaver_plugin_images_styles', FALSE) && function_exists('image_styles')) {
+      $styles = image_styles();
     }
 
     $query = 'SELECT ti.fid, ti.description, f.uri FROM {sweaver_image} ti
@@ -138,9 +138,9 @@ class sweaver_plugin_images extends sweaver_plugin {
     foreach ($images_result as $image) {
       $images[file_create_url($image->uri)] = $image->description;
 
-      // Imagecache presets.
-      foreach ($imagecache_presets as $preset_key => $preset) {
-        $images[$GLOBALS['base_url'] .'/'. imagecache_create_url($preset['presetname'], $image->filepath)] = $image->description .' ('. $preset['presetname'] .')';
+      // Styles presets.
+      foreach ($styles as $preset_key => $preset) {
+        $images[image_style_url($preset_key, $image->uri)] = $image->description .' ('. $preset['name'] .')';
       }
     }
   }
@@ -158,20 +158,20 @@ class sweaver_plugin_images extends sweaver_plugin {
       '#default_value' => variable_get('sweaver_plugin_images_tab', TRUE),
     );
 
-    // Use imagecache on images ?
-    if (function_exists('imagecache_presets')) {
-      $form['sweaver_plugin_images_imagecache'] = array(
+    // Use styles on images ?
+    if (function_exists('image_styles')) {
+      $form['sweaver_plugin_images_styles'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Allow to see imagecached version of images'),
-        '#description' => t('Toggle this checkbox if you want to create imagecached versions of the images uploaded by the Images plugin.'),
-        '#default_value' => variable_get('sweaver_plugin_images_imagecache', FALSE),
+        '#title' => t('Allow to see styled version of images'),
+        '#description' => t('Toggle this checkbox if you want to create styled versions of the images uploaded by the Image plugin.'),
+        '#default_value' => variable_get('sweaver_plugin_images_styles', FALSE),
       );
     }
     else {
-      $form['imagecache_disabled'] = array(
-        '#markup' => '<p>' . t('If you enable the imagecache module, all images can be made available with all imagecache preset variants.') . '</p>',
+      $form['style_disabled'] = array(
+        '#markup' => '<p>' . t('If you enable the image module, all images can be made available with all style variants.') . '</p>',
       );
-      $form['sweaver_plugin_images_imagecache'] = array(
+      $form['sweaver_plugin_images_styles'] = array(
         '#type' => 'value',
         '#value' => 0,
       );
@@ -186,7 +186,7 @@ class sweaver_plugin_images extends sweaver_plugin {
 
     // Images list
     $rows = array();
-    $output = '<p>'. l(t('Add new image'), 'admin/settings/sweaver/images/add') .'</p>';
+    $output = '<p>'. l(t('Add new image'), 'admin/config/user-interface/sweaver/images/add') .'</p>';
 
     $query = 'SELECT ti.fid, ti.description, f.uri FROM {sweaver_image} ti
               INNER JOIN {file_managed} f on f.fid = ti.fid order by description ASC';
@@ -230,7 +230,7 @@ class sweaver_plugin_images extends sweaver_plugin {
    * Menu callback submit.
    */
   public function sweaver_menu_callback_submit($form, &$form_state) {
-    variable_set('sweaver_plugin_images_imagecache', $form_state['values']['sweaver_plugin_images_imagecache']);
+    variable_set('sweaver_plugin_images_styles', $form_state['values']['sweaver_plugin_images_styles']);
     variable_set('sweaver_plugin_images_tab', $form_state['values']['sweaver_plugin_images_tab']);
     variable_set('sweaver_plugin_handle_images', 'sweaver_plugin_images');
     drupal_set_message(t('The configuration options have been saved.'));
@@ -335,7 +335,7 @@ class sweaver_plugin_images extends sweaver_plugin {
     $image = $this->sweaver_get_image(arg(6));
     if ($image) {
       $form['#image'] = $image;
-      return confirm_form($form, t('Are you sure you want to delete image %description?', array('%description' => $image->description)), 'admin/settings/sweaver/images');
+      return confirm_form($form, t('Are you sure you want to delete image %description?', array('%description' => $image->description)), 'admin/config/user-interface/sweaver/images');
     }
     else {
       drupal_set_message(t('Image not found'));

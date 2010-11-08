@@ -488,6 +488,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = '';
   $property->property_options = array(
         'left' => 'Left',
+        'center' => 'Center',
         'right' => 'Right',
         'justify' => 'Justified',
       );
@@ -535,7 +536,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-color';
-  $property->description = 'Background color';
+  $property->description = 'Color';
   $property->property = 'background-color';
   $property->property_parent = '';
   $property->property_type = 'color';
@@ -550,7 +551,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-image';
-  $property->description = 'Background image';
+  $property->description = 'Image';
   $property->property = 'background-image';
   $property->property_parent = '';
   $property->property_type = 'image';
@@ -565,7 +566,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-repeat';
-  $property->description = 'Background repeat';
+  $property->description = 'Repeat';
   $property->property = 'background-repeat';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -580,6 +581,49 @@ function _sweaver_default_sweaver_property() {
         'repeat' => 'Both',
       );
   $propertys['background-repeat'] = $property;
+
+  // Background position.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'background-position';
+  $property->description = 'Position';
+  $property->property = 'background-position';
+  $property->property_parent = '';
+  $property->property_type = 'select';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+    'left top' => 'Left top',
+    'right top' => 'Right top',
+    'left bottom' => 'Left bottom',
+    'right bottom' => 'Right bottom',
+    'center center' => 'Center center',
+    'center bottom' => 'Center bottom',
+    'center top' => 'Center top',
+  );
+  $propertys['background-position'] = $property;
+
+  // Background-attachment
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'background-attachment';
+  $property->description = 'Attachment';
+  $property->property = 'background-attachment';
+  $property->property_parent = '';
+  $property->property_type = 'select';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+    'scroll' => 'Scroll',
+    'fixed ' => 'Fixed',
+  );
+  $propertys['background-attachment'] = $property;
 
   // Padding.
   $property = new stdClass;
@@ -981,6 +1025,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'padding-top' => 'padding-top',
     'padding-left' => 'padding-left',
     'padding-right' => 'padding-right',
@@ -1016,6 +1062,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'border-top-width' => 'border-top-width',
     'border-left-width' => 'border-left-width',
     'border-right-width' => 'border-right-width',
@@ -1042,6 +1090,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'padding-top' => 'padding-top',
     'padding-left' => 'padding-left',
     'padding-right' => 'padding-right',
@@ -1078,6 +1128,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'margin-top' => 'margin-top',
     'margin-left' => 'margin-left',
     'margin-right' => 'margin-right',
@@ -1110,6 +1162,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'padding-top' => 'padding-top',
     'padding-left' => 'padding-left',
     'padding-right' => 'padding-right',
@@ -1146,6 +1200,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'padding-top' => 'padding-top',
     'padding-left' => 'padding-left',
     'padding-right' => 'padding-right',
@@ -1182,6 +1238,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'margin-top' => 'margin-top',
     'margin-left' => 'margin-left',
     'margin-right' => 'margin-right',
@@ -1216,6 +1274,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'padding-top' => 'padding-top',
     'padding-left' => 'padding-left',
     'padding-right' => 'padding-right',
@@ -1253,6 +1313,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'padding-top' => 'padding-top',
     'padding-left' => 'padding-left',
     'padding-right' => 'padding-right',
@@ -1279,6 +1341,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'padding-top' => 'padding-top',
     'padding-left' => 'padding-left',
     'padding-right' => 'padding-right',
@@ -1305,6 +1369,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
     'padding-top' => 'padding-top',
     'padding-left' => 'padding-left',
     'padding-right' => 'padding-right',
@@ -1331,6 +1397,8 @@ function _sweaver_default_sweaver_type() {
     'background-color' => 'background-color',
     'background-image' => 'background-image',
     'background-repeat' => 'background-repeat',
+    'background-position' => 'background-position',
+    'background-attachment' => 'background-attachment',
   );
   $types['table-row'] = $type;
 

@@ -32,7 +32,7 @@ The back end screen has a checkbox to load the active style for
 the theme if the editor itself is disabled.
 
 4) Images
-Upload images in the editor or in the back end. With imagecache
+Upload images in the editor or in the back end. With Image
 enabled, the images are also available as their derivatives.
 
 5) Switch theme

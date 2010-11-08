@@ -44,7 +44,8 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     $form['#sweaver_other_themesettings'] = array();
 
     // Let other modules alter the form.
-    $form_state = array();
+    $form['#method'] = 'post';
+    $form_state['method'] = 'post';
     drupal_prepare_form('system_theme_settings', $form, $form_state);
     // We need to unset the #type, otherwise a nested form is created, which breaks in IE7.
     unset($form['#type']);
@@ -170,6 +171,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
 
         // Move temporary if needed.
         if ($style_id != 'temp' && !$theme_values[$default] && !empty($theme_values[$file]) && strpos($theme_values[$file], 'temp_draft') !== FALSE) {
+          $type = str_replace('_path', '', $file);
           $parts = pathinfo($theme_values[$file]);
           $temp_path = $theme_values[$file];
           $dest_draft = file_default_scheme() . '://sweaver/' . $type . '_'. $theme_name . '_' . $style_id . '_draft.' . $parts['extension'];
@@ -181,7 +183,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         // or when setting a style live after the uploads were done already.
         if (isset($form_state['publish']) && $form_state['publish'] && !$theme_values[$default] && !empty($theme_values[$file])) {
           $source_path = $theme_values[$file];
-          $dest_live = str_replace('_draft', '_lidve', $theme_values[$file]);
+          $dest_live = str_replace('_draft', '_live', $theme_values[$file]);
           file_unmanaged_copy($source_path, $dest_live, FILE_EXISTS_REPLACE);
           $theme_values[$file] = $dest_live;
         }
@@ -301,7 +303,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     // Check for a new uploaded logo. Put it in the form
     // so we can give it the right filename in the submit function.
     if ($file = file_save_upload('logo_upload', array('file_validate_is_image' => array()))) {
-      $parts = pathinfo($file->filename);
+      $parts = pathinfo($file->uri);
       $filename = file_default_scheme() . '://sweaver/temp_logo.' . $parts['extension'];
       $form['#logo_path'] = $filename;
       $form['#logo_path_extension'] = $parts['extension'];
@@ -311,7 +313,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       // collector delete the original upload.
       if (file_unmanaged_copy($file->uri, $filename, FILE_EXISTS_REPLACE)) {
         $_POST['default_logo'] = 0;
-        $_POST['logo_path'] = $file->filepath;
+        $_POST['logo_path'] = $file->uri;
         $_POST['toggle_logo'] = 1;
       }
     }
@@ -319,7 +321,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     // Check for a new uploaded favicon. Put it in the form
     // so we can give it the right filename in the submit function.
     if ($file = file_save_upload('favicon_upload')) {
-      $parts = pathinfo($file->filename);
+      $parts = pathinfo($file->uri);
       $filename = file_default_scheme() . '://sweaver/temp_favicon.' . $parts['extension'];
       $form['#favicon_path'] = $filename;
       $form['#favicon_path_extension'] = $parts['extension'];
@@ -329,7 +331,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       // collector delete the original upload.
       if (file_unmanaged_copy($file->uri, $filename)) {
         $_POST['default_favicon'] = 0;
-        $_POST['favicon_path'] = $file->filepath;
+        $_POST['favicon_path'] = $file->uri;
         $_POST['toggle_favicon'] = 1;
       }
     }

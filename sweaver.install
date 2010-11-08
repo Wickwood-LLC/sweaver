@@ -81,6 +81,8 @@ function sweaver_install() {
         0 => 'background-color',
         1 => 'background-image',
         2 => 'background-repeat',
+        3 => 'background-position',
+        4 => 'background-attachment',
       ),
     ),
     'three' => array(

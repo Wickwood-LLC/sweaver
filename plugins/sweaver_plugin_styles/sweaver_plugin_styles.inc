@@ -478,7 +478,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $mask = '/(.*)' . $style->theme . '_' . $style->style_id . '_(.*)/';
     $files = file_scan_directory($dir, $mask);
     // Get temp files.
-    $mask = '(.*)'. $style->theme .'_temp_(.*)';
+    $mask = '/(.*)'. $style->theme .'_temp_(.*)/';
     $files += file_scan_directory($dir, $mask);
     foreach ($files as $key => $file) {
       file_unmanaged_delete($file->uri);
