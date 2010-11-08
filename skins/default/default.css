@@ -282,24 +282,20 @@ body.sweaver {
 
 /* style actions */
 
-#sweaver-popup #edit-save-type-wrapper,
-#sweaver-popup #edit-save-style-wrapper,
-#sweaver-popup #edit-style-existing-id-wrapper {
+#sweaver-popup .form-item-save-type,
+#sweaver-popup .form-item-save-style,
+#sweaver-popup .form-item-style-existing-id {
   float: left !important;
 }
 
-#sweaver-popup #edit-save-type-wrapper select,
-#sweaver-popup #edit-save-style-wrapper input,
-#sweaver-popup #edit-style-existing-id-wrapper select {
+#sweaver-popup .form-item-save-type select,
+#sweaver-popup .form-item-save-style input,
+#sweaver-popup .form-item-style-existing-id select {
   margin-right: 15px !important;
 }
 
 #sweaver-popup #edit-save-style {
 	width: 140px !important;
-}
-
-#sweaver-popup #edit-save-keep-draft-wrapper {
-  clear: both !important;
 }
 
 #sweaver-popup .delete-style-question {
