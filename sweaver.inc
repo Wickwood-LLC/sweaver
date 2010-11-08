@@ -21,7 +21,6 @@ class Sweaver {
 	 * instantiated by the constructor.
    */
   private function __construct() {
-
     if ($theme_key = sweaver_session(NULL, 'sweaver_theme')) {
       $this->set_current_style($theme_key);
     }

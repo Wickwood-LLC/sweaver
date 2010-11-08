@@ -504,12 +504,6 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $form = array();
 
     // Settings.
-    $form['sweaver_load_style_when_editor_inactive'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Load style'),
-      '#description' => t('Load active style for the theme when the editor is inactive. You can also add a line to the info file of your theme like this: stylesheets[all][] = /path/to/cssfile after you copied the file to your theme path. If you do that, you can ignore this setting completely and even disable this module after you have themed your website.'),
-      '#default_value' => variable_get('sweaver_load_style_when_editor_inactive', TRUE),
-    );
     $form['sweaver_styles_delete_tab'] = array(
       '#type' => 'checkbox',
       '#title' => t('Show delete tab'),

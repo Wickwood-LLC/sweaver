@@ -333,9 +333,17 @@ function sweaver_custom_theme() {
  */
 function sweaver_preprocess_page(&$vars) {
   // Load css for this theme if available.
-  if (variable_get('sweaver_load_style_when_editor_inactive', TRUE) || sweaver_show_editor()) {
+  if (drupal_static('load_style')) {
 
     $sweaver = Sweaver::get_instance();
+
+    // Extra check for the theme if we need to load css files.
+    if (drupal_static('load_style')) {
+      if (!empty($GLOBALS['theme'])) {
+        $sweaver->set_current_style($GLOBALS['theme']);
+      }
+    }
+
     $sweaver_style = $sweaver->get_current_style();
     if (isset($sweaver_style->css) && drupal_static('load_style')) {
       $settings = array(

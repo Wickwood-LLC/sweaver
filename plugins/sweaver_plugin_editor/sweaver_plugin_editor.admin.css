@@ -18,20 +18,11 @@
   opacity:0.6;
 }
 
-#sweaver-plugin-editor-objects-list input {
-  margin: 0px;
-  padding: 0px;
-}
-
 #object-list-disabled tr.odd td.empty {
   background-color: #fff;
 }
 
 /* Editor configuration form */
-
-#editor-configuration-form tr.container-row {
-  background-color: #D4E7F3;
-}
 
 #editor-configuration-form .container-label-edit {
   font-size: 16px;
