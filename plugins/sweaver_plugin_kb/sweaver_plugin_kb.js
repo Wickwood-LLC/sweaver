@@ -21,11 +21,12 @@ var kb_popup = '';
  */
 $(document).ready(function() {
   $.each(Drupal.settings.sweaver['kb'], function (index, key_binding) {
-    if ($(key_binding.element).length > 0) {
-      $(document).bind('keydown', {combi: key_binding.combination, disableInInput: true}, function(event) {
-        Drupal.Sweaver.kbShowPopup(index, key_binding.element);
-      });
+    if (key_binding.element != '' && $(key_binding.element).length == 0) {
+      return; 
     }
+    $(document).bind('keydown', {combi: key_binding.combination, disableInInput: true}, function(event) {
+      Drupal.Sweaver.kbShowPopup(index, key_binding.element);
+    });
   });
 });
 
