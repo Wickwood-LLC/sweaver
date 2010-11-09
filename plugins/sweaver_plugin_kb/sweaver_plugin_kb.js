@@ -7,6 +7,7 @@
  *
  * List of key bindings can be found at
  * http://www.weverwijk.net/wordpress/2010/03/23/key-events-in-javascript/
+ * https://github.com/jeresig/jquery.hotkeys
  *
  * More inspiration :
  * - http://rikrikrik.com/jquery/shortkeys/#download
@@ -22,10 +23,10 @@ var kb_popup = '';
 $(document).ready(function() {
   $.each(Drupal.settings.sweaver['kb'], function (index, key_binding) {
     if (key_binding.element != '' && $(key_binding.element).length == 0) {
-      return; 
+      return;
     }
-    $(document).bind('keydown', {combi: key_binding.combination, disableInInput: true}, function(event) {
-      Drupal.Sweaver.kbShowPopup(index, key_binding.element);
+    $(document).bind('keydown', key_binding.kb_button, function(event) {
+      Drupal.Sweaver.kbShowPopup(event, key_binding);
     });
   });
 });
@@ -33,10 +34,12 @@ $(document).ready(function() {
 /**
  * Show or close the popup.
  */
-Drupal.Sweaver.kbShowPopup = function(type, element) {
-  if (type != kb_popup && element != '') {
-    kb_popup = type;
-    Drupal.Sweaver.showPopup($(element), '400px', '200px');
+Drupal.Sweaver.kbShowPopup = function(event, key_binding) {
+  if (event.keyCode == parseInt(key_binding.kb_code) && key_binding.element != '') {
+    if (key_binding.kb_button != kb_popup) {
+      kb_popup = key_binding.kb_button;
+      Drupal.Sweaver.showPopup($(key_binding.element), '400px', '200px');
+    }
   }
   else {
     kb_popup = '';

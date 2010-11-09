@@ -39,8 +39,8 @@ class sweaver_plugin_kb extends sweaver_plugin {
   public function sweaver_form_css_js(&$inline_settings) {
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/jquery.hotkeys.js');
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/sweaver_plugin_kb.js');
-    $first_key = (variable_get('sweaver_plugin_kb_firstkey', '') != '') ? variable_get('sweaver_plugin_kb_firstkey', '') .'+': '';
     $bindings = $this->sweaver_kb_bindings();
+    $binding_options = $this->sweaver_kb_binding_options();
 
     foreach ($bindings as $key => $value) {
 
@@ -53,7 +53,8 @@ class sweaver_plugin_kb extends sweaver_plugin {
       $keyboard_key = variable_get('sweaver_plugin_kb_'. $key, $value['default']);
       if (!empty($keyboard_key)) {
         $inline_settings['sweaver']['kb'][$key] = array(
-          'combination' => $value['double'] ? $first_key . $keyboard_key : $keyboard_key,
+          'kb_code' => $keyboard_key,
+          'kb_button' => $binding_options[$keyboard_key],
           'element' => isset($value['element']) ? $value['element'] : '',
         );
       }
@@ -66,19 +67,10 @@ class sweaver_plugin_kb extends sweaver_plugin {
   public function sweaver_menu_callback() {
     $form = array();
     $bindings = $this->sweaver_kb_bindings();
-    $binding_options_firstkey = drupal_map_assoc($this->sweaver_kb_binding_firstkeys());
-    $binding_options = drupal_map_assoc($this->sweaver_kb_binding_options());
+    $binding_options = $this->sweaver_kb_binding_options();
 
     $form['info'] = array(
-      '#markup' => t('Select keys for every event possible. Note, there is no validation when saving this form, so make sure every event has a unique key combination.'),
-    );
-
-    $form['sweaver_plugin_kb_firstkey'] = array(
-      '#type' => 'select',
-      '#title' => t('First key'),
-      '#options' => $binding_options_firstkey,
-      '#description' => t('Can be used for all events, except the close popup'),
-      '#default_value' => variable_get('sweaver_plugin_kb_firstkey', ''),
+      '#markup' => t('Select keys for every event possible. Note, there is no validation when saving this form, so make sure every event has a unique key.'),
     );
 
     foreach ($bindings as $key => $value) {
@@ -100,32 +92,32 @@ class sweaver_plugin_kb extends sweaver_plugin {
     $bindings = array(
       'save' => array(
         'title' => t('Save style popup'),
-        'default' => 's',
+        'default' => '83',
         'element' => '.save-style-popup',
         'double' => TRUE,
       ),
       'load' => array(
         'title' => t('Load style popup'),
-        'default' => 'l',
+        'default' => '76',
         'element' => '.load-style-popup',
         'double' => TRUE,
       ),
       'publish' => array(
         'title' => t('Publish style popup'),
-        'default' => 'p',
+        'default' => '80',
         'element' => '.publish-style-popup',
         'double' => TRUE,
       ),
       'delete' => array(
         'title' => t('Delete style popup'),
-        'default' => 'd',
+        'default' => '68',
         'variable' => 'sweaver_styles_delete_tab',
         'element' => '.delete-style-popup',
         'double' => TRUE,
       ),
       'close' => array(
         'title' => t('Close popup'),
-        'default' => 'esc',
+        'default' => '27',
         'double' => FALSE,
       ),
     );
@@ -134,76 +126,48 @@ class sweaver_plugin_kb extends sweaver_plugin {
   }
 
   /**
-   * First key options
-   */
-  public function sweaver_kb_binding_firstkeys() {
-    return array(
-      '',
-      'shift',
-      'ctrl',
-      'alt',
-    );
-  }
-
-  /**
    * All possible keyboard bindings.
    */
   public function sweaver_kb_binding_options() {
     return array(
       '',
-      'esc',
-      'left',
-      'up',
-      'right',
-      'down',
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      'a',
-      'b',
-      'c',
-      'd',
-      'e',
-      'f',
-      'g',
-      'h',
-      'i',
-      'j',
-      'k',
-      'l',
-      'm',
-      'n',
-      'o',
-      'p',
-      'q',
-      'r',
-      's',
-      't',
-      'u',
-      'v',
-      'w',
-      'x',
-      'y',
-      'z',
-      'f1',
-      'f2',
-      'f3',
-      'f4',
-      'f5',
-      'f6',
-      'f7',
-      'f8',
-      'f9',
-      'f10',
-      'f11',
-      'f12',
+      '27' => 'esc',
+      '48' => '0',
+      '49' => '1',
+      '50' => '2',
+      '51' => '3',
+      '52' => '4',
+      '53' => '5',
+      '54' => '6',
+      '55' => '7',
+      '56' => '8',
+      '57' => '9',
+      '65' => 'a',
+      '66' => 'b',
+      '67' => 'c',
+      '68' => 'd',
+      '69' => 'e',
+      '70' => 'f',
+      '71' => 'g',
+      '72' => 'h',
+      '73' => 'i',
+      '74' => 'j',
+      '75' => 'k',
+      '76' => 'l',
+      '77' => 'm',
+      '78' => 'n',
+      '79' => 'o',
+      '80' => 'p',
+      '81' => 'q',
+      '82' => 'r',
+      '83' => 's',
+      '84' => 't',
+      '85' => 'u',
+      '86' => 'v',
+      '87' => 'w',
+      '88' => 'x',
+      '89' => 'y',
+      '90' => 'z',
     );
   }
 }
