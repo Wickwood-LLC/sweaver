@@ -484,9 +484,8 @@ body.sweaver {
 /* link for 'theme styles' tab */
 
 #sweaver .sweaver-switch-to-style {
-  border: 0px;
   float: left;
-  margin-right: 10px;
+  margin-right: 10px !important;
 }
 
 #sweaver .sweaver-switch-to-style a {
