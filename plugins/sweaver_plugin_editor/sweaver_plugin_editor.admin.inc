@@ -81,7 +81,7 @@ function sweaver_settings($form, $form_state) {
  * Settings screen submit.
  */
 function sweaver_settings_submit($form, &$form_state) {
-  drupal_rebuild_theme_registry();
+  drupal_theme_rebuild();
 }
 
 /**
