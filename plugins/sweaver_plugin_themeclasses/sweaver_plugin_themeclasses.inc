@@ -18,7 +18,7 @@ class sweaver_plugin_themeclasses extends sweaver_plugin {
 
     // Theme classes groups administration.
     $items['admin/config/user-interface/sweaver/themeclasses'] = $base + array(
-      'title' => 'Theme classes',
+      'title' => 'Theme styles',
       'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
       'weight' => $weight++,
