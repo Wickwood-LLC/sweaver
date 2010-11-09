@@ -95,8 +95,11 @@ class sweaverThemeSettings extends DrupalWebTestCase {
     $form = array();
     $values = array();
     $this->enableSweaverData();
-    $sweaver_style = Sweaver::get_instance()->get_plugin('sweaver_plugin_styles');
-    $sweaver_ts = Sweaver::get_instance()->get_plugin('sweaver_plugin_themesettings');
+    $sweaver = Sweaver::get_instance();
+    $sweaver_style = $sweaver->get_plugin('sweaver_plugin_styles');
+    // Rebuild configuration because themesettings isn't looaded in install.
+    $sweaver->register_plugins_configuration();
+    $sweaver_ts = $sweaver->get_plugin('sweaver_plugin_themesettings');
 
     $form['#current_theme'] = 'bartik';
     $form['sweaver_plugin_themesettings']['form'] = $sweaver_ts->sweaver_get_theme_settings_form('bartik', array());
