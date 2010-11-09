@@ -212,13 +212,19 @@ body.sweaver {
   margin: 10px 0 !important;
 }
 
-#sweaver-popup legend {
+#sweaver-frontend #sweaver-popup legend {
+  position: static;
+  text-indent: 0;
+}
+
+#sweaver-frontend #sweaver-popup legend span {
   font-size: 16px !important;
   line-height:19px !important;
   margin:0 0 10px !important;
+  display: block;
 }
 
-#sweaver-popup fieldset fieldset legend {
+#sweaver-frontend #sweaver-popup fieldset fieldset legend span {
   font-size: 12px !important;
   line-height: 13px !important;
   background: transparent url(images/close.png) no-repeat left center !important;
@@ -226,15 +232,15 @@ body.sweaver {
   height: 16px !important;
 }
 
-#sweaver-popup fieldset fieldset .fieldset-wrapper {
+#sweaver-frontend #sweaver-popup fieldset fieldset .fieldset-wrapper {
   margin: 0px 0 10px 25px;
 }
 
-#sweaver-popup fieldset {
+#sweaver-frontend #sweaver-popup fieldset {
   background: transparent none !important;
 }
 
-#sweaver-popup fieldset .description {
+#sweaver-frontend #sweaver-popup fieldset .description {
   border-radius: 5px 5px 5px 5px !important;
   -moz-border-radius: 5px 5px 5px 5px !important;
   -webkit-border-radius: 5px 5px 5px 5px !important;
@@ -244,20 +250,20 @@ body.sweaver {
   margin: 0 !important;
 }
 
-#sweaver-popup fieldset fieldset .description {
+#sweaver-frontend #sweaver-popup fieldset fieldset .description {
   margin-top: 10px !important;
 }
 
-#sweaver-popup fieldset .form-item .description {
+#sweaver-frontend #sweaver-popup fieldset .form-item .description {
   font-size: 0.9em !important;
 }
 
-#sweaver-popup fieldset .form-item {
+#sweaver-frontend #sweaver-popup fieldset .form-item {
   padding: 15px 0 !important;
   border-bottom: 1px solid #777 !important;
 }
 
-#sweaver-popup fieldset fieldset {
+#sweaver-frontend #sweaver-popup fieldset fieldset {
   background: transparent none !important;
   padding: 5px 0 !important;
 }
