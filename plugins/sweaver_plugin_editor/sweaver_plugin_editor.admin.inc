@@ -784,7 +784,7 @@ function sweaver_object_status($redirect, $object, $status) {
 /**
  * Editor form.
  */
-function sweaver_plugin_editor_config_editor(&$form_state) {
+function sweaver_plugin_editor_config_editor($form, &$form_state) {
   $form = array();
   $form['#tree'] = TRUE;
   $form['#properties_tree'] = array();
