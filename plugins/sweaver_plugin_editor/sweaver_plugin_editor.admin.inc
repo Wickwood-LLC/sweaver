@@ -72,6 +72,14 @@ function sweaver_settings($form, $form_state) {
     '#wysiwyg' => FALSE,
   );
 
+  $form['sweaver_ctools_allowed_properties'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Allowed Properties'),
+    '#default_value' => variable_get('sweaver_ctools_allowed_properties', SWEAVER_CTOOLS_ALLOWED_PROPERTIES),
+    '#description' => t('Define which properties can be used in css besides the default ones defined by CTools. That list is found in ctools_css_filter_default_allowed_properties() in ctools/includes/css.inc. Enter one selector per line.'),
+    '#wysiwyg' => FALSE,
+  );
+
   $form = system_settings_form($form);
   $form['#submit'][] = 'sweaver_settings_submit';
   return $form;

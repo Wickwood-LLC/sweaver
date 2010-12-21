@@ -1,6 +1,7 @@
 -------------------------------------------------------------------------------------
 7.x-1.1 2011-xx-xx
 -------------------------------------------------------------------------------------
+- #1004062 by FreekyMage and swentel: add UI to control the allowed css properties.
 - #984302 by swentel: fix reference in form.
 - #966644 by swentel: drupal_rebuild_theme_registry has been renamed.
 - General clean up in css and js.

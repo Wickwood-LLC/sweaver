@@ -22,6 +22,11 @@ define('SWEAVER_SELECTORS_EXCLUDE', "#sweaver-frontend\n#admin-menu\n.colorpicke
 define('SWEAVER_CLASSES_EXCLUDE', "clear\nclearfix\nsweaver\nsweaver-hovered\nsweaver-clicked\nsweaver-clicked-temp");
 
 /**
+ * Sweaver default properties that can be used in css extending the default from CTools.
+ */
+define('SWEAVER_CTOOLS_ALLOWED_PROPERTIES', "-moz-border-radius\n-webkit-border-radius\nborder-top-right-radius\nborder-bottom-right-radius\nborder-bottom-left-radius\nborder-top-left-radius\nwebkit-border-top-right-radius\nwebkit-border-bottom-right-radius\nwebkit-border-bottom-left-radius\nwebkit-border-top-left-radius\nmoz-border-radius-topright\nmoz-border-radius-bottomright\nmoz-border-radius-bottomleft\nmoz-border-radius-topleft\nposition\ntop\nleft\nbottom\nright\nborder-collapse\nborder-spacing\nlist-style-image\nlist-style-type\nmin-width\nmax-width\nmin-height\nmax-height\nvisibility");
+
+/**
  * Default skin.
  */
 define('SWEAVER_SKIN', "default");

@@ -436,30 +436,16 @@ class sweaver_plugin_styles extends sweaver_plugin {
    */
   function sweaver_ctools_allowed_properties() {
     $allowed = ctools_css_filter_default_allowed_properties();
-    $allowed_sweaver = array(
-      '-moz-border-radius',
-      '-webkit-border-radius',
-      'border-top-right-radius',
-      'border-bottom-right-radius',
-      'border-bottom-left-radius',
-      'border-top-left-radius',
-      'webkit-border-top-right-radius',
-      'webkit-border-bottom-right-radius',
-      'webkit-border-bottom-left-radius',
-      'webkit-border-top-left-radius',
-      'moz-border-radius-topright',
-      'moz-border-radius-bottomright',
-      'moz-border-radius-bottomleft',
-      'moz-border-radius-topleft',
-      'position',
-      'top',
-      'left',
-      'bottom',
-      'right',
-      'border-collapse',
-      'border-spacing',
-    );
-    return array_merge($allowed, $allowed_sweaver);
+    $allowed_properties = array();
+    $exploded = explode("\n", variable_get('sweaver_ctools_allowed_properties', SWEAVER_CTOOLS_ALLOWED_PROPERTIES));
+    foreach ($exploded as $key => $class) {
+      $trimmed = trim($class);
+      if (!empty($trimmed)) {
+        $allowed_properties[] = $trimmed;
+      }
+    }
+
+    return array_merge($allowed, $allowed_properties);
   }
 
   /**
