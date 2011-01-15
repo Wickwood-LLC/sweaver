@@ -23,9 +23,15 @@ class sweaver_plugin_fontface extends sweaver_plugin {
 
     foreach ($used_fonts as $font) {
       if (module_exists($font->provider)) {
-        $css_function = $font->provider . '_fontyourface_css';
-        $font_css = $css_function($font);
-        $extra_fonts[$font_css['font-family']] = $font->group_name;
+
+        if (function_exists('fontyourface_font_css')) {
+          $extra_fonts[$font->css_family] = $font->name;
+        }
+        else {
+          $css_function = $font->provider . '_fontyourface_css';
+          $font_css = $css_function($font);
+          $extra_fonts[$font_css['font-family']] = $font->group_name;
+        }
       }
     }
 
