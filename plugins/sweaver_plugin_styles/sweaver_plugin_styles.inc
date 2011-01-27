@@ -247,8 +247,8 @@ class sweaver_plugin_styles extends sweaver_plugin {
    * Frontend css and js.
    */
   public function sweaver_form_css_js(&$inline_settings) {
-    if (variable_get('sweaver_styles_autosave', 10) > 0) {
-      $inline_settings['sweaver']['autosave'] = variable_get('sweaver_styles_autosave', 10);
+    if (variable_get('sweaver_styles_autosave', 0) > 0) {
+      $inline_settings['sweaver']['autosave'] = variable_get('sweaver_styles_autosave', 0);
     }
     drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_styles/sweaver_plugin_styles.js');
   }
@@ -509,7 +509,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
         60 => t('Every minute'),
         120 => t('Every two minutes'),
       ),
-      '#default_value' => variable_get('sweaver_styles_autosave', 10),
+      '#default_value' => variable_get('sweaver_styles_autosave', 0),
       '#description' => t('Check for changes on your style and custom CSS every x seconds. If a change has been identified, sweaver will save those settings in a temporary cache table with AJAX. So leaving a page - or even worse, a browser crash - will make sure you keep your current configuration.'),
     );
     $form = system_settings_form($form);

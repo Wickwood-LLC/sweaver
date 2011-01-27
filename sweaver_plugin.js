@@ -28,9 +28,6 @@ Drupal.Sweaver.writeCss = function(context) {
 
 $(document).ready(function() {
 
-  // Add sweaver class for extra margin at bottom.
-  $('body').addClass('sweaver');
-
   // Avoid overlap with the localization client.
   if ($('#l10n-client').length > 0) {
     $('#sweaver').css({'bottom': $('#l10n-client .labels').height()});
@@ -43,6 +40,11 @@ $(document).ready(function() {
   Drupal.Sweaver.open = Drupal.Sweaver.cookie('sweaver_open') ? Drupal.Sweaver.cookie('sweaver_open') : 'true';
   Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
 
+  // Add sweaver class for extra margin at bottom.
+  if (Drupal.Sweaver.open != 'false') {
+    $('body').addClass('sweaver');
+  }
+  
   // Open/close the Sweaver bar.
   $('#sweaver-tabs .close a').click(function(){
     Drupal.Sweaver.toggleBar($(this).parent());
@@ -81,6 +83,7 @@ Drupal.Sweaver.toggleBar = function (tab) {
   if (Drupal.Sweaver.open == 'false') {
     $('#sweaver-middle').css('height', 'auto');
     tab.removeClass('active-tab');
+    $('#sweaver-tabs .close').removeClass('active-tab');
     $('#' + Drupal.Sweaver.activeTab).addClass('active-tab');
     Drupal.Sweaver.open = 'true';
   }
@@ -88,6 +91,7 @@ Drupal.Sweaver.toggleBar = function (tab) {
     $('#sweaver-middle').css("height", 0);
     Drupal.Sweaver.activeTab =  $('#sweaver-tabs .active-tab').attr('id');
     tab.addClass('active-tab');
+    $('#sweaver-tabs .close').addClass('active-tab');
     Drupal.Sweaver.open = 'false';
   }
   // Hide the extra margin at the bottom of the screen.

@@ -23,6 +23,13 @@ $(document).ready(function() {
 });
 
 /**
+ * Always save when leaving the page.
+ */
+$(window).unload(function() {
+  Drupal.Sweaver.AutoSave();
+});
+
+/**
  * Autosave function.
  */
 Drupal.Sweaver.AutoSave = function(context) {
