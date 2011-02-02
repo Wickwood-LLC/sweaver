@@ -98,7 +98,7 @@ class sweaver_plugin_images extends sweaver_plugin {
         file_save($image);
 
         drupal_write_record('sweaver_image', $image);
-        sweaver_session(t('Image @image has been uploaded.', array('@image' => t($image->description))));
+        sweaver_session(t('Image @image has been uploaded.', array('@image' => $image->description)));
       }
       else {
 
