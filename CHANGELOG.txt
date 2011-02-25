@@ -4,6 +4,7 @@
 - #1020860 by sreynen: Work with @font-your-face 2.x.
 - Added automatic save when leaving a page.
 - Fixed minor open/close bar issue.
+- #991544: conflict with Overlay module fixed.
 
 -------------------------------------------------------------------------------------
 7.x-1.1 2011-01-05

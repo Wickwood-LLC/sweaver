@@ -58,7 +58,7 @@ body.sweaver {
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 499;
   text-transform: none !important;
   background-image: none !important;
 }

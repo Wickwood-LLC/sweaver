@@ -324,12 +324,6 @@ Drupal.Sweaver.bindClicks = function() {
   // Add hover outline object.
   $('#sweaver-frontend').append('<div style="position: absolute; top: 0; left: 0; border: 2px dotted #ccc" id="#sweaver-hover"></div>');
 
-  // Never select the editor form as themeable.
-  // This function appears to be needed, although we exclude on the click bind too.
-  $(excludes).click(function(event) {
-    event.stopPropagation();
-  });
-
   // Build an object with all the elements that can be hovered/clicked
   var tempSelectors = $('html').find('*').filter(':parents(' + excludes + '):not(' + excludes + ')');
 
@@ -339,7 +333,7 @@ Drupal.Sweaver.bindClicks = function() {
     .bind('mouseenter', function(event){
       // Only do something when the content area is visible.
       if (Drupal.Sweaver.visible()) {
-        tempObject = $(event.target);
+        tempObject = $(this);
         object = Drupal.Sweaver.buildSweaverObject(tempObject);
         // Loop through the selectors to see if the current item should be selectable.
         if (!object.translation[0]) {
@@ -384,64 +378,68 @@ Drupal.Sweaver.bindClicks = function() {
   // When an element is clicked, add a class and build the entire path.
   tempSelectors
   .bind('click', function (event) {
-    event.stopPropagation();
     // Only do something when the content area is visible.
     if (Drupal.Sweaver.visible()) {
-
+      
+      // We need to use event.target here as we need to know if we clicked on an element that should be excluded.
+      // If we don't do this, then we will get the parent element of the excluded element, which is not what we want.
       tempObject = $(event.target);
-      object = Drupal.Sweaver.buildSweaverObject(tempObject);
-
-       // If the clicked object is a link, or an element in a link, prevent default behavior.
-       $('#follow-link').hide();
-       if(object.tag == 'a' || tempObject.parents('a').length > 0) {
-         var position = tempObject.offset();
-         var clickObject = tempObject;
-         if (object.tag != 'a') {
-           clickObject = tempObject.parents('a');
+      if(!tempObject.parents(excludes).length > 0) {
+        event.stopPropagation();
+        object = Drupal.Sweaver.buildSweaverObject(tempObject);
+  
+         // If the clicked object is a link, or an element in a link, prevent default behavior.
+         $('#follow-link').hide();
+         if(object.tag == 'a' || tempObject.parents('a').length > 0) {
+           var position = tempObject.offset();
+           var clickObject = tempObject;
+           if (object.tag != 'a') {
+             clickObject = tempObject.parents('a');
+           }
+           if (object.id != 'follow-link') {
+             $('#follow-link').attr('href', clickObject.attr('href')).css({'top' : position.top + clickObject.outerHeight() + 5, 'left': position.left}).fadeIn();
+             event.preventDefault();
+           }
          }
-         if (object.id != 'follow-link') {
-           $('#follow-link').attr('href', clickObject.attr('href')).css({'top' : position.top + clickObject.outerHeight() + 5, 'left': position.left}).fadeIn();
+         // If the clicked object is a button prevent default behavior.
+         if(object.tag == 'input' || object.tag == 'label') {
            event.preventDefault();
          }
-       }
-       // If the clicked object is a button prevent default behavior.
-       if(object.tag == 'input' || object.tag == 'label') {
-         event.preventDefault();
-       }
-
-      // Don't do anything if the clicked object is the 'follow-link' link.
-      if (object.id != 'follow-link') {
-
-	      // Only do something if the clicked item is found in the selectors.
-	      if (!object.translation[0]) {
-	        $.each(tempObject.parents(), function() {
-	          tempObject = $(this);
-	          object = Drupal.Sweaver.buildSweaverObject(tempObject);
-	          if (object.translation[0]) {
-	            return false;
-	          }
-	        });
-	      }
-
-	      // clear the old paths.
-	      $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clearfix"></div><div id="selected-path" class="clear-block"></div>');
-
-        // Initial check for the changesbox.
-        if (Drupal.Sweaver.changesboxcheck == false) {
-          Drupal.Sweaver.ChangesBox(true);
-          Drupal.Sweaver.changesboxcheck = true;
+  
+        // Don't do anything if the clicked object is the 'follow-link' link.
+        if (object.id != 'follow-link') {
+  
+  	      // Only do something if the clicked item is found in the selectors.
+  	      if (!object.translation[0]) {
+  	        $.each(tempObject.parents(), function() {
+  	          tempObject = $(this);
+  	          object = Drupal.Sweaver.buildSweaverObject(tempObject);
+  	          if (object.translation[0]) {
+  	            return false;
+  	          }
+  	        });
+  	      }
+  
+  	      // clear the old paths.
+  	      $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clearfix"></div><div id="selected-path" class="clear-block"></div>');
+  
+          // Initial check for the changesbox.
+          if (Drupal.Sweaver.changesboxcheck == false) {
+            Drupal.Sweaver.ChangesBox(true);
+            Drupal.Sweaver.changesboxcheck = true;
+          }
+  
+          // Reset some values.
+          Drupal.Sweaver.path.length = 0;
+          Drupal.Sweaver.pathIndexes.length = 0;
+          $("#selected-path").html('<span class="path-label">' + Drupal.t('Selected item: ') + '</span><span class="path-content"></span>');
+          $("#full-path").html('<span class="path-label">' + Drupal.t('Full path: ') + '</span><span class="path-content"></span>');
+  
+          // Build path with parents.
+          Drupal.Sweaver.buildPath(tempObject);
+          Drupal.Sweaver.updateForm();
+          Drupal.Sweaver.updateScreen();
         }
-
-        // Reset some values.
-        Drupal.Sweaver.path.length = 0;
-        Drupal.Sweaver.pathIndexes.length = 0;
-        $("#selected-path").html('<span class="path-label">' + Drupal.t('Selected item: ') + '</span><span class="path-content"></span>');
-        $("#full-path").html('<span class="path-label">' + Drupal.t('Full path: ') + '</span><span class="path-content"></span>');
-
-        // Build path with parents.
-        Drupal.Sweaver.buildPath(tempObject);
-        Drupal.Sweaver.updateForm();
-        Drupal.Sweaver.updateScreen();
       }
     }
   });
