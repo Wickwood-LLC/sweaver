@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * Add an extra color css

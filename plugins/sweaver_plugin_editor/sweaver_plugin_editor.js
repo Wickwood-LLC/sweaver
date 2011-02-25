@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * Add the sweaver bar at the bottom of the theme

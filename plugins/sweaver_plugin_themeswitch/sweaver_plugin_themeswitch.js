@@ -1,4 +1,3 @@
-/* $Id$ */
 
 /**
  * Add scroller on the theme switcher.
