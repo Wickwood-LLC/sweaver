@@ -1,3 +1,4 @@
+// $Id: sweaver_plugin_editor.js,v 1.1.2.21.2.20 2010/11/08 16:01:24 jyve Exp $
 
 /**
  * Add the sweaver bar at the bottom of the theme
