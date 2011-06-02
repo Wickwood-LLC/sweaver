@@ -5,7 +5,7 @@
 - Added automatic save when leaving a page.
 - Fixed minor open/close bar issue.
 - #991544: conflict with Overlay module fixed.
-
+- Fixed minor css typos
 -------------------------------------------------------------------------------------
 7.x-1.1 2011-01-05
 -------------------------------------------------------------------------------------

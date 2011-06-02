@@ -503,7 +503,7 @@ body.sweaver {
   margin-right: 25px !important;
   padding: 5px !important;
   text-align: center !important;
-  margin-top: 10px !imporant;
+  margin-top: 10px !important;
 }
 
 #sweaver .selected-image img {
@@ -902,3 +902,4 @@ body.sweaver {
 
 #sweaver_plugin_palettes .colors:hover {
   background-color: #666 !important;
+}
