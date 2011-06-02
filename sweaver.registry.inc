@@ -595,13 +595,13 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-    'left top' => 'Left top',
-    'right top' => 'Right top',
-    'left bottom' => 'Left bottom',
-    'right bottom' => 'Right bottom',
-    'center center' => 'Center center',
-    'center bottom' => 'Center bottom',
-    'center top' => 'Center top',
+    '0% 0%' => 'left top',
+    '100% 0%' => 'right top',
+    '0% 100%' => 'left bottom',
+    '100% 100%' => 'right bottom',
+    '50% 50%' => 'center center',
+    '50% 100%' => 'center bottom',
+    '50% 0%' => 'center top',
   );
   $propertys['background-position'] = $property;
 
