@@ -169,7 +169,6 @@ Drupal.Sweaver.updateForm = function() {
 	              }
 	            }
 	          });
-	          console.log(value);
 	          if(value != '' && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'color') {
 	            $('#' + object + ' .colorSelector div').css('cssText', 'background-color: ' + value + ' !important;');
 	          }
