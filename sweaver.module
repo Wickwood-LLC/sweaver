@@ -373,8 +373,10 @@ function sweaver_preprocess_page(&$vars) {
 function sweaver_page_alter(&$page) {
   // We return the complete form in the page_bottom.
   if (sweaver_show_editor()) {
+    $content = drupal_get_form('sweaver_frontend');
+    $content['#suffix'] = '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>';
     $page['page_bottom']['sweaver'] = array(
-      '#markup' => drupal_render(drupal_get_form('sweaver_frontend')) . '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>',
+      '#markup' => drupal_render($content),
     );
   }
 }

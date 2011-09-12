@@ -171,6 +171,9 @@ class Sweaver {
       }
       else {
         $css = db_query("SELECT style_id, theme, style, css, customcss, palette, themesettings, active FROM {sweaver_style} where theme = :theme and active = 1", array(':theme' => $this->theme))->fetchObject();
+        if (!isset($css->style_id)) {
+          $css = new stdClass();
+        }
         $css->type = 'live';
       }
       if (!isset($css->style_id)) {

@@ -1,10 +1,11 @@
 -------------------------------------------------------------------------------------
 7.x-1.2 2011-xx-xx
 -------------------------------------------------------------------------------------
+- #1232006 by swentel: fix strict warnings.
 - #1020860 by sreynen: Work with @font-your-face 2.x.
+- #991544: conflict with Overlay module fixed.
 - Added automatic save when leaving a page.
 - Fixed minor open/close bar issue.
-- #991544: conflict with Overlay module fixed.
 - Fixed minor css typos
 -------------------------------------------------------------------------------------
 7.x-1.1 2011-01-05
