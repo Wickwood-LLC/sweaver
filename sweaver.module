@@ -242,7 +242,10 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
         $loaded_objects = ctools_export_load_object($object_to_load);
         foreach ($loaded_objects as $key => $object) {
           $object_type_key = str_replace('sweaver_', '', $object->table);
-          if (!isset($object->disabled) || (isset($object->disabled) && $object->disabled == FALSE)) {
+          if (!isset($object->disabled)) {
+            $object->disabled = FALSE;
+          }
+          if ($object->disabled == FALSE) {
             $objects->{$object_type_key}->enabled[$key] = $object;
           }
           $objects->{$object_type_key}->all[$key] = $object;

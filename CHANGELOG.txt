@@ -1,6 +1,7 @@
 -------------------------------------------------------------------------------------
 7.x-1.2 2011-xx-xx
 -------------------------------------------------------------------------------------
+- #1157902 by swentel: Properties added in the back don't show up.
 - #1232006 by swentel: fix strict warnings.
 - #1020860 by sreynen: Work with @font-your-face 2.x.
 - #991544: conflict with Overlay module fixed.
