@@ -59,6 +59,9 @@ Use the keyboard to popup save, load, publish, delete screens.
 Define color palettes from your theme info file. More info
 is found in API.txt.
 
+11) Toolbar
+Adds a 'Sweaver' menu item in the adminstration toolbar.
+
 -- MAINTAINERS --
 
 swentel - http://drupal.org/user/107403

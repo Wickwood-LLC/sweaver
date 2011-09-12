@@ -138,6 +138,18 @@ abstract class sweaver_plugin {
   }
 
   /**
+   * Return false to not show editor.
+   */
+  public function show_editor() {
+  }
+
+  /**
+   * Return true to allow access and false to deny.
+   */
+  public function sweaver_menu_access_callback($args) {
+  }
+
+  /**
    * Sweaver form render.
    */
   public function sweaver_form_render(&$vars, &$form, $plugin) {

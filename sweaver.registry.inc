@@ -175,6 +175,15 @@ function _sweaver_sweaver_plugins() {
     ),
     'tab' => t('Palettes'),
   );
+  $plugins['sweaver_plugin_toolbar'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_toolbar',
+      'file' => 'sweaver_plugin_toolbar.inc',
+      'class' => 'sweaver_plugin_toolbar',
+      'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Toolbar'),
+  );
 
   return $plugins;
 }
@@ -1240,7 +1249,7 @@ function _sweaver_default_sweaver_type() {
     'border-top-width' => 'border-top-width',
     'border-right-width' => 'border-right-width',
     'border-bottom-width' => 'border-bottom-width',
-    'border-left-width' => 'border-left-width',    
+    'border-left-width' => 'border-left-width',
     'border-style' => 'border-style',
     'border-color' => 'border-color',
     'border-collapse' => 'border-collapse',
@@ -1367,7 +1376,7 @@ function _sweaver_default_sweaver_type() {
     'padding-top' => 'padding-top',
     'padding-right' => 'padding-right',
     'padding-bottom' => 'padding-bottom',
-    'padding-left' => 'padding-left',    
+    'padding-left' => 'padding-left',
     'height' => 'height',
   );
   $types['table-footer-group'] = $type;

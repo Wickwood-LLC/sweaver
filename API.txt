@@ -241,6 +241,18 @@ class pluginname extends sweaver_plugin {
   function sweaver_menu_callback_submit($form, &$form_state) {
     // Do something with the submitted values.
   }
+  
+  /**
+   * Return false to not show editor.
+   */
+  public function show_editor() {
+  }
+
+  /**
+   * Return true to allow access and false to deny.
+   */
+  public function sweaver_menu_access_callback($args) {
+  }  
 }
 
 ------------------------------------------------------

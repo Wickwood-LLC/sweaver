@@ -94,6 +94,7 @@ function sweaver_plugin_config_plugins_submit(&$form, &$form_state) {
   }
   variable_set('sweaver_plugins_weight', $plugins_order);
   drupal_flush_all_caches();
+  variable_set('menu_rebuild_needed', TRUE);
 
   drupal_set_message(t('The configuration options have been saved.'));
   $form_state['redirect'] = 'admin/config/user-interface/sweaver/plugins';
