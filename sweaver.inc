@@ -167,6 +167,9 @@ class Sweaver {
       elseif (sweaver_session(NULL, 'draft_mode')) {
         $table = (sweaver_session(NULL, 'loaded_table') == 'live') ? 'sweaver_style' : 'sweaver_style_draft';
         $css = db_query("SELECT * FROM {". $table ."} where style_id = :style_id", array(':style_id' => sweaver_session(NULL, 'loaded_style')))->fetchObject();
+        if (!isset($css->style_id)) {
+          $css = new stdClass();
+        }
         $css->type = 'draft';
       }
       else {
