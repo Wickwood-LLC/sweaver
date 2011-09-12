@@ -80,90 +80,100 @@ function _sweaver_sweaver_plugins() {
   $plugins = array();
 
   $plugins['sweaver_plugin_editor'] = array(
-      'tab' => t('Style'),
-      'tab_description' => t('Click on the element you want to theme.'),
-      'handler' => 'sweaver_plugin_editor',
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor',
       'file' => 'sweaver_plugin_editor.inc',
       'class' => 'sweaver_plugin_editor',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Style'),
+    'tab_description' => t('Click on the element you want to theme.'),
   );
   $plugins['sweaver_plugin_styles'] = array(
-      'tab' => t('Manage styles'),
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_styles',
-      'handler' => 'sweaver_plugin_styles',
       'file' => 'sweaver_plugin_styles.inc',
       'class' => 'sweaver_plugin_styles',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Manage styles'),
   );
   $plugins['sweaver_plugin_customcss'] = array(
-      'tab' => t('Custom css'),
-      'tab_description' => t('Add custom css.'),
-      'handler' => 'sweaver_plugin_customcss',
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_customcss',
       'file' => 'sweaver_plugin_customcss.inc',
       'class' => 'sweaver_plugin_customcss',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Custom css'),
+    'tab_description' => t('Add custom css.'),
   );
   $plugins['sweaver_plugin_images'] = array(
-      'tab' => t('Images'),
-      'tab_description' => t('Upload images to use as a background image.'),
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_images',
-      'handler' => 'sweaver_plugin_images',
       'file' => 'sweaver_plugin_images.inc',
       'class' => 'sweaver_plugin_images',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Images'),
+    'tab_description' => t('Upload images to use as a background image.'),
   );
   $plugins['sweaver_plugin_themeswitch'] = array(
-      'tab' => t('Switch theme'),
-      'tab_description' => t('Switch and style another theme.'),
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeswitch',
-      'handler' => 'sweaver_plugin_themeswitch',
       'file' => 'sweaver_plugin_themeswitch.inc',
       'class' => 'sweaver_plugin_themeswitch',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Switch theme'),
+    'tab_description' => t('Switch and style another theme.'),
   );
   $plugins['sweaver_plugin_themesettings'] = array(
-      'tab' => t('Theme settings'),
-      'tab_description' => t('Configure the settings for this theme.'),
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themesettings',
-      'handler' => 'sweaver_plugin_themesettings',
       'file' => 'sweaver_plugin_themesettings.inc',
       'class' => 'sweaver_plugin_themesettings',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Theme settings'),
+    'tab_description' => t('Configure the settings for this theme.'),
   );
   $plugins['sweaver_plugin_themeclasses'] = array(
-      'tab' => t('Theme styles'),
-      'tab_description' => t('Select an item - if any - to style it. Clicking will switch to the style editor form.'),
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_themeclasses',
-      'handler' => 'sweaver_plugin_themeclasses',
       'file' => 'sweaver_plugin_themeclasses.inc',
       'class' => 'sweaver_plugin_themeclasses',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Theme styles'),
+    'tab_description' => t('Select an item - if any - to style it. Clicking will switch to the style editor form.'),
   );
   $plugins['sweaver_plugin_fontface'] = array(
-      'tab' => t('Font face'),
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_fontface',
-      'handler' => 'sweaver_plugin_fontface',
       'file' => 'sweaver_plugin_fontface.inc',
       'class' => 'sweaver_plugin_fontface',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Font face'),
   );
   $plugins['sweaver_plugin_kb'] = array(
-      'tab' => t('Key bindings'),
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb',
-      'handler' => 'sweaver_plugin_kb',
       'file' => 'sweaver_plugin_kb.inc',
       'class' => 'sweaver_plugin_kb',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Key bindings'),
   );
   $plugins['sweaver_plugin_palettes'] = array(
-      'tab' => t('Palettes'),
+    'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_palettes',
-      'handler' => 'sweaver_plugin_palettes',
       'file' => 'sweaver_plugin_palettes.inc',
       'class' => 'sweaver_plugin_palettes',
       'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Palettes'),
   );
 
   return $plugins;
