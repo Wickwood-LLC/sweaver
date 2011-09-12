@@ -162,6 +162,9 @@ class Sweaver {
       if (sweaver_session(NULL, 'sweaver_temp')) {
         ctools_include('object-cache');
         $css = ctools_object_cache_get('sweaver-styling', 'sweaver-styling');
+        if (!isset($css->style_id)) {
+          $css = new stdClass();
+        }
         $css->type = 'draft';
       }
       elseif (sweaver_session(NULL, 'draft_mode')) {
