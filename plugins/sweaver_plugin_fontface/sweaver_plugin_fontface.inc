@@ -18,7 +18,7 @@ class sweaver_plugin_fontface extends sweaver_plugin {
    */
   public function sweaver_objects_alter(&$objects) {
     $extra_fonts = array();
-    $used_fonts = fontyourface_get_fonts();
+    $used_fonts = fontyourface_get_fonts('enabled = 1');
 
     foreach ($used_fonts as $font) {
       if (module_exists($font->provider)) {
