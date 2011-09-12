@@ -67,6 +67,6 @@ class sweaver_plugin_toolbar extends sweaver_plugin {
    * Menu access callback.
    */
   public function sweaver_menu_access_callback($args) {
-    return user_access($args) && (sweaver_show_editor(FALSE, FALSE) || request_path() == 'admin/sweaver');
+    return user_access($args[0]) && (sweaver_show_editor(FALSE, FALSE) || request_path() == 'admin/sweaver');
   }
 }
