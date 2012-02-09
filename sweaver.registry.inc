@@ -413,14 +413,14 @@ function _sweaver_default_sweaver_property() {
   $property->description = 'Font style';
   $property->property = 'font-style';
   $property->property_parent = '';
-  $property->property_type = 'select';
+  $property->property_type = 'checkbox';
   $property->property_prefix = '';
   $property->property_suffix = '';
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        'normal' => 'Normal',
-        'italic' => 'Italic',
+        'normal' => false, // Not checked
+        'italic' => true,
       );
   $propertys['font-style'] = $property;
 
@@ -432,14 +432,14 @@ function _sweaver_default_sweaver_property() {
   $property->description = 'Font weight';
   $property->property = 'font-weight';
   $property->property_parent = '';
-  $property->property_type = 'select';
+  $property->property_type = 'checkbox';
   $property->property_prefix = '';
   $property->property_suffix = '';
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        '400' => 'Normal',
-        '800' => 'Bold',
+        '400' => false,
+        '800' => true,
       );
   $propertys['font-weight'] = $property;
 
@@ -499,7 +499,7 @@ function _sweaver_default_sweaver_property() {
   $property->description = 'Text alignment';
   $property->property = 'text-align';
   $property->property_parent = '';
-  $property->property_type = 'select';
+  $property->property_type = 'radio';
   $property->property_prefix = '';
   $property->property_suffix = '';
   $property->property_slider_min = '';

@@ -179,7 +179,18 @@ Drupal.Sweaver.updateForm = function() {
 	            stripped = value.replace('url("', '').replace('")', '').replace('url(', '').replace(')', '');
 	            $("#sweaver_plugin_editor #edit-" + object).val(stripped);
 	          }
-	          else {
+              else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'checkbox') // Implement the new field checkbox
+              {
+                if (Drupal.Sweaver.properties[object]['options'][value] == true)
+                    $("#sweaver_plugin_editor #button-checkbox-" + object).addClass('button_active');
+                else $("#sweaver_plugin_editor #button-checkbox-" + object).removeClass('button_active')
+              }
+              else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'radio') // Implement the new field radio
+	          {
+                $("#sweaver_plugin_editor div[id^=button-radio-" + object + "-]").removeClass('button_active');
+                $("#sweaver_plugin_editor #button-radio-" + object + '-' + value).addClass('button_active');
+	          }
+              else {
 	            if (value) {
                 // Make the sure it is a the string.
                 value = value + '';
@@ -456,10 +467,41 @@ Drupal.Sweaver.bindClicks = function() {
     Drupal.Sweaver.hideOverlays();
   });
 
-  // Update css when something is changed in the form.
+  // Update css when a fake checkbox is clicked
+  $("#sweaver_plugin_editor div[id^=button-checkbox-]").click(function(){
+    if ($(this).hasClass('button_active'))
+        $(this).removeClass('button_active');
+    else $(this).addClass('button_active');
+    
+    if (Drupal.Sweaver.updateMode) {
+        var status = $(this).hasClass('button_active');
+        var property_to_update = $(this).attr('id').replace('button-checkbox-', '');
+        
+        $.each(Drupal.Sweaver.properties[property_to_update]['options'], function(key, value) { 
+          if (value == status)
+            Drupal.Sweaver.setValue(property_to_update, key);
+        });
+    }
+  });
+  
+  // Update css when a fake radio button is clicked
+  // Todo: Write this function
+  $("#sweaver_plugin_editor div[id^=button-radio-]").click(function(){
+    var property_to_update = $(this).attr('name');
+    var value = $(this).attr('id').substr($(this).attr('id').lastIndexOf('-') + 1);
+    
+    $("#sweaver_plugin_editor div[id^=button-radio-" + property_to_update + "-]").removeClass('button_active');
+    $(this).addClass('button_active');
+    
+    if (Drupal.Sweaver.updateMode) {
+        Drupal.Sweaver.setValue(property_to_update, value);
+    }
+  });
+
+  // Update css when something (that is not checkbox or radio button) is changed in the form.
   $("#sweaver_plugin_editor input[id^=edit-], #sweaver_plugin_editor select[id^=edit-]").change(function(){
     if (Drupal.Sweaver.updateMode) {
-      Drupal.Sweaver.setValue($(this).attr('name'), $(this).val());
+        Drupal.Sweaver.setValue($(this).attr('name'), $(this).val());
     }
   });
 

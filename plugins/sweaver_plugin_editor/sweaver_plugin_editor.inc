@@ -451,7 +451,14 @@ class sweaver_plugin_editor extends sweaver_plugin {
           ),
         );
         break;
-
+      
+      // New Type of Field implemented to improve the interface
+      case 'checkbox':
+        return array(
+          '#markup' => '<div id="button-checkbox-'.$property->name.'" class="editor_icons"></div>',
+          );
+        break;
+      
       case 'color':
         return array(
           '#markup' =>  '<div id="edit-'. $property->name .'-wrapper" class="form-item clearfix">
@@ -488,6 +495,15 @@ class sweaver_plugin_editor extends sweaver_plugin {
           '#suffix' => '</div></div>',
         );
         break;
+        
+      // New Type of Field implemented to improve the interface
+      case 'radio':
+        $return_markup = '';
+        foreach ($property->property_options as $key => $value)
+            $return_markup .= '<div id="button-radio-'.$property->name.'-'.$key.'" name="'.$property->name.'" class="editor_icons"></div>';
+        return array(
+          '#markup' => $return_markup,
+        );
     }
   }
 }

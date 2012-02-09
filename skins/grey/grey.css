@@ -11,20 +11,20 @@
 
 #sweaver-frontend *,
 #sweaver-messages * {
-  background: transparent 0 none !important;
+  background: transparent 0 none;
   color: #fff !important;
   font-family: "Lucida Grande", Lucida, Verdana, sans-serif !important;
   font-size: 12px !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  text-decoration: none !important;
-  text-transform: none !important;
-  background-image: none !important;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: none;
+  background-image: none;
   line-height: 1.3em !important;
   text-align: left !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: 0 none !important;
+  padding: 0;
+  margin: 0;
+  border: 0 none;
   width: auto;
   height: auto;
   outline: 0;
@@ -903,3 +903,44 @@ body.sweaver {
 #sweaver_plugin_palettes .colors:hover {
   background-color: #666 !important;
 }
+
+/* New icons */
+#sweaver_plugin_editor .editor_icons {
+    background: url('images/sweaver_icons.png');
+    float: left;
+    cursor: pointer;
+    margin:10px 0 10px 40px;
+    width: 32px;
+    height: 32px;
+}
+
+#sweaver_plugin_editor #button-checkbox-font-weight { background-position: 0 0; }
+#sweaver_plugin_editor #button-checkbox-font-weight:hover { background-position: -80px 0; }
+#sweaver_plugin_editor #button-checkbox-font-weight.button_active { background-position: -160px 0; }
+#sweaver_plugin_editor #button-checkbox-font-weight.button_active:hover { background-position: -240px 0; }
+
+#sweaver_plugin_editor #button-checkbox-font-style { background-position: 0 -60px; }
+#sweaver_plugin_editor #button-checkbox-font-style:hover { background-position: -80px -60px; }
+#sweaver_plugin_editor #button-checkbox-font-style.button_active { background-position: -160px -60px; }
+#sweaver_plugin_editor #button-checkbox-font-style.button_active:hover { background-position: -240px -60px; }
+
+#sweaver_plugin_editor #button-radio-text-align-left { background-position: 0 -120px; }
+#sweaver_plugin_editor #button-radio-text-align-left:hover { background-position: -80px -120px; }
+#sweaver_plugin_editor #button-radio-text-align-left.button_active { background-position: -160px -120px; }
+#sweaver_plugin_editor #button-radio-text-align-left.button_active:hover { background-position: -240px -120px; }
+
+#sweaver_plugin_editor #button-radio-text-align-center { background-position: 0 -180px; }
+#sweaver_plugin_editor #button-radio-text-align-center:hover { background-position: -80px -180px; }
+#sweaver_plugin_editor #button-radio-text-align-center.button_active { background-position: -160px -180px; }
+#sweaver_plugin_editor #button-radio-text-align-center.button_active:hover { background-position: -240px -180px; }
+
+#sweaver_plugin_editor #button-radio-text-align-right { background-position: 0 -240px; }
+#sweaver_plugin_editor #button-radio-text-align-right:hover { background-position: -80px -240px; }
+#sweaver_plugin_editor #button-radio-text-align-right.button_active { background-position: -160px -240px; }
+#sweaver_plugin_editor #button-radio-text-align-right.button_active:hover { background-position: -240px -240px; }
+
+#sweaver_plugin_editor #button-radio-text-align-justify { background-position: 0 -300px; }
+#sweaver_plugin_editor #button-radio-text-align-justify:hover { background-position: -80px -300px; }
+#sweaver_plugin_editor #button-radio-text-align-justify.button_active { background-position: -160px -300px; }
+#sweaver_plugin_editor #button-radio-text-align-justify.button_active:hover { background-position: -240px -300px; }
+
