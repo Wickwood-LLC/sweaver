@@ -438,8 +438,8 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        '400' => false,
-        '800' => true,
+        'normal' => false,
+        'bold' => true,
       );
   $propertys['font-weight'] = $property;
 
