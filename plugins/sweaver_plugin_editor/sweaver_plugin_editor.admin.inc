@@ -556,6 +556,8 @@ function sweaver_property_form(&$form, $property = NULL) {
     'select' => t('Select'),
     'color' => t('Color'),
     'image' => t('Image'),
+    'radio' => t('Radio'),
+    'checkbox' => t('Checkbox'),
   );
   $form['property_type'] = array(
     '#title' => t('Type'),

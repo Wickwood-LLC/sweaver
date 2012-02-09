@@ -38,7 +38,11 @@ $(document).ready(function() {
   Drupal.Sweaver.updateForm();
 
   Drupal.Sweaver.bindClicks();
-
+  
+  // On load the Editor selects the body tag. And still shows the message "Click on the element you want to theme"
+  Drupal.Sweaver.buildPath($('body'));
+  Drupal.Sweaver.updateForm();
+  Drupal.Sweaver.updateScreen();
 });
 
 /**
@@ -618,6 +622,11 @@ Drupal.Sweaver.buildPath = function(object) {
       i++;
     }
   });
+  if (i > 2) // There are always at least 2 levels
+  {
+      Drupal.Sweaver.addToActivePathIndex(1);
+      $('#sweaver #full-path #sid-1').addClass('active');
+  }
   Drupal.Sweaver.printActivePath();
 }
 
