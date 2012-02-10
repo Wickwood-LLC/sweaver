@@ -379,7 +379,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'font-family';
-  $property->description = 'Font family';
+  $property->description = t('Font family');
   $property->property = 'font-family';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -410,7 +410,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'font-style';
-  $property->description = 'Font style';
+  $property->description = t('Font style');
   $property->property = 'font-style';
   $property->property_parent = '';
   $property->property_type = 'checkbox';
@@ -429,7 +429,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'font-weight';
-  $property->description = 'Font weight';
+  $property->description = t('Font weight');
   $property->property = 'font-weight';
   $property->property_parent = '';
   $property->property_type = 'checkbox';
@@ -448,7 +448,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'font-size-wrapper';
-  $property->description = 'Font size';
+  $property->description = t('Font size');
   $property->property = '';
   $property->property_parent = '';
   $property->property_type = 'parent';
@@ -464,7 +464,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'font-size';
-  $property->description = 'size';
+  $property->description = t('Size');
   $property->property = 'font-size';
   $property->property_parent = 'font-size-wrapper';
   $property->property_type = 'slider';
@@ -480,7 +480,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'line-height';
-  $property->description = 'line height';
+  $property->description = t('Line height');
   $property->property = 'line-height';
   $property->property_parent = 'font-size-wrapper';
   $property->property_type = 'slider';
@@ -496,7 +496,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'text-align';
-  $property->description = 'Text alignment';
+  $property->description = t('Text alignment');
   $property->property = 'text-align';
   $property->property_parent = '';
   $property->property_type = 'radio';
@@ -517,7 +517,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'color';
-  $property->description = 'Font color';
+  $property->description = t('Font color');
   $property->property = 'color';
   $property->property_parent = '';
   $property->property_type = 'color';
@@ -533,7 +533,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'text-decoration';
-  $property->description = 'Text decoration';
+  $property->description = t('Text decoration');
   $property->property = 'text-decoration';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -554,7 +554,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-color';
-  $property->description = 'Color';
+  $property->description = t('Color');
   $property->property = 'background-color';
   $property->property_parent = '';
   $property->property_type = 'color';
@@ -569,7 +569,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-image';
-  $property->description = 'Image';
+  $property->description = t('Image');
   $property->property = 'background-image';
   $property->property_parent = '';
   $property->property_type = 'image';
@@ -584,7 +584,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-repeat';
-  $property->description = 'Repeat';
+  $property->description = t('Repeat');
   $property->property = 'background-repeat';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -605,7 +605,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-position';
-  $property->description = 'Position';
+  $property->description = t('Position');
   $property->property = 'background-position';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -629,7 +629,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-attachment';
-  $property->description = 'Attachment';
+  $property->description = t('Attachment');
   $property->property = 'background-attachment';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -648,7 +648,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'padding';
-  $property->description = 'Padding';
+  $property->description = t('Padding');
   $property->property = '';
   $property->property_parent = '';
   $property->property_type = 'parent';
@@ -663,7 +663,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'padding-top';
-  $property->description = 'Top';
+  $property->description = t('Top');
   $property->property = 'padding-top';
   $property->property_parent = 'padding';
   $property->property_type = 'slider';
@@ -678,7 +678,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'padding-right';
-  $property->description = 'Right';
+  $property->description = t('Right');
   $property->property = 'padding-right';
   $property->property_parent = 'padding';
   $property->property_type = 'slider';
@@ -693,7 +693,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'padding-bottom';
-  $property->description = 'Bottom';
+  $property->description = t('Bottom');
   $property->property = 'padding-bottom';
   $property->property_parent = 'padding';
   $property->property_type = 'slider';
@@ -708,7 +708,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'padding-left';
-  $property->description = 'Left';
+  $property->description = t('Left');
   $property->property = 'padding-left';
   $property->property_parent = 'padding';
   $property->property_type = 'slider';
@@ -724,7 +724,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'margin';
-  $property->description = 'Margin';
+  $property->description = t('Margin');
   $property->property = '';
   $property->property_parent = '';
   $property->property_type = 'parent';
@@ -739,7 +739,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'margin-top';
-  $property->description = 'Top';
+  $property->description = t('Top');
   $property->property = 'margin-top';
   $property->property_parent = 'margin';
   $property->property_type = 'slider';
@@ -754,7 +754,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'margin-right';
-  $property->description = 'Right';
+  $property->description = t('Right');
   $property->property = 'margin-right';
   $property->property_parent = 'margin';
   $property->property_type = 'slider';
@@ -769,7 +769,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'margin-bottom';
-  $property->description = 'Bottom';
+  $property->description = t('Bottom');
   $property->property = 'margin-bottom';
   $property->property_parent = 'margin';
   $property->property_type = 'slider';
@@ -784,7 +784,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'margin-left';
-  $property->description = 'Left';
+  $property->description = t('Left');
   $property->property = 'margin-left';
   $property->property_parent = 'margin';
   $property->property_type = 'slider';
@@ -800,7 +800,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border';
-  $property->description = 'Border width';
+  $property->description = t('Border width');
   $property->property = '';
   $property->property_parent = '';
   $property->property_type = 'parent';
@@ -815,7 +815,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border-top-width';
-  $property->description = 'Top';
+  $property->description = t('Top');
   $property->property = 'border-top-width';
   $property->property_parent = 'border';
   $property->property_type = 'slider';
@@ -832,7 +832,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border-right-width';
-  $property->description = 'Right';
+  $property->description = t('Right');
   $property->property = 'border-right-width';
   $property->property_parent = 'border';
   $property->property_type = 'slider';
@@ -847,7 +847,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border-bottom-width';
-  $property->description = 'Bottom';
+  $property->description = t('Bottom');
   $property->property = 'border-bottom-width';
   $property->property_parent = 'border';
   $property->property_type = 'slider';
@@ -862,7 +862,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border-left-width';
-  $property->description = 'Left';
+  $property->description = t('Left');
   $property->property = 'border-left-width';
   $property->property_parent = 'border';
   $property->property_type = 'slider';
@@ -878,7 +878,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border-color';
-  $property->description = 'Border color';
+  $property->description = t('Border color');
   $property->property = 'border-top-color border-right-color border-bottom-color border-left-color';
   $property->property_parent = '';
   $property->property_type = 'color';
@@ -894,7 +894,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border-style';
-  $property->description = 'Border style';
+  $property->description = t('Border style');
   $property->property = 'border-top-style border-right-style border-bottom-style border-left-style';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -920,7 +920,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border-collapse';
-  $property->description = 'Border collapse';
+  $property->description = t('Border collapse');
   $property->property = 'border-collapse';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -938,7 +938,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'border-spacing';
-  $property->description = 'Border spacing';
+  $property->description = t('Border spacing');
   $property->property = 'border-spacing';
   $property->property_parent = '';
   $property->property_type = 'slider';
@@ -953,7 +953,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'vertical-align';
-  $property->description = 'Vertical align';
+  $property->description = t('Vertical align');
   $property->property = 'vertical-align';
   $property->property_parent = '';
   $property->property_type = 'select';
@@ -974,7 +974,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'width';
-  $property->description = 'Width';
+  $property->description = t('Width');
   $property->property = 'width';
   $property->property_parent = '';
   $property->property_type = 'slider';
@@ -990,7 +990,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'height';
-  $property->description = 'Height';
+  $property->description = t('Height');
   $property->property = 'height';
   $property->property_parent = '';
   $property->property_type = 'slider';
