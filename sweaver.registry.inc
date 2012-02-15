@@ -641,7 +641,7 @@ function _sweaver_default_sweaver_property() {
     'scroll' => 'Scroll',
     'fixed ' => 'Fixed',
   );
-  $propertys['background-attachment'] = $property;
+  $propertys['background-attachment'] = $property;  
 
   // Padding.
   $property = new stdClass;
@@ -665,13 +665,15 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'padding-top';
   $property->description = t('Top');
   $property->property = 'padding-top';
-  $property->property_parent = 'padding';
+  $property->property_parent = 'margin';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['padding-top'] = $property;
 
   $property = new stdClass;
@@ -680,13 +682,15 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'padding-right';
   $property->description = t('Right');
   $property->property = 'padding-right';
-  $property->property_parent = 'padding';
+  $property->property_parent = 'margin';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['padding-right'] = $property;
 
   $property = new stdClass;
@@ -695,13 +699,15 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'padding-bottom';
   $property->description = t('Bottom');
   $property->property = 'padding-bottom';
-  $property->property_parent = 'padding';
+  $property->property_parent = 'margin';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['padding-bottom'] = $property;
 
   $property = new stdClass;
@@ -710,16 +716,19 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'padding-left';
   $property->description = t('Left');
   $property->property = 'padding-left';
-  $property->property_parent = 'padding';
+  $property->property_parent = 'margin';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['padding-left'] = $property;
 
   // Margin.
+  //ToDo: Change this into a table
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -732,7 +741,136 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = '';
   $property->property_slider_min = '';
   $property->property_slider_max = '';
-  $property->property_options = array();
+  $property->property_options = array(
+    '#attributes' => array('id' => 'sweaver-style-margin'),
+    '#rows' => array( // Margin & Border & Padding
+        array(
+            array(
+                'data' => '<span>'.t('Margin').'</span>',
+                'class' => array('corner', 'label'),
+            ), 
+            array(
+                'data' => '{margin-top}',
+                'class' => 'side',
+            ),
+            array(
+                'class' => 'corner',
+            ),
+        ),
+        array(
+            array(
+                'data' => '{margin-left}',
+                'class' => 'side',
+            ),
+            array( // Border & Padding
+                'data' => array(
+                    '#theme' => 'table',
+                    '#rows' => array(
+                        array(
+                            array(
+                                'data' => '<span>'.t('Border').'</span>',
+                                'class' => array('corner', 'label'),
+                            ),
+                            array(
+                                'data' => '{border-top-width}',
+                                'class' => 'side',
+                            ),
+                            array(
+                                'class' => 'corner',
+                            ),
+                        ),
+                        array(
+                            array(
+                                'data' => '{border-left-width}',
+                                'class' => 'side',
+                            ),
+                            array( // Padding
+                                'data' => array(
+                                    '#theme' => 'table',
+                                    '#rows' => array(
+                                        array(
+                                            array(
+                                                'data' => '<span>'.t('Padding').'</span>',
+                                                'class' => array('corner', 'label'),
+                                            ),
+                                            array(
+                                                'data' => '{padding-top}',
+                                                'class' => 'side',
+                                            ),
+                                            array(
+                                                'class' => 'corner',
+                                            ),
+                                        ),
+                                        array(
+                                            array(
+                                                'data' => '{padding-left}',
+                                                'class' => 'side',
+                                            ),
+                                            array(
+                                                'data' => t('Content'),
+                                                'class' => 'table-center',    
+                                            ),
+                                            array(
+                                                'data' => '{padding-right}',
+                                                'class' => 'side',
+                                            ),
+                                        ),
+                                        array(
+                                            array(
+                                                'class' => 'corner',
+                                            ),
+                                            array(
+                                                'data' => '{padding-bottom}',
+                                                'class' => 'side',
+                                            ),
+                                            array(
+                                                'class' => 'corner',
+                                            ),
+                                        ),    
+                                    ),
+                                    '#attributes' => array('id' => 'sweaver-style-padding'),
+                                )
+                            ), 
+                            array(
+                                'data' => '{border-right-width}',
+                                'class' => 'side',
+                            ),
+                        ),
+                        array(
+                            array(
+                                'class' => 'corner',
+                            ), 
+                            array(
+                                'data' => '{border-bottom-width}',
+                                'class' => 'side',
+                            ),
+                            array(
+                                'class' => 'corner',
+                            ),
+                        ),
+                    ),
+                    '#attributes' => array('id' => 'sweaver-style-border'),
+                ), 
+            ),
+            array(
+                'data' => '{margin-right}',
+                'class' => 'side',
+            ),
+        ),
+        array(
+            array(
+                'class' => 'corner',
+            ), 
+            array(
+                'data' => '{margin-bottom}',
+                'class' => 'side',
+            ),
+            array(
+                'class' => 'corner',
+            ),
+        ),
+    ),
+  );
   $propertys['margin'] = $property;
 
   $property = new stdClass;
@@ -747,7 +885,9 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['margin-top'] = $property;
 
   $property = new stdClass;
@@ -762,7 +902,9 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['margin-right'] = $property;
 
   $property = new stdClass;
@@ -777,7 +919,9 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['margin-bottom'] = $property;
 
   $property = new stdClass;
@@ -792,7 +936,9 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['margin-left'] = $property;
 
   // Border.
@@ -817,7 +963,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-top-width';
   $property->description = t('Top');
   $property->property = 'border-top-width';
-  $property->property_parent = 'border';
+  $property->property_parent = 'margin';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
@@ -825,7 +971,9 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = 500;
   $property->property_slider_min = '';
   $property->property_slider_max = '';
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['border-top-width'] = $property;
 
   $property = new stdClass;
@@ -834,13 +982,15 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-right-width';
   $property->description = t('Right');
   $property->property = 'border-right-width';
-  $property->property_parent = 'border';
+  $property->property_parent = 'margin';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['border-right-width'] = $property;
 
   $property = new stdClass;
@@ -849,13 +999,15 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-bottom-width';
   $property->description = t('Bottom');
   $property->property = 'border-bottom-width';
-  $property->property_parent = 'border';
+  $property->property_parent = 'margin';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['border-bottom-width'] = $property;
 
   $property = new stdClass;
@@ -864,13 +1016,15 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-left-width';
   $property->description = t('Left');
   $property->property = 'border-left-width';
-  $property->property_parent = 'border';
+  $property->property_parent = 'margin';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
   $property->property_slider_max = 500;
-  $property->property_options = array();
+  $property->property_options = array(
+    'title_display' => 'invisible',
+  );
   $propertys['border-left-width'] = $property;
 
   // Border color
@@ -903,15 +1057,15 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        'none' => 'None',
-        'dashed' => 'Dashed',
-        'dotted' => 'Dotted',
-        'solid' => 'Solid',
-        'double' => 'Double',
-        'groove' => 'Groove',
-        'inset' => 'Inset',
-        'outset' => 'Outset',
-        'ridge' => 'Ridge',
+        'none' => t('None'),
+        'dashed' => t('Dashed'),
+        'dotted' => t('Dotted'),
+        'solid' => t('Solid'),
+        'double' => t('Double'),
+        'groove' => t('Groove'),
+        'inset' => t('Inset'),
+        'outset' => t('Outset'),
+        'ridge' => t('Ridge'),
   );
   $propertys['border-style'] = $property;
 

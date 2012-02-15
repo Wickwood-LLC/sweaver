@@ -530,12 +530,23 @@ Drupal.Sweaver.bindClicks = function() {
       $('#sweaver_plugin_editor .form-item, #sweaver_plugin_editor .sweaver-group').removeClass('active');
       $slider.parent().addClass('active');
       $slider.parents('.sweaver-group').addClass('active');
-
+      
+      var container = $(this).parent().parent();      
+      var top =  $slider.outerHeight();
       var left = -($slider.width() / 2) + ($(this).outerWidth() / 2);
+      
       if ($slider.siblings('label').is(':visible')) {
         left += $slider.siblings('label').width();
       }
-      var top = $slider.outerHeight();
+      else if (container.hasClass('side')) {
+        left += $(this).offset().left - container.offset().left;      
+      }
+      
+      // Flip the slider over the input when it is too close to the bottom of the page to be displayed
+      if ($('#sweaver').offset().top + $('#sweaver').height() - $(this).offset().top < 100) {
+        top = 0 - top - 5;
+      }  
+      
       $slider.css({'left' : left, 'top' : top}).css({'visibility' : 'visible'});
     }
   });

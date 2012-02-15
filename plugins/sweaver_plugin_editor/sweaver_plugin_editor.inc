@@ -210,7 +210,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
           $property = $properties[$property_key];
           sweaver_export_check_serialized_keys($property);
           $form[$property->name] = $this->sweaver_property_element($property, $images);
-
           // Any children?
           if ($property->property_type == 'parent') {
             foreach ($properties as $key => $prop) {
@@ -266,6 +265,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
       $container_total = ceil(count($container_value['properties'])/5);
 
       $containers .= '<div id="container-'. $key .'" class="container-wrapper">';
+      
       foreach ($container_value['properties'] as $property) {
         if ($i == 0) {
           // Add first/last classes to the containers.
@@ -278,7 +278,14 @@ class sweaver_plugin_editor extends sweaver_plugin {
           }
           $containers .= '<div class="container '. $container_class .'"><div class="container-inner">';
         }
-
+        
+        if (isset($form[$name]['form'][$property]['#theme'])){
+            if ($form[$name]['form'][$property]['#theme'] == 'table') {
+                $form[$name]['form'][$property]['#rows'] = $this->sweaver_recursive_table_element($form[$name]['form'][$property]['#rows'], $form[$name]['form'][$property]);
+                $i = 4; // The container is closed after the table
+            }
+        }
+        
         $containers .= drupal_render($form[$name]['form'][$property]);
         $i++;
         if ($i == 5) {
@@ -347,12 +354,12 @@ class sweaver_plugin_editor extends sweaver_plugin {
         }
       }
     }
-
+    
     if ($default_source) {
       $selectors = sweaver_object_load(NULL, 'selector');
       $order = variable_get('sweaver_selector_order', array());
     }
-
+    
     $new_weight = 100;
     $js_selectors = array();
     foreach ($selectors as $key => $selector) {
@@ -396,7 +403,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
       $js_properties[$key] = $options;
       }
     }
-
+    
     // Excluded selectors.
     $js_excluded_selectors = array();
     $exclude_selectors = variable_get('sweaver_selectors_exclude', SWEAVER_SELECTORS_EXCLUDE);
@@ -489,11 +496,18 @@ class sweaver_plugin_editor extends sweaver_plugin {
         break;
 
       case 'parent':
-        return array(
-          '#type' => 'markup',
-          '#prefix' => '<div class="sweaver-group clearfix"><label>'. $property->description .':</label><div class="sweaver-group-content">',
-          '#suffix' => '</div></div>',
-        );
+        if (empty($property->property_options)) {
+            return array(
+              '#type' => 'markup',
+              '#prefix' => '<div class="sweaver-group clearfix"><label>'. $property->description .':</label><div class="sweaver-group-content">',
+              '#suffix' => '</div></div>',
+            );
+        }
+        else {
+          return array(
+            '#theme' => 'table')
+            + $property->property_options;
+        }
         break;
         
       // New Type of Field implemented to improve the interface
@@ -504,6 +518,28 @@ class sweaver_plugin_editor extends sweaver_plugin {
         return array(
           '#markup' => $return_markup,
         );
+        break;
+        
+    }
+  }
+  
+  private function sweaver_recursive_table_element ($property, $properties)
+  {
+    if (is_array($property))
+    {
+      foreach($property as $kee => $value)
+      {
+        if (is_array($value))
+          $property[$kee] = $this->sweaver_recursive_table_element($value, $properties);
+          
+        elseif (preg_match('/^{([a-zA-Z_-]+)}$/', $value, $property_name)) {
+          // $property_name[0] contains the entire string and $property_name[1] the first variable
+          $property_name = $property_name[1];
+          if (isset($properties[$property_name]))
+            $property[$kee] = $properties[$property_name]; 
+        }
+      }
+      return $property;
     }
   }
 }
