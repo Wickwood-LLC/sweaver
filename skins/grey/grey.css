@@ -976,6 +976,8 @@ body.sweaver {
 #sweaver_plugin_editor table td {
     vertical-align:middle;
     padding:0;
+    height: 20px;
+    width: 20px;
 }
 
 #sweaver_plugin_editor table td.corner {

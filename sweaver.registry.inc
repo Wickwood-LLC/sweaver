@@ -647,21 +647,6 @@ function _sweaver_default_sweaver_property() {
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
-  $property->name = 'padding';
-  $property->description = t('Padding');
-  $property->property = '';
-  $property->property_parent = '';
-  $property->property_type = 'parent';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array();
-  $propertys['padding'] = $property;
-
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
   $property->name = 'padding-top';
   $property->description = t('Top');
   $property->property = 'padding-top';
@@ -733,7 +718,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'margin';
-  $property->description = t('Margin');
+  $property->description = '';
   $property->property = '';
   $property->property_parent = '';
   $property->property_type = 'parent';
@@ -942,21 +927,6 @@ function _sweaver_default_sweaver_property() {
   $propertys['margin-left'] = $property;
 
   // Border.
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'border';
-  $property->description = t('Border width');
-  $property->property = '';
-  $property->property_parent = '';
-  $property->property_type = 'parent';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array();
-  $propertys['border'] = $property;
-
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -1220,6 +1190,14 @@ function _sweaver_default_sweaver_type() {
     'background-repeat' => 'background-repeat',
     'background-position' => 'background-position',
     'background-attachment' => 'background-attachment',
+    'padding-top' => 'padding-top',
+    'padding-right' => 'padding-right',
+    'padding-bottom' => 'padding-bottom',
+    'padding-left' => 'padding-left',
+    'margin-top' => 'margin-top',
+    'margin-right' => 'margin-right',
+    'margin-bottom' => 'margin-bottom',
+    'margin-left' => 'margin-left',
     'border-top-width' => 'border-top-width',
     'border-right-width' => 'border-right-width',
     'border-bottom-width' => 'border-bottom-width',
