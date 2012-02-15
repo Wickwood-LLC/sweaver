@@ -87,13 +87,11 @@ function sweaver_install() {
     'three' => array(
       'title' => t('Border & Spacing'),
       'properties' => array(
-        0 => 'padding',
-        1 => 'margin',
-        2 => 'border',
-        3 => 'border-style',
-        4 => 'border-color',
-        5 => 'border-collapse',
-        6 => 'border-spacing',
+        0 => 'margin',
+        1 => 'border-style',
+        2 => 'border-color',
+        3 => 'border-collapse',
+        4 => 'border-spacing',
       ),
     ),
     'four' => array(
