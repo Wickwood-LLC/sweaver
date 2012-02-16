@@ -1013,7 +1013,7 @@ body.sweaver {
 }
 
 #sweaver_plugin_editor #sweaver-style-margin .side .form-item input {
-    float:center;
+    float:center !important;
     margin: 0 6px !important;
     font-size:11px;
     height:15px !important;

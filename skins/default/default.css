@@ -624,13 +624,6 @@ body.sweaver {
   z-index: 2;
 }
 
-#sweaver_plugin_editor label,
-#sweaver_plugin_editor select,
-#sweaver_plugin_editor input {
-  float: left;
-}
-
-
 /* parent / children */
 
 #sweaver_plugin_editor .sweaver-group-content label {
@@ -1014,7 +1007,6 @@ body.sweaver {
 
 #sweaver_plugin_editor #sweaver-style-padding {
     width:115px;
-    /* background-color:#333; */
     background-color: #859626;
     border: 1px solid #6D8000;
 }
@@ -1025,7 +1017,7 @@ body.sweaver {
 }
 
 #sweaver_plugin_editor #sweaver-style-margin .side .form-item input {
-    float:center;
+    float:center !important;
     margin: 0 6px !important;
     font-size:11px;
     height:15px !important;
