@@ -366,9 +366,15 @@ Drupal.Sweaver.bindClicks = function() {
 
         // Don't add the class on elements that cover the entire screen
         // since that would add a, annoying horizontal scrollbar.
+        
+        // There is actually a bug reguarding WebKit and outerHeight property
+        // In aim to make it work we have to shortly change the display to inline-block
+        var originalDisplay = tempObject.css('display');
+        tempObject.css('display', 'inline-block');
         if (tempObject.outerWidth() != $(window).width()) {
           tempObject.addClass('sweaver-hovered');
         }
+        tempObject.css('display', originalDisplay);
       }
     })
     .bind('mouseleave', function(event){
@@ -384,9 +390,12 @@ Drupal.Sweaver.bindClicks = function() {
             return false;
           }
         });
+        var originalDisplay = tempObject.css('display');
+        tempObject.css('display', 'inline-block');
         if (tempObject.outerWidth() != $(window).width()) {
           tempObject.addClass('sweaver-hovered');
         }
+        tempObject.css('display', originalDisplay);
       }
     });
   }
