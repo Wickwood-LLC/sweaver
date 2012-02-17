@@ -88,6 +88,7 @@ Drupal.Sweaver.toggleBar = function (tab) {
   }
   else {
     $('#sweaver-middle').css("height", 0);
+    $('#follow-link').hide();
     Drupal.Sweaver.activeTab =  $('#sweaver-tabs .active-tab').attr('id');
     tab.addClass('active-tab');
     $('#sweaver-tabs .close').addClass('active-tab');
