@@ -196,8 +196,18 @@ Drupal.Sweaver.updateForm = function() {
 	          }
               else {
 	            if (value) {
-                // Make the sure it is a the string.
-                value = value + '';
+                  if (value.substr(-1) == '%') {
+                    // This value is in %
+                    // We have to check if this is a correct for this field
+                    // If not we will convert this value into px
+                    if (!(value in Drupal.Sweaver.properties[object].options)) {
+                      //Get first parent width
+                      value = $(tempObject).parent().outerWidth() * value.replace('%', '') / 100;
+                      value = Math.round(value);
+                    }
+                  }
+                  // Make the sure it is a the string.
+                  value = value + '';
 	              $("#sweaver_plugin_editor #edit-" + object).val(value.replace('px', ''));
 	            }
 	          }
