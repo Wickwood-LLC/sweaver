@@ -8,6 +8,7 @@
 - #1020860 by sreynen: Work with @font-your-face 2.x.
 - #991544: conflict with Overlay module fixed.
 - Added automatic save when leaving a page.
+- Improvements into the interface such as the Spacing Pannel which had been rethinked
 - Fixed minor open/close bar issue.
 - Fixed minor css typos
 -------------------------------------------------------------------------------------

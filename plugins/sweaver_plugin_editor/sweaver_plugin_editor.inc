@@ -284,7 +284,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
                 $form[$name]['form'][$property]['#rows'] = $this->sweaver_recursive_table_element($form[$name]['form'][$property]['#rows'], $form[$name]['form'][$property]);
                 $i = 4; // The container is closed after the table
             }
-        }
+        }        
         
         $containers .= drupal_render($form[$name]['form'][$property]);
         $i++;
@@ -456,6 +456,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
             'title' => $property->description,
             'autocomplete' => 'off',
           ),
+          '#prefix' => isset($property->css_prefix) ? $property->css_prefix : '',
+          '#suffix' => isset($property->css_suffix) ? $property->css_suffix : '',          
         );
         break;
       
@@ -474,7 +476,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
             <div class="colorSelector"><div style="background-color: #ffffff"></div>
             </div></div></div>'
         );
-        break;
+        break;                   
 
       case 'image':
         return array(
@@ -492,6 +494,8 @@ class sweaver_plugin_editor extends sweaver_plugin {
           '#type' => 'select',
           '#title' => $property->description,
           '#options' => $property->property_options,
+          '#prefix' => isset($property->css_prefix) ? $property->css_prefix : '',
+          '#suffix' => isset($property->css_suffix) ? $property->css_suffix : '',
         );
         break;
 

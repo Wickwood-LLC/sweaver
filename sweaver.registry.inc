@@ -98,16 +98,16 @@ function _sweaver_sweaver_plugins() {
     ),
     'tab' => t('Manage styles'),
   );
-  $plugins['sweaver_plugin_customcss'] = array(
+  $plugins['sweaver_plugin_advanced'] = array(
     'handler' => array(
-      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_customcss',
-      'file' => 'sweaver_plugin_customcss.inc',
-      'class' => 'sweaver_plugin_customcss',
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_advanced',
+      'file' => 'sweaver_plugin_advanced.inc',
+      'class' => 'sweaver_plugin_advanced',
       'parent' => 'sweaver_plugin',
     ),
-    'tab' => t('Custom css'),
-    'tab_description' => t('Add custom css.'),
-  );
+    'tab' => t('Advanced'),
+    'tab_description' => t('Advanced options for managing css'),
+  );  
   $plugins['sweaver_plugin_images'] = array(
     'handler' => array(
       'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_images',
@@ -403,8 +403,10 @@ function _sweaver_default_sweaver_property() {
         '\'Trebuchet\',Helvetica,Sans-Serif' => 'Trebuchet',
         'Verdana,Geneva,Sans-Serif' => 'Verdana',
       );
-  $propertys['font-family'] = $property;
-
+  $property->css_prefix = '<fieldset>';
+  $property->css_suffix = '</fieldset>';
+  $propertys['font-family'] = $property;  
+  
   // Font style.
   $property = new stdClass;
   $property->api_version = 1;

@@ -68,7 +68,7 @@ abstract class sweaver_plugin {
   /**
    * Sweaver objects alter.
    */
-  public function sweaver_objects_alter(&$objects) {
+  public function sweaver_objects_alter(&$objects) { 
     // Alter the objects if you want to.
   }
 

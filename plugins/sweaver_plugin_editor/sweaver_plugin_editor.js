@@ -56,6 +56,7 @@ Drupal.Sweaver.invokes.editor = {
 
     for (var key in Drupal.Sweaver.css) {
       var target = Drupal.Sweaver.css[key];
+      var contains_hidden_property = false;
       for (var prop in target) {
         if (Drupal.Sweaver.properties[prop]) {
 
@@ -63,21 +64,26 @@ Drupal.Sweaver.invokes.editor = {
           $.each(properties, function(i, property) {
             // Don't write anything if the value is empty.
             // 0 is not empty!
-            if (target[prop] == '' && target[prop] != '0') {
+            if (target[prop]['value'] == '' && target[prop]['value'] != '0') {
               cssContent += '';
             }
+            // Don't right anything if the property is hidden
+            else if (target[prop]['hidden']) {
+              cssContent += '';
+              contains_hidden_property = true;
+            }
             // Don't add a prefix and suffix for these exceptions.
-            else if ((property == 'background-color' && target[prop] == 'transparent') || (property == 'background-image' && target[prop] == 'none')) {
-              cssContent += '  ' + property + ': ' + target[prop] + ';\n';
+            else if ((property == 'background-color' && target[prop]['value'] == 'transparent') || (property == 'background-image' && target[prop]['value'] == 'none')) {
+              cssContent += '  ' + property + ': ' + target[prop]['value'] + ';\n';
             }
             else {
-              cssContent += '  ' + property + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + ';\n';
+              cssContent += '  ' + property + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop]['value'] + Drupal.Sweaver.properties[prop].suffix + ';\n';
             }
           });
         }
       }
 
-      if (cssContent != '') {
+      if (cssContent != '' || contains_hidden_property) {
         css += key + '{\n';
         css += cssContent;
         css += '}\n';
@@ -110,6 +116,20 @@ Drupal.Sweaver.init = function() {
   db_css = $("[name=sweaver-css]");
   if (db_css.val() && db_css.val() != '[]'){
     Drupal.Sweaver.css = $.evalJSON(db_css.val());
+    
+    // Check if values are correctly set
+    // If not they are converted in aim to correct depreciated behaviour
+    for (key in Drupal.Sweaver.css){
+      var target = Drupal.Sweaver.css[key];
+      for (prop in target) {
+        if (jQuery.type(target[prop]) != 'object'){
+          Drupal.Sweaver.css[key][prop] = {
+            'value' : Drupal.Sweaver.css[key][prop],
+            'hidden' : false,
+          };
+        }  
+      }
+    }
     db_css.val('');
   }
 
@@ -157,8 +177,8 @@ Drupal.Sweaver.updateForm = function() {
 	          $.each(properties, function(i, property) {
 	            // Are there pseudo-classes in the active path? If so check the saved css for any values that have been set.
 	            // We have do this since jQuery cannot get any values for selectors with pseudo-classes.
-	            if (Drupal.Sweaver.safeActivePath != Drupal.Sweaver.activePath && Drupal.Sweaver.css[Drupal.Sweaver.activePath] && Drupal.Sweaver.css[Drupal.Sweaver.activePath][property]) {
-                value = Drupal.Sweaver.properties[property].prefix + Drupal.Sweaver.css[Drupal.Sweaver.activePath][property] + Drupal.Sweaver.properties[property].suffix;
+	            if (Drupal.Sweaver.safeActivePath != Drupal.Sweaver.activePath && Drupal.Sweaver.css[Drupal.Sweaver.activePath] && Drupal.Sweaver.css[Drupal.Sweaver.activePath][property]['value']) {
+                value = Drupal.Sweaver.properties[property].prefix + Drupal.Sweaver.css[Drupal.Sweaver.activePath][property]['value'] + Drupal.Sweaver.properties[property].suffix;
               }
               else {
                 value = $(Drupal.Sweaver.safeActivePath).css(property);
@@ -377,7 +397,7 @@ Drupal.Sweaver.bindClicks = function() {
         // Don't add the class on elements that cover the entire screen
         // since that would add a, annoying horizontal scrollbar.
         
-        // There is actually a bug reguarding WebKit and outerHeight property
+        // There is actually a bug reguarding WebKit and outerHeight/outerWidth property
         // In aim to make it work we have to shortly change the display to inline-block
         var originalDisplay = tempObject.css('display');
         tempObject.css('display', 'inline-block');
@@ -908,7 +928,10 @@ Drupal.Sweaver.updateStyleTab = function(theClass, name) {
  */
 Drupal.Sweaver.setValue = function(property, value) {
   Drupal.Sweaver.css[Drupal.Sweaver.activePath] = Drupal.Sweaver.css[Drupal.Sweaver.activePath] || {};
-  Drupal.Sweaver.css[Drupal.Sweaver.activePath][property] = value;
+  Drupal.Sweaver.css[Drupal.Sweaver.activePath][property] = {
+    'value' : value,
+    'hidden' : false,
+  };
   Drupal.Sweaver.writeCss();
 
   // Check for state of changes box.
@@ -925,13 +948,13 @@ Drupal.Sweaver.writeChanges = function() {
   for (key in Drupal.Sweaver.css) {
     var target = Drupal.Sweaver.css[key];
     for (prop in target) {
-      if (Drupal.Sweaver.properties[prop] && (target[prop] != '' || target[prop] == '0')) {
+      if (Drupal.Sweaver.properties[prop] && (target[prop]['value'] != '' || target[prop]['value'] == '0') && target[prop]['hidden'] != true) {
       // Special case for transparent.
-        if ((prop == 'background-color' && target[prop] == 'transparent') || (prop == 'background-image' && target[prop] == 'none')) {
-          $('#editor-changes').prepend($('<p onclick="Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop] + '</p>'));
+        if ((prop == 'background-color' && target[prop]['value'] == 'transparent') || (prop == 'background-image' && target[prop]['value'] == 'none')) {
+          $('#editor-changes').prepend($('<p onclick="Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop]['value'] + '</p>'));
         }
         else {
-          $('#editor-changes').prepend($('<p onclick="Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
+          $('#editor-changes').prepend($('<p onclick="Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop]['value'] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
         }
       }
     }

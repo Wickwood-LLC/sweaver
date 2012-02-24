@@ -51,6 +51,11 @@ function sweaver_requirements($phase) {
   return $requirements;
 }
 
+function sweaver_update_7100(){
+    variable_del('sweaver_plugin_status_sweaver_plugin_customcss');
+    variable_set('sweaver_plugin_status_sweaver_plugin_advanced', TRUE);
+}
+
 /**
  * Implements hook_install().
  */
@@ -85,7 +90,7 @@ function sweaver_install() {
       ),
     ),
     'three' => array(
-      'title' => t('Border & Spacing'),
+      'title' => t('Borders & Spacing'),
       'properties' => array(
         0 => 'margin',
         1 => 'border-style',
