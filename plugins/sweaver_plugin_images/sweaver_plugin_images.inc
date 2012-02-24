@@ -134,8 +134,9 @@ class sweaver_plugin_images extends sweaver_plugin {
     $query = 'SELECT ti.fid, ti.description, f.uri FROM {sweaver_image} ti
               INNER JOIN {file_managed} f on f.fid = ti.fid order by description ASC';
     $images_result = db_query($query)->fetchAll();
+    global $base_root;
     foreach ($images_result as $image) {
-      $images[file_create_url($image->uri)] = $image->description;
+      $images[str_replace($base_root, '', file_create_url($image->uri))] = $image->description;
 
       // Styles presets.
       foreach ($styles as $preset_key => $preset) {
