@@ -397,7 +397,7 @@ Drupal.Sweaver.bindClicks = function() {
   $('#sweaver-frontend').append('<div style="position: absolute; top: 0; left: 0; border: 2px dotted #ccc" id="#sweaver-hover"></div>');
 
   // Build an object with all the elements that can be hovered/clicked
-  var tempSelectors = $('html').find('*').filter(':parents(' + excludes + '):not(' + excludes + ')');
+  var tempSelectors = $('body').find('*').filter(':parents(' + excludes + '):not(' + excludes + ')');
 
   // When an element is hovered, add a class 'sweaver-hovered'.
   if (Drupal.settings.sweaver['preview_selector']) {
@@ -461,7 +461,7 @@ Drupal.Sweaver.bindClicks = function() {
   .bind('click', function (event) {
     // Only do something when the content area is visible.
     if (Drupal.Sweaver.visible()) {
-      
+
       // We need to use event.target here as we need to know if we clicked on an element that should be excluded.
       // If we don't do this, then we will get the parent element of the excluded element, which is not what we want.
       tempObject = $(event.target);
