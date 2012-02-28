@@ -630,6 +630,10 @@ body.sweaver {
   z-index: 2;
 }
 
+#sweaver_plugin_editor .form-managed-file {
+  float: left;
+}
+
 /* parent / children */
 
 #sweaver_plugin_editor .sweaver-group-content label {

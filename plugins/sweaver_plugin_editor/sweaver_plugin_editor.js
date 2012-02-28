@@ -197,11 +197,37 @@ Drupal.Sweaver.updateForm = function() {
 	            $('#' + object + ' .colorSelector div').css('cssText', 'background-color: ' + value + ' !important;');
 	          }
 	          else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'image') {
-	            // Remove the url() from around the image url.
+                // Remove the url() from around the image url.
 	            // Mozilla browsers wrap in url(""), while webkit browsers wrap in url()
 	            // so we need two replacements.
 	            stripped = value.replace('url("', '').replace('")', '').replace('url(', '').replace(')', '');
-	            $("#sweaver_plugin_editor #edit-" + object).val(stripped);
+                var container = $('#sweaver_plugin_editor #edit-' + object + '-ajax-wrapper .form-managed-file');
+                if (1){
+                if (stripped != 'none') {
+                  container.children('input[type="file"]').hide();
+                  container.children('span').remove();
+                  
+                  container.prepend('<span class="file"><a href="' + stripped + '" target="_blank">' + Drupal.t('Display image') + '</a></span>');
+
+                  container.children('#edit-' + object + '-upload-button').val(Drupal.t('Remove'));
+                  container.children('#edit-' + object + '-upload-button').attr('name', object + '_remove_button');
+                  container.children('#edit-' + object + '-upload-button').attr('id', 'edit-' + object + '-remove-button');
+                }
+                else{
+                  container.children('input[type="file"]').show();
+                  container.children('span').remove();
+                  container.children('input[name="' + object + '[fid]"]').val(0);
+
+                  if(container.children('input[type="file"]').length == 0){
+                    container.prepend('<input type="file" id="edit-' + object + '-upload" name="files[' + object + ']" size="22" class="form-file" style="display: inline-block; ">');
+                  }
+                  
+                  container.children('#edit-' + object + '-remove-button').val(Drupal.t('Upload'));
+                  container.children('#edit-' + object + '-remove-button').attr('name', object + '_upload_button');
+                  container.children('#edit-' + object + '-remove-button').attr('id', 'edit-' + object + '-upload-button');
+                }
+                }
+	            //$("#sweaver_plugin_editor #edit-" + object).val(stripped);
 	          }
               else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'checkbox') // Implement the new field checkbox
               {
@@ -513,22 +539,21 @@ Drupal.Sweaver.bindClicks = function() {
   // Update css when a fake checkbox is clicked
   $("#sweaver_plugin_editor div[id^=button-checkbox-]").click(function(){
     if ($(this).hasClass('button_active'))
-        $(this).removeClass('button_active');
+      $(this).removeClass('button_active');
     else $(this).addClass('button_active');
     
     if (Drupal.Sweaver.updateMode) {
-        var status = $(this).hasClass('button_active');
-        var property_to_update = $(this).attr('id').replace('button-checkbox-', '');
+      var status = $(this).hasClass('button_active');
+      var property_to_update = $(this).attr('id').replace('button-checkbox-', '');
         
-        $.each(Drupal.Sweaver.properties[property_to_update]['options'], function(key, value) { 
-          if (value == status)
-            Drupal.Sweaver.setValue(property_to_update, key);
-        });
+      $.each(Drupal.Sweaver.properties[property_to_update]['options'], function(key, value) { 
+        if (value == status)
+          Drupal.Sweaver.setValue(property_to_update, key);
+      });
     }
   });
   
   // Update css when a fake radio button is clicked
-  // Todo: Write this function
   $("#sweaver_plugin_editor div[id^=button-radio-]").click(function(){
     var property_to_update = $(this).attr('name');
     var value = $(this).attr('id').substr($(this).attr('id').lastIndexOf('-') + 1);
@@ -542,12 +567,48 @@ Drupal.Sweaver.bindClicks = function() {
   });
 
   // Update css when something (that is not checkbox or radio button) is changed in the form.
-  $("#sweaver_plugin_editor input[id^=edit-], #sweaver_plugin_editor select[id^=edit-]").change(function(){
+  $("#sweaver_plugin_editor input[id^=edit-], #sweaver_plugin_editor select[id^=edit-]").live('change', function(){
     if (Drupal.Sweaver.updateMode) {
+      // Is this a file input ?
+      if ($(this).attr('name').match('^files\[[a-zA-Z0-9_-]+\]')){
+        var name = $(this).attr('name').substr(6, $(this).attr('name').length - 7);
+        var button = $('#' + $(this).attr('id') + '-button');
+        button.trigger('click');
+        button.trigger('mousedown');    
+          
+        // this function check every second if the image selected has been uploaded
+        (function imageValueChecker (i) {  
+          var fidInput = $('#sweaver_plugin_editor input[name="' + name + '[fid]"]');
+          setTimeout(function () {  
+          if (fidInput.val() != 0 ){
+          // Download complete
+          // We proceed of the css update
+            $('#edit-' + name + '-ajax-wrapper').ajaxSuccess(function(evt, request, settings){
+              window.location.reload();
+            });
+            Drupal.Sweaver.setValue(name ,fidInput.siblings('.file').children('a').attr('href'));
+            Drupal.Sweaver.AutoSave();
+          }               
+          if (fidInput.val() == 0 && --i) imageValueChecker(i);      //  decrement i and call myLoop again if i > 0
+          }, 1000);
+        })(15); // If 15 seconds after the beginning of the upload it is not yet finished we can assume that there has been a problem.
+      }
+      else {
         Drupal.Sweaver.setValue($(this).attr('name'), $(this).val());
+      }
     }
   });
-
+  
+  $('#sweaver_plugin_editor .form-managed-file input[type=submit]').live('mouseover', function(){
+    if(!$(this).hasClass('event_added')){
+      $(this).addClass('event_added');
+      $(this).bind('mousedown', function(){
+        Drupal.Sweaver.setValue($(this).attr('name').replace('_remove_button', ''), 'none');
+        Drupal.Sweaver.AutoSave();
+      });
+    }
+  });
+  
   // Show the slider when a numeric value is entered.
   $("#sweaver_plugin_editor  .slider-value").click(function(event){
     event.stopPropagation();

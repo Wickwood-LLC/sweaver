@@ -64,11 +64,11 @@ $(document).ready(function() {
   $('#sweaver .vertical-tabs a').click(function(){
     if (!$(this).hasClass('active')) {
       // handle active classes.
-      $('#sweaver .vertical-tabs .active').removeClass('active');
+      $('#sweaver #' + Drupal.Sweaver.container + ' .vertical-tabs .active').removeClass('active');
       $(this).addClass('active');
       var id = $(this).parent().attr('id').replace('tab-', '');
-      $('#sweaver .vertical-content #container-' + id).siblings().hide();
-      $('#sweaver .vertical-content #container-' + id).show();
+      $('#sweaver #' + Drupal.Sweaver.container + ' .vertical-content #container-' + id).siblings().hide();
+      $('#sweaver #' + Drupal.Sweaver.container + ' .vertical-content #container-' + id).show();
     }
     return false;
   });

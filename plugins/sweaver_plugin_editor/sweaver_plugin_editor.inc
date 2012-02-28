@@ -228,6 +228,17 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     return $form;
   }
+  
+  private function count_containers(&$form, $name,$properties){
+    $count = 0;
+    $this->i = 0;
+    foreach($properties as $property){
+      if ($this->is_container_end($form, $name, $property)){
+        $count++;
+      }
+    }
+    return $count;
+  }
 
   /**
    * Frontend form render.
@@ -259,11 +270,12 @@ class sweaver_plugin_editor extends sweaver_plugin {
       // Combine all vertical tabs.
       $vertical_tabs .= '<div id="tab-'. $key .'" class="vertical-tab"><a href="#" '. $tab_class .'>'. $container_value['title'] .'</a></div>';
 
+      //TODO: All of the container count method has to be rethought
       // Combine all properties in containers.
       $i = 0;
       $container_count = 1;
       $container_total = ceil(count($container_value['properties'])/5);
-
+      
       $containers .= '<div id="container-'. $key .'" class="container-wrapper">';
       
       foreach ($container_value['properties'] as $property) {
@@ -284,7 +296,10 @@ class sweaver_plugin_editor extends sweaver_plugin {
                 $form[$name]['form'][$property]['#rows'] = $this->sweaver_recursive_table_element($form[$name]['form'][$property]['#rows'], $form[$name]['form'][$property]);
                 $i = 4; // The container is closed after the table
             }
-        }        
+            elseif($form[$name]['form'][$property]['#type'] == 'managed_file'){
+                $i = 4; // The container is closed after the table
+            }
+        }
         
         $containers .= drupal_render($form[$name]['form'][$property]);
         $i++;
@@ -310,7 +325,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     $vars['tabs_data'][$name]['content'] = $output;
   }
-
+  
   /**
    * Frontend css and js.
    */
@@ -480,13 +495,25 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
       case 'image':
         return array(
-          '#type' => 'select',
+          '#type' => 'managed_file',
           '#title' => $property->description,
-          '#options' => $images,
-          '#attributes' => array(
-            'class' => array('background-image'),
+          '#size' => '40',
+          '#upload_location' => file_default_scheme() . '://sweaver/',
+          '#upload_validators' => array(
+            'file_validate_is_image' => array(),
+            'file_validate_extensions' => array('png gif jpg jpeg'),
           ),
         );
+      
+      
+        //return array(
+//          '#type' => 'select',
+//          '#title' => $property->description,
+//          '#options' => $images,
+//          '#attributes' => array(
+//            'class' => array('background-image'),
+//          ),
+//        );
         break;
 
       case 'select':
