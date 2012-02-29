@@ -256,6 +256,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
    * Frontend form submit.
    */
   public function sweaver_form_submit($form, &$form_state) {
+      
     $sweaver_directory = file_default_scheme() . '://sweaver';
     file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
 
@@ -607,6 +608,17 @@ class sweaver_plugin_styles extends sweaver_plugin {
     if (isset($working_style->themesettings)) {
       $style->theme = $working_style->theme;
       $style->themesettings = $working_style->themesettings;
+    }
+
+    // An image might have been uploaded by a managed_file field, permanant status needs to be set up
+    
+    if (!empty($_POST['managed_file_fid'])) {
+      $fid = filter_input(INPUT_POST, 'managed_file_fid', FILTER_SANITIZE_NUMBER_INT);
+      if ($fid > 0){
+        $file = file_load($fid);
+        $file->status = FILE_STATUS_PERMANENT;
+        file_save($file);
+      }
     }
 
     // Save to CTools object cache.

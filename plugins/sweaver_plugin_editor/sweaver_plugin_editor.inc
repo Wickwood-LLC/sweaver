@@ -228,17 +228,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     return $form;
   }
-  
-  private function count_containers(&$form, $name,$properties){
-    $count = 0;
-    $this->i = 0;
-    foreach($properties as $property){
-      if ($this->is_container_end($form, $name, $property)){
-        $count++;
-      }
-    }
-    return $count;
-  }
 
   /**
    * Frontend form render.

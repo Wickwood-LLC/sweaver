@@ -49,6 +49,12 @@ Drupal.Sweaver.AutoSave = function(context) {
     else {
       var palette = '';
     }
+    var managed_file_fid = 0;
+    $('#sweaver input[type=hidden][name$="[fid]"]').each(function(){ 
+      if ($(this).val() != 0){
+        managed_file_fid = $(this).val();
+      }
+    });
 
     $.ajax({
       type: "POST",
@@ -56,7 +62,8 @@ Drupal.Sweaver.AutoSave = function(context) {
       data: {
         css: css,
         customcss: customcss,
-        palette: palette        
+        palette: palette,
+        managed_file_fid: managed_file_fid,        
       },
       dataType: 'json',
       timeout: 5000,
