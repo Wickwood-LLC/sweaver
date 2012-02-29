@@ -650,6 +650,26 @@ Drupal.Sweaver.bindClicks = function() {
       $slider.css({'left' : left, 'top' : top}).css({'visibility' : 'visible'});
     }
   });
+  
+  // The value of an input field can be modified with arrows
+  $("#sweaver_plugin_editor  .slider-value").keydown(function(event){
+    var value = $(this).val();
+    switch(event.keyCode) {
+      case 37:
+      case 40:
+        value--;
+        $(this).val(value);
+        Drupal.Sweaver.setValue($(this).attr('name'), value);
+        break;
+      
+      case 38:
+      case 39:
+        value++;
+        $(this).val(value);
+        Drupal.Sweaver.setValue($(this).attr('name'), value);
+        break;
+    }
+  });
 
 }
 
