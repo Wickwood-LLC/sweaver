@@ -386,8 +386,8 @@ Drupal.Sweaver.addSliders = function() {
   
   //Double clicking on a slider delete all modifications made through the editor to the property
   $('#sweaver .slider a').bind('dblclick', function(){
-    id = $(this).parent().attr('id').replace('-slider', '');
-    Drupal.Sweaver.deleteProperty(Drupal.Sweaver.activePath, id);
+    property = $(this).parent().attr('id').replace('-slider', '');
+    Drupal.Sweaver.deleteProperty(Drupal.Sweaver.activePath, property);
   });
 }
 
@@ -570,6 +570,12 @@ Drupal.Sweaver.bindClicks = function() {
     if (Drupal.Sweaver.updateMode) {
         Drupal.Sweaver.setValue(property_to_update, value);
     }
+  });
+  
+  //Double clicking on a radio button delete all modifications made through the editor to the property
+  $("#sweaver_plugin_editor div[id^=button-radio-]").bind('dblclick', function(){
+    property = $(this).attr('name');
+    Drupal.Sweaver.deleteProperty(Drupal.Sweaver.activePath, property);
   });
 
   // Update css when something (that is not checkbox or radio button) is changed in the form.
