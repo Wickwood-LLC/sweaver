@@ -102,6 +102,18 @@ class Sweaver {
   private function add_plugin(Sweaver_plugin $plugin) {
     $this->plugins[] = $plugin;
   }
+  
+  /**
+   * is_plugin_activated
+   * Check if a plugin is activated
+   * @return true if activated
+   */
+  public function is_plugin_activated($name) {
+    if ($this->plugins[$name]) {
+      return isset($this->plugins_registry_enabled[$name]);
+    }
+    return false;
+  }
 
   /**
    * get_plugin.

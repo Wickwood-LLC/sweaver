@@ -483,26 +483,29 @@ class sweaver_plugin_editor extends sweaver_plugin {
         break;                   
 
       case 'image':
-        return array(
-          '#type' => 'managed_file',
-          '#title' => $property->description,
-          '#size' => '40',
-          '#upload_location' => file_default_scheme() . '://sweaver/',
-          '#upload_validators' => array(
-            'file_validate_is_image' => array(),
-            'file_validate_extensions' => array('png gif jpg jpeg'),
-          ),
-        );
-      
-      
-        //return array(
-//          '#type' => 'select',
-//          '#title' => $property->description,
-//          '#options' => $images,
-//          '#attributes' => array(
-//            'class' => array('background-image'),
-//          ),
-//        );
+        $sweaver = Sweaver::get_instance();
+        if ($sweaver->is_plugin_activated('sweaver_plugin_images')){
+          return array(
+            '#type' => 'select',
+            '#title' => $property->description,
+            '#options' => $images,
+            '#attributes' => array(
+              'class' => array('background-image'),
+            ),
+          );
+        }
+        else {
+          return array(
+            '#type' => 'managed_file',
+            '#title' => $property->description,
+            '#size' => '40',
+            '#upload_location' => file_default_scheme() . '://sweaver/',
+            '#upload_validators' => array(
+              'file_validate_is_image' => array(),
+              'file_validate_extensions' => array('png gif jpg jpeg'),
+            ),
+          ); 
+        }
         break;
 
       case 'select':

@@ -637,7 +637,9 @@ class sweaver_plugin_styles extends sweaver_plugin {
       if ($fid > 0){
         $file = file_load($fid);
         $file->status = FILE_STATUS_PERMANENT;
+        $file->description = $file->filename;
         file_save($file);
+        drupal_write_record('sweaver_image', $file);
       }
     }
 
