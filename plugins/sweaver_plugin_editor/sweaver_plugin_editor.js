@@ -383,6 +383,12 @@ Drupal.Sweaver.addSliders = function() {
       }
     });
   });
+  
+  //Double clicking on a slider delete all modifications made through the editor to the property
+  $('#sweaver .slider a').bind('dblclick', function(){
+    id = $(this).parent().attr('id').replace('-slider', '');
+    Drupal.Sweaver.deleteProperty(Drupal.Sweaver.activePath, id);
+  });
 }
 
 /**
@@ -556,7 +562,7 @@ Drupal.Sweaver.bindClicks = function() {
   // Update css when a fake radio button is clicked
   $("#sweaver_plugin_editor div[id^=button-radio-]").click(function(){
     var property_to_update = $(this).attr('name');
-    var value = $(this).attr('id').substr($(this).attr('id').lastIndexOf('-') + 1);
+    var value = $(this).attr('id').replace('button-radio-' + property_to_update + '-', '');
     
     $("#sweaver_plugin_editor div[id^=button-radio-" + property_to_update + "-]").removeClass('button_active');
     $(this).addClass('button_active');
