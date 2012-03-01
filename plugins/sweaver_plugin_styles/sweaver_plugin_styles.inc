@@ -300,11 +300,31 @@ class sweaver_plugin_styles extends sweaver_plugin {
       else {
         $style->style = $style_name;
         if (empty($style->style)) {
-          sweaver_session(t('You need to enter a name for your style.'));
-          // Reset the clicked button
-          $form_state['clicked_button']['#value'] = t('Unknown Sweaver button.');
-          return;
+          $style->style = t('Undefined');
         }
+        
+        // Check if this name is already used
+        $styles = db_select('sweaver_style_draft', 's')
+          ->fields('s', array('style'))
+          ->execute()
+          ->fetchAll();       
+        $i = '';
+        do {
+          $exist = false;
+          if ($i == '') {
+            $name = $style->style;
+          }
+          else {
+            $name = $style->style.' '.$i;
+          }
+          foreach($styles as $db_style){
+            if ($name == $db_style->style)
+              $exist = TRUE;
+          }
+          $i = ($i == '') ? 2 : $i + 1;
+        } while ($exist);
+        
+        $style->style = $name;        
       }
 
       // Always save the draft version.
