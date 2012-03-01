@@ -263,7 +263,24 @@ class sweaver_plugin_editor extends sweaver_plugin {
       // Combine all properties in containers.
       $i = 0;
       $container_count = 1;
-      $container_total = ceil(count($container_value['properties'])/5);
+      $container_total = 1;
+      foreach ($container_value['properties'] as $property) {
+        if (isset($form[$name]['form'][$property]['#theme'])){
+            if ($form[$name]['form'][$property]['#theme'] == 'table') {
+                $form[$name]['form'][$property]['#rows'] = $this->sweaver_recursive_table_element($form[$name]['form'][$property]['#rows'], $form[$name]['form'][$property]);
+                $i = 4; // The container is closed after the table
+            }
+            elseif($form[$name]['form'][$property]['#type'] == 'managed_file'){
+                $i = 4; // The container is closed after the table
+            }
+        }
+        $i++;
+        if ($i == 5){
+          $container_total++;
+          $i = 0;
+        }
+      }
+      $i = 0;
       
       $containers .= '<div id="container-'. $key .'" class="container-wrapper">';
       
@@ -468,7 +485,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
       // New Type of Field implemented to improve the interface
       case 'checkbox':
         return array(
-          '#markup' => '<div id="button-checkbox-'.$property->name.'" class="editor_icons"></div>',
+          '#markup' => '<div id="button-checkbox-'.$property->name.'" class="editor_icons form-item-'.$property->name.'"></div>',
           );
         break;
       
@@ -537,9 +554,11 @@ class sweaver_plugin_editor extends sweaver_plugin {
       case 'radio':
         $return_markup = '';
         foreach ($property->property_options as $key => $value)
-            $return_markup .= '<div id="button-radio-'.$property->name.'-'.$key.'" name="'.$property->name.'" class="editor_icons"></div>';
+            $return_markup .= '<div id="button-radio-'.$property->name.'-'.$key.'" name="'.$property->name.'" class="editor_icons form-item-'.$property->name.'"></div>';
         return array(
           '#markup' => $return_markup,
+          '#prefix' => '<div class="sweaver-group clearfix"><div class="sweaver-group-content">',
+          '#suffix' => '</div></div>',
         );
         break;
         

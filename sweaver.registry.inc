@@ -538,16 +538,15 @@ function _sweaver_default_sweaver_property() {
   $property->description = t('Text decoration');
   $property->property = 'text-decoration';
   $property->property_parent = '';
-  $property->property_type = 'select';
+  $property->property_type = 'radio';
   $property->property_prefix = '';
   $property->property_suffix = '';
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        'none' => 'None',
-        'underline' => 'Underline',
-        'overline' => 'Overline',
-        'line-through' => 'Line through',
+        'none' => t('None'),
+        'underline' => t('Underline'),
+        'line-through' => t('Line through'),
       );
   $propertys['text-decoration'] = $property;
 
@@ -715,7 +714,6 @@ function _sweaver_default_sweaver_property() {
   $propertys['padding-left'] = $property;
 
   // Margin.
-  //ToDo: Change this into a table
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
