@@ -31,6 +31,13 @@ function sweaver_settings($form, $form_state) {
     '#default_value' => variable_get('sweaver_combined_selectors', FALSE),
     '#description' => t('Show combined tag and id or class selectors in the selectors dropdown.'),
   );
+  
+  $form['sweaver_translate_path'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable translate oject\'s path translation'),
+    '#default_value' => variable_get('sweaver_translate_path', TRUE),
+    '#description' => t('Translate object path in a human-readable name'),
+  );
 
   $skins = array();
   $ignore = array('.', '..', '.svn', 'CVS', '.git');

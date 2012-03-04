@@ -1190,7 +1190,7 @@ Drupal.Sweaver.objectToReadable = function(object) {
   translation.splice(0, 0, translation[index]);
   css.splice(0, 0, css[index]);
 
-  object.translation = translation;
+  object.translation = Drupal.settings.sweaver['translate_path'] ? translation : css;
   object.css = css;
   return translation;
 }
@@ -1199,7 +1199,12 @@ Drupal.Sweaver.objectToReadable = function(object) {
  * Add a pseudo class to the translation.
  */
 Drupal.Sweaver.addPseudoClass = function(pseudoClass, original) {
-  var translation = pseudoClass ? original + Drupal.t(' in the ' + pseudoClass + ' state') : original;
+  if (Drupal.settings.sweaver['translate_path']) {
+    var translation = pseudoClass ? original + Drupal.t(' in the ' + pseudoClass + ' state') : original;
+  }
+  else {
+    var translation = pseudoClass ? original + pseudoClass : original;
+  }
   return translation;
 }
 

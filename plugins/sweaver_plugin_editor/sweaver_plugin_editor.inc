@@ -455,6 +455,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
     $inline_settings['sweaver']['exclude_classes'] = $js_excluded_classes;
     $inline_settings['sweaver']['preview_selector'] = variable_get('sweaver_preview_selection', TRUE);
     $inline_settings['sweaver']['combined_selectors'] = variable_get('sweaver_combined_selectors', FALSE);
+    $inline_settings['sweaver']['translate_path'] = variable_get('sweaver_translate_path', TRUE);
   }
 
   /**
