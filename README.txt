@@ -22,8 +22,9 @@ on the front end which you can use to style your theme.
 The plugin creates a few configuration screens where you
 can configure the selectors, properties & types.
 
-2) Custom CSS
-Adds a tab on the front end to add custom CSS.
+2) Advanced
+Adds a tab on the front end to manage advanced settings. 
+It is used to add custom css and list all modifications made through the editor.
 
 3) Manage styles
 Save, load and delete styles directly from the front end.
@@ -66,3 +67,4 @@ Adds a 'Sweaver' menu item in the adminstration toolbar.
 
 swentel - http://drupal.org/user/107403
 jyve - http://drupal.org/user/591438
+Quentin Albrand - http://drupal.org/user/1414746

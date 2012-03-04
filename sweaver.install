@@ -51,9 +51,52 @@ function sweaver_requirements($phase) {
   return $requirements;
 }
 
-function sweaver_update_7100(){
-    variable_del('sweaver_plugin_status_sweaver_plugin_customcss');
-    variable_set('sweaver_plugin_status_sweaver_plugin_advanced', TRUE);
+function sweaver_update_7100()
+{
+  variable_del('sweaver_plugin_status_sweaver_plugin_customcss');
+  variable_set('sweaver_plugin_status_sweaver_plugin_advanced', true);
+}
+
+function sweaver_update_7101()
+{
+  $editor_form_configuration = array(
+    'one' => array(
+      'title' => t('Font'),
+      'properties' => array(
+        0 => 'font-family',
+        1 => 'font-properties-wrapper',
+        2 => 'vertical-align',
+        ),
+      ),
+    'two' => array(
+      'title' => t('Background'),
+      'properties' => array(
+        0 => 'background-color',
+        1 => 'background-image',
+        2 => 'background-repeat',
+        3 => 'background-attachment',
+        4 => 'background-position',
+        ),
+      ),
+    'three' => array(
+      'title' => t('Borders & Spacing'),
+      'properties' => array(
+        0 => 'position-settings',
+        1 => 'border-style',
+        2 => 'border-color',
+        3 => 'border-collapse',
+        4 => 'border-spacing',
+        ),
+      ),
+    'four' => array(
+      'title' => t('Other'),
+      'properties' => array(
+        0 => 'height',
+        1 => 'width',
+        ),
+      ),
+    );
+  variable_set('sweaver_editor_form_configuration', $editor_form_configuration);
 }
 
 /**
@@ -70,43 +113,38 @@ function sweaver_install() {
       'title' => t('Font'),
       'properties' => array(
         0 => 'font-family',
-        1 => 'font-style',
-        2 => 'font-weight',
-        3 => 'font-size-wrapper',
-        4 => 'color',
-        5 => 'text-align',
-        6 => 'text-decoration',
-        7 => 'vertical-align',
+        1 => 'font-properties-wrapper',
+        2 => 'vertical-align',
+        ),
       ),
-    ),
     'two' => array(
       'title' => t('Background'),
       'properties' => array(
         0 => 'background-color',
         1 => 'background-image',
         2 => 'background-repeat',
-        3 => 'background-position',
-        4 => 'background-attachment',
+        3 => 'background-attachment',
+        4 => 'background-position',
+        ),
       ),
-    ),
     'three' => array(
       'title' => t('Borders & Spacing'),
       'properties' => array(
-        0 => 'margin',
+        0 => 'position-settings',
         1 => 'border-style',
         2 => 'border-color',
         3 => 'border-collapse',
         4 => 'border-spacing',
+        ),
       ),
-    ),
     'four' => array(
       'title' => t('Other'),
       'properties' => array(
         0 => 'height',
         1 => 'width',
+        ),
       ),
-    ),
-  );
+    );
   variable_set('sweaver_editor_form_configuration', $editor_form_configuration);
 
   // Selector order.

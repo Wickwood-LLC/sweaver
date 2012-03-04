@@ -38,7 +38,6 @@ function _sweaver_menu() {
 
     $items += $item;
   }
-
   return $items;
 }
 
@@ -97,6 +96,16 @@ function _sweaver_sweaver_plugins() {
       'parent' => 'sweaver_plugin',
     ),
     'tab' => t('Manage styles'),
+  );
+  $plugins['sweaver_plugin_palettes'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_palettes',
+      'file' => 'sweaver_plugin_palettes.inc',
+      'class' => 'sweaver_plugin_palettes',
+      'parent' => 'sweaver_plugin',
+    ),
+    'tab' => t('Palettes'),
+    'tab_description' => t('Change all settings in one click'),
   );
   $plugins['sweaver_plugin_advanced'] = array(
     'handler' => array(
@@ -165,15 +174,6 @@ function _sweaver_sweaver_plugins() {
       'parent' => 'sweaver_plugin',
     ),
     'tab' => t('Key bindings'),
-  );
-  $plugins['sweaver_plugin_palettes'] = array(
-    'handler' => array(
-      'path' => drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_palettes',
-      'file' => 'sweaver_plugin_palettes.inc',
-      'class' => 'sweaver_plugin_palettes',
-      'parent' => 'sweaver_plugin',
-    ),
-    'tab' => t('Palettes'),
   );
   $plugins['sweaver_plugin_toolbar'] = array(
     'handler' => array(
@@ -414,7 +414,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'font-style';
   $property->description = t('Font style');
   $property->property = 'font-style';
-  $property->property_parent = '';
+  $property->property_parent = 'font-properties-wrapper';
   $property->property_type = 'checkbox';
   $property->property_prefix = '';
   $property->property_suffix = '';
@@ -433,7 +433,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'font-weight';
   $property->description = t('Font weight');
   $property->property = 'font-weight';
-  $property->property_parent = '';
+  $property->property_parent = 'font-properties-wrapper';
   $property->property_type = 'checkbox';
   $property->property_prefix = '';
   $property->property_suffix = '';
@@ -449,7 +449,7 @@ function _sweaver_default_sweaver_property() {
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
-  $property->name = 'font-size-wrapper';
+  $property->name = 'font-properties-wrapper';
   $property->description = t('Font size');
   $property->property = '';
   $property->property_parent = '';
@@ -458,8 +458,43 @@ function _sweaver_default_sweaver_property() {
   $property->property_suffix = '';
   $property->property_slider_min = '';
   $property->property_slider_max = '';
-  $property->property_options = array();
-  $propertys['font-size-wrapper'] = $property;
+  $property->property_options = array(
+    '#attributes' => array(
+      'id' => 'sweaver-font'
+    ),
+    '#rows' => array(
+      array(
+        array(
+          'data' => '{font-size}',
+        ),
+        array(
+          'data' => '{line-height}',
+          'class' => 'close-container',
+        ),
+        array(
+          'data' => '{color}',
+          'class' => array('open-container', 'close-container'),
+        ),
+        array(
+          'data' => '{font-style}',
+          'class' => 'open-container',
+        ),
+        array(
+          'data' => '{font-weight}',
+          'class' => 'close-container',
+        ),
+        array(
+          'data' => '{text-decoration}',
+          'class' => array('open-container', 'close-container'),
+        ),
+        array(
+          'data' => '{text-align}',
+          'class' => 'open-container',
+        ),
+      ),
+    )
+  );
+  $propertys['font-properties-wrapper'] = $property;
 
   // Font size
   $property = new stdClass;
@@ -468,12 +503,14 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'font-size';
   $property->description = t('Size');
   $property->property = 'font-size';
-  $property->property_parent = 'font-size-wrapper';
+  $property->property_parent = 'font-properties-wrapper';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 1;
   $property->property_slider_max = 200;
+  $property->css_prefix = '<div id="logo-font-size" class="editor_logos"></div>';
+  $property->css_suffix = '';
   $property->property_options = array();
   $propertys['font-size'] = $property;
 
@@ -484,12 +521,14 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'line-height';
   $property->description = t('Line height');
   $property->property = 'line-height';
-  $property->property_parent = 'font-size-wrapper';
+  $property->property_parent = 'font-properties-wrapper';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 1;
   $property->property_slider_max = 200;
+  $property->css_prefix = '<div id="logo-line-height" class="editor_logos"></div>';
+  $property->css_suffix = '';
   $property->property_options = array();
   $propertys['line-height'] = $property;
 
@@ -500,7 +539,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'text-align';
   $property->description = t('Text alignment');
   $property->property = 'text-align';
-  $property->property_parent = '';
+  $property->property_parent = 'font-properties-wrapper';
   $property->property_type = 'radio';
   $property->property_prefix = '';
   $property->property_suffix = '';
@@ -521,7 +560,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'color';
   $property->description = t('Font color');
   $property->property = 'color';
-  $property->property_parent = '';
+  $property->property_parent = 'font-properties-wrapper';
   $property->property_type = 'color';
   $property->property_prefix = '#';
   $property->property_suffix = '';
@@ -537,7 +576,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'text-decoration';
   $property->description = t('Text decoration');
   $property->property = 'text-decoration';
-  $property->property_parent = '';
+  $property->property_parent = 'font-properties-wrapper';
   $property->property_type = 'radio';
   $property->property_prefix = '';
   $property->property_suffix = '';
@@ -588,7 +627,7 @@ function _sweaver_default_sweaver_property() {
   $property->description = t('Repeat');
   $property->property = 'background-repeat';
   $property->property_parent = '';
-  $property->property_type = 'select';
+  $property->property_type = 'radio';
   $property->property_prefix = '';
   $property->property_suffix = '';
   $property->property_slider_min = '';
@@ -633,14 +672,14 @@ function _sweaver_default_sweaver_property() {
   $property->description = t('Attachment');
   $property->property = 'background-attachment';
   $property->property_parent = '';
-  $property->property_type = 'select';
+  $property->property_type = 'radio';
   $property->property_prefix = '';
   $property->property_suffix = '';
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
     'scroll' => 'Scroll',
-    'fixed ' => 'Fixed',
+    'fixed' => 'Fixed',
   );
   $propertys['background-attachment'] = $property;  
 
@@ -651,12 +690,12 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'padding-top';
   $property->description = t('Top');
   $property->property = 'padding-top';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 150;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -668,12 +707,12 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'padding-right';
   $property->description = t('Right');
   $property->property = 'padding-right';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 150;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -685,12 +724,12 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'padding-bottom';
   $property->description = t('Bottom');
   $property->property = 'padding-bottom';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 150;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -702,22 +741,22 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'padding-left';
   $property->description = t('Left');
   $property->property = 'padding-left';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 150;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
   $propertys['padding-left'] = $property;
 
-  // Margin.
+  // Position Settings.
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
-  $property->name = 'margin';
+  $property->name = 'position-settings';
   $property->description = '';
   $property->property = '';
   $property->property_parent = '';
@@ -856,7 +895,7 @@ function _sweaver_default_sweaver_property() {
         ),
     ),
   );
-  $propertys['margin'] = $property;
+  $propertys['position-settings'] = $property;
 
   $property = new stdClass;
   $property->api_version = 1;
@@ -864,7 +903,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'margin-top';
   $property->description = t('Top');
   $property->property = 'margin-top';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
@@ -881,7 +920,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'margin-right';
   $property->description = t('Right');
   $property->property = 'margin-right';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
@@ -898,7 +937,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'margin-bottom';
   $property->description = t('Bottom');
   $property->property = 'margin-bottom';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
@@ -915,7 +954,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'margin-left';
   $property->description = t('Left');
   $property->property = 'margin-left';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
@@ -933,14 +972,12 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-top-width';
   $property->description = t('Top');
   $property->property = 'border-top-width';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
+  $property->property_slider_max = 100;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -952,12 +989,12 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-right-width';
   $property->description = t('Right');
   $property->property = 'border-right-width';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 100;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -969,12 +1006,12 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-bottom-width';
   $property->description = t('Bottom');
   $property->property = 'border-bottom-width';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 100;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -986,12 +1023,12 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-left-width';
   $property->description = t('Left');
   $property->property = 'border-left-width';
-  $property->property_parent = 'margin';
+  $property->property_parent = 'position-settings';
   $property->property_type = 'slider';
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 100;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
