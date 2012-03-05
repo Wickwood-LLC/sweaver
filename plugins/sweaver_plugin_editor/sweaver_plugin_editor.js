@@ -1228,7 +1228,31 @@ Drupal.Sweaver.addPseudoClass = function(pseudoClass, original) {
  */
 Drupal.Sweaver.SavePosition = function() {
   // Store the object used
-  Drupal.Sweaver.cookie('sweaver_active_path', Drupal.Sweaver.activePath);
+  // First we need to construct this path
+  path = '';
+  Drupal.Sweaver.path.reverse();
+  $.each(Drupal.Sweaver.path, function(index, value){
+    $.each(value.classes, function(i, v){
+      if (v == 'sweaver-hovered' || v == 'sweaver-clicked') {
+        value.classes.splice(i);
+      }
+    })
+    
+    if (value.tag == 'html' || value.tag == 'body') {
+      path += ' ' + value.tag;
+    }
+    else if (value.id != '') {
+      path += ' #' + value.id;
+    }
+    else if (Object.keys( value.classes ).length !== 0 && value.classes[0] != ''){
+      path += ' .' + value.classes[0];
+    }
+    else {
+      path += ' ' + value.tag;
+    }
+  });
+  Drupal.Sweaver.path.reverse();
+  Drupal.Sweaver.cookie('sweaver_active_path', path);
   
   // Save indexed path
   indexed_path = '';
