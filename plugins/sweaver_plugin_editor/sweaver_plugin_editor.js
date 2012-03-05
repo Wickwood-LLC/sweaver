@@ -540,7 +540,9 @@ Drupal.Sweaver.bindClicks = function() {
             $('#edit-' + name + '-ajax-wrapper').ajaxSuccess(function(evt, request, settings){
               window.location.reload();
             });
-            Drupal.Sweaver.setValue(name ,fidInput.siblings('.file').children('a').attr('href'));
+            absolute_path = fidInput.siblings('.file').children('a').attr('href');
+            relative_path = absolute_path.replace(Drupal.settings.sweaver['base_root'], '');
+            Drupal.Sweaver.setValue(name ,relative_path);
             Drupal.Sweaver.SavePosition();
             Drupal.Sweaver.AutoSave();
           }               
@@ -559,7 +561,6 @@ Drupal.Sweaver.bindClicks = function() {
       $(this).addClass('event_added');
       $(this).bind('mousedown', function(){
         Drupal.Sweaver.setValue($(this).attr('name').replace('_remove_button', ''), 'none');
-        Drupal.Sweaver.AutoSave();
       });
     }
   });
