@@ -39,10 +39,7 @@ $(document).ready(function() {
 
   Drupal.Sweaver.bindClicks();
   
-  // On load the Editor selects the body tag. And still shows the message "Click on the element you want to theme"
-  Drupal.Sweaver.buildPath($('body'));
-  Drupal.Sweaver.updateForm();
-  Drupal.Sweaver.updateScreen();
+  Drupal.Sweaver.LoadPosition();
 });
 
 /**
@@ -471,63 +468,8 @@ Drupal.Sweaver.bindClicks = function() {
       // We need to use event.target here as we need to know if we clicked on an element that should be excluded.
       // If we don't do this, then we will get the parent element of the excluded element, which is not what we want.
       tempObject = $(event.target);
-      if(!tempObject.parents(excludes).length > 0) {
-        event.stopPropagation();
-        object = Drupal.Sweaver.buildSweaverObject(tempObject);
-  
-         // If the clicked object is a link, or an element in a link, prevent default behavior.
-         $('#follow-link').hide();
-         if(object.tag == 'a' || tempObject.parents('a').length > 0) {
-           var position = tempObject.offset();
-           var clickObject = tempObject;
-           if (object.tag != 'a') {
-             clickObject = tempObject.parents('a');
-           }
-           if (object.id != 'follow-link') {
-             $('#follow-link').attr('href', clickObject.attr('href')).css({'top' : position.top + clickObject.outerHeight() + 5, 'left': position.left}).fadeIn();
-             event.preventDefault();
-           }
-         }
-         // If the clicked object is a button prevent default behavior.
-         if(object.tag == 'input' || object.tag == 'label') {
-           event.preventDefault();
-         }
-  
-        // Don't do anything if the clicked object is the 'follow-link' link.
-        if (object.id != 'follow-link') {
-  
-  	      // Only do something if the clicked item is found in the selectors.
-  	      if (!object.translation[0]) {
-  	        $.each(tempObject.parents(), function() {
-  	          tempObject = $(this);
-  	          object = Drupal.Sweaver.buildSweaverObject(tempObject);
-  	          if (object.translation[0]) {
-  	            return false;
-  	          }
-  	        });
-  	      }
-  
-  	      // clear the old paths.
-  	      $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clearfix"></div><div id="selected-path" class="clear-block"></div>');
-  
-          // Initial check for the changesbox.
-          if (Drupal.Sweaver.changesboxcheck == false) {
-            Drupal.Sweaver.ChangesBox(true);
-            Drupal.Sweaver.changesboxcheck = true;
-          }
-  
-          // Reset some values.
-          Drupal.Sweaver.path.length = 0;
-          Drupal.Sweaver.pathIndexes.length = 0;
-          $("#selected-path").html('<span class="path-label">' + Drupal.t('Selected item: ') + '</span><span class="path-content"></span>');
-          $("#full-path").html('<span class="path-label">' + Drupal.t('Full path: ') + '</span><span class="path-content"></span>');
-  
-          // Build path with parents.
-          Drupal.Sweaver.buildPath(tempObject);
-          Drupal.Sweaver.updateForm();
-          Drupal.Sweaver.updateScreen();
-        }
-      }
+      
+      Drupal.Sweaver.editSelection(tempObject, true);
     }
   });
 
@@ -599,6 +541,7 @@ Drupal.Sweaver.bindClicks = function() {
               window.location.reload();
             });
             Drupal.Sweaver.setValue(name ,fidInput.siblings('.file').children('a').attr('href'));
+            Drupal.Sweaver.SavePosition();
             Drupal.Sweaver.AutoSave();
           }               
           if (fidInput.val() == 0 && --i) imageValueChecker(i);      //  decrement i and call myLoop again if i > 0
@@ -683,6 +626,77 @@ Drupal.Sweaver.bindClicks = function() {
     }
   });
 
+}
+
+/**
+ * Load an object to the editor from a selector
+ */
+Drupal.Sweaver.editSelection = function (tempObject, clicked_object) {
+  if (!tempObject.parents(Drupal.settings.sweaver['exclude_selectors']).length > 0) {
+    if (clicked_object) {
+      event.stopPropagation();
+    }
+
+    object = Drupal.Sweaver.buildSweaverObject(tempObject);
+
+    // If the clicked object is a link, or an element in a link, prevent default behavior.
+    $('#follow-link').hide();
+    if (object.tag == 'a' || tempObject.parents('a').length > 0) {
+      var position = tempObject.offset();
+      var clickObject = tempObject;
+      if (object.tag != 'a') {
+        clickObject = tempObject.parents('a');
+      }
+      if (object.id != 'follow-link') {
+        $('#follow-link').attr('href', clickObject.attr('href')).css({
+          'top': position.top + clickObject.outerHeight() + 5,
+          'left': position.left
+        }).fadeIn();
+        if (clicked_object) {
+          event.preventDefault();
+        }
+      }
+    }
+    // If the clicked object is a button prevent default behavior.
+    if ((object.tag == 'input' || object.tag == 'label') && clicked_object) {
+      event.preventDefault();
+    }
+
+    // Don't do anything if the clicked object is the 'follow-link' link.
+    if (object.id != 'follow-link') {
+
+      // Only do something if the clicked item is found in the selectors.
+      if (!object.translation[0]) {
+        $.each(tempObject.parents(), function () {
+          tempObject = $(this);
+          object = Drupal.Sweaver.buildSweaverObject(tempObject);
+          if (object.translation[0]) {
+            return false;
+          }
+        });
+      }
+
+      // clear the old paths.
+      $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clearfix"></div><div id="selected-path" class="clear-block"></div>');
+
+      // Initial check for the changesbox.
+      if (Drupal.Sweaver.changesboxcheck == false) {
+        Drupal.Sweaver.ChangesBox(true);
+        Drupal.Sweaver.changesboxcheck = true;
+      }
+
+      // Reset some values.
+      Drupal.Sweaver.path.length = 0;
+      Drupal.Sweaver.pathIndexes.length = 0;
+      $("#selected-path").html('<span class="path-label">' + Drupal.t('Selected item: ') + '</span><span class="path-content"></span>');
+      $("#full-path").html('<span class="path-label">' + Drupal.t('Full path: ') + '</span><span class="path-content"></span>');
+
+      // Build path with parents.
+      Drupal.Sweaver.buildPath(tempObject);
+      Drupal.Sweaver.updateForm();
+      Drupal.Sweaver.updateScreen();
+    }
+  }
 }
 
 /**
@@ -1207,6 +1221,96 @@ Drupal.Sweaver.addPseudoClass = function(pseudoClass, original) {
   }
   return translation;
 }
+
+/**
+ * Save current position
+ */
+Drupal.Sweaver.SavePosition = function() {
+  // Store the object used
+  Drupal.Sweaver.cookie('sweaver_active_path', Drupal.Sweaver.activePath);
+  
+  // Save indexed path
+  indexed_path = '';
+  $('#sweaver_plugin_editor #full-path div[id^=sid-].active').each(function(){
+    id = $(this).attr('id').substr(4);
+    $(this).find('li.active').each(function(){
+      if ($(this).children().attr('id') != '') {
+        sub_id = $(this).children().attr('id').substr(5);
+      }
+      else {
+        sub_id = $(this).children().attr('class');
+      }
+      indexed_path += ' ' + id + '-' + sub_id;
+    });
+  });
+  Drupal.Sweaver.cookie('sweaver_indexed_path', indexed_path);
+  
+  // Store the tab used
+  Drupal.Sweaver.cookie('sweaver_active_vertical_tab', $('#sweaver_plugin_editor #sweaver-editor .vertical-tabs a.active').parent().attr('id'));
+}
+
+/**
+ * Load a saved position
+ */
+Drupal.Sweaver.LoadPosition = function() {
+  active_path = Drupal.Sweaver.cookie('sweaver_active_path');
+  indexed_path = Drupal.Sweaver.cookie('sweaver_indexed_path');
+  vertical_tab = Drupal.Sweaver.cookie('sweaver_active_vertical_tab');
+  
+  // If a configuration has been saved lets load it
+  if (active_path && indexed_path && vertical_tab){    
+    tempObject = $(active_path);
+    
+    // Load active path in the editor
+    Drupal.Sweaver.editSelection(tempObject, false);
+    
+    // Reset full path
+    $('#sweaver_plugin_editor #full-path div[id^=sid-]').removeClass('active');
+    Drupal.Sweaver.pathIndexes = [];
+    
+    // Apply indexed path
+    $.each(indexed_path.split(' '), function(index, value){
+      specific_path = value.split('-');
+      if (specific_path.length == 2) {
+        $('#sweaver_plugin_editor #full-path #sid-' + specific_path[0]).addClass('active');
+        Drupal.Sweaver.addToActivePathIndex(specific_path[0]);
+        Drupal.Sweaver.pathIndexes.sort(function(a,b){return a - b});
+        
+        if (specific_path[1].match('^[0-9]+$')) {
+        // Alternative Class  
+          Drupal.Sweaver.path[specific_path[0]].preferredSelector = specific_path[1];
+          
+          $('#sid-' + specific_path[0] + ' .first-selector a').html(Drupal.Sweaver.objectToReadable(Drupal.Sweaver.path[specific_path[0]])[0]);
+          
+          $('#sweaver_plugin_editor #full-path #sid-' + specific_path[0] + ' .selectors li').removeClass('active');
+          $('#sweaver_plugin_editor #full-path #sid-' + specific_path[0] + ' #ssid-' + specific_path[1]).parent().addClass('active');
+        }
+        else {
+        // Pseudo Class
+          Drupal.Sweaver.path[specific_path[0]].pseudoClass = ':' + specific_path[1];
+          Drupal.Sweaver.path[specific_path[0]].translation = Drupal.Sweaver.objectToReadable(Drupal.Sweaver.path[specific_path[0]]);
+          $('#sid-' + specific_path[0] + ' .first-selector a').html(Drupal.Sweaver.path[specific_path[0]].translation[0]);
+          
+          $('#sweaver_plugin_editor #full-path #sid-' + specific_path[0] + ' .pseudoclasses .' + specific_path[1]).parent().addClass('active');
+        }
+      }
+    });
+    Drupal.Sweaver.printActivePath();
+    Drupal.Sweaver.activeElement = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]] ? Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[0]] : {} ;
+    Drupal.Sweaver.updateForm();
+    Drupal.Sweaver.updateScreen();
+    
+    $('#sweaver_plugin_editor #sweaver-editor #' + vertical_tab + ' a').click();
+    
+    Drupal.Sweaver.cookie('sweaver_active_path', null);
+    Drupal.Sweaver.cookie('sweaver_indexed_path', null);
+    Drupal.Sweaver.cookie('sweaver_active_vertical_tab', null);
+  }
+  else {
+    Drupal.Sweaver.editSelection($('body'), false);
+  }
+}
+
 
 /**
  * Build a Sweaver object.
