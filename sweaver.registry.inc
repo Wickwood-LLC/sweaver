@@ -546,10 +546,10 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        'left' => 'Left',
-        'center' => 'Center',
-        'right' => 'Right',
-        'justify' => 'Justified',
+        'left' => t('Left'),
+        'center' => t('Center'),
+        'right' => t('Right'),
+        'justify' => t('Justified'),
       );
   $propertys['text-align'] = $property;
 
@@ -669,7 +669,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'background-attachment';
-  $property->description = t('Attachment');
+  $property->description = t('Attachment', array(), array('context' => 'sweaver'));
   $property->property = 'background-attachment';
   $property->property_parent = '';
   $property->property_type = 'radio';

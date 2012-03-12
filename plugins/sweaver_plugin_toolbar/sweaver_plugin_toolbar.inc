@@ -19,7 +19,7 @@ class sweaver_plugin_toolbar extends sweaver_plugin {
       'title' => 'Sweaver',
       'page arguments' => array($page_arguments),
       'access callback' => 'sweaver_menu_access_callback',
-      'weight' => -6,
+      'weight' => -6,                  
     );
 
     return $items;
