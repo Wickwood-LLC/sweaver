@@ -162,7 +162,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         if (isset($form['sweaver_plugin_themesettings']['form']['#'. $file])) {
           $type = str_replace('_path', '', $file);
           $source_path = $form['sweaver_plugin_themesettings']['form']['#' . $file];
-          $dest_draft = file_default_scheme() . '://sweaver/' . $type . '_' . $theme_name . '_' . $style_id . '_draft.' . $form['sweaver_plugin_themesettings']['form']['#' . $file . '_extension'];
+          $dest_draft = 'public://sweaver/' . $type . '_' . $theme_name . '_' . $style_id . '_draft.' . $form['sweaver_plugin_themesettings']['form']['#' . $file . '_extension'];
           file_unmanaged_move($source_path, $dest_draft, FILE_EXISTS_REPLACE);
           $theme_values[$file] = $dest_draft;
           $theme_values[$default] = 0;
@@ -173,7 +173,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
           $type = str_replace('_path', '', $file);
           $parts = pathinfo($theme_values[$file]);
           $temp_path = $theme_values[$file];
-          $dest_draft = file_default_scheme() . '://sweaver/' . $type . '_'. $theme_name . '_' . $style_id . '_draft.' . $parts['extension'];
+          $dest_draft = 'public://sweaver/' . $type . '_'. $theme_name . '_' . $style_id . '_draft.' . $parts['extension'];
           file_unmanaged_move($temp_path, $dest_draft, FILE_EXISTS_REPLACE);
           $theme_values[$file] = $dest_draft;
         }
@@ -295,7 +295,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     // so we can give it the right filename in the submit function.
     if ($file = file_save_upload('logo_upload', array('file_validate_is_image' => array()))) {
       $parts = pathinfo($file->uri);
-      $filename = file_default_scheme() . '://sweaver/temp_logo.' . $parts['extension'];
+      $filename = 'public://sweaver/temp_logo.' . $parts['extension'];
       $form['#logo_path'] = $filename;
       $form['#logo_path_extension'] = $parts['extension'];
 
@@ -313,7 +313,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     // so we can give it the right filename in the submit function.
     if ($file = file_save_upload('favicon_upload')) {
       $parts = pathinfo($file->uri);
-      $filename = file_default_scheme() . '://sweaver/temp_favicon.' . $parts['extension'];
+      $filename = 'public://sweaver/temp_favicon.' . $parts['extension'];
       $form['#favicon_path'] = $filename;
       $form['#favicon_path_extension'] = $parts['extension'];
 

@@ -519,7 +519,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
             '#type' => 'managed_file',
             '#title' => $property->description,
             '#size' => '40',
-            '#upload_location' => file_default_scheme() . '://sweaver/',
+            '#upload_location' => 'public://sweaver/',
             '#upload_validators' => array(
               'file_validate_is_image' => array(),
               'file_validate_extensions' => array('png gif jpg jpeg'),

@@ -79,16 +79,16 @@ class sweaver_plugin_images extends sweaver_plugin {
         'file_validate_is_image' => array(),
       );
 
-      $sweaver_directory = file_default_scheme() . '://sweaver';
+      $sweaver_directory = 'public://sweaver';
       file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
-      $image = file_save_upload('image_image', $validators, file_default_scheme() . '://sweaver');
+      $image = file_save_upload('image_image', $validators, 'public://sweaver');
 
       if ($image && !empty($form_state['values']['image_description'])) {
         $image->description = $form_state['values']['image_description'];
         $image_parts = explode('.', $image->uri);
         $extension = array_pop($image_parts);
 
-        $new_image_name = file_default_scheme() . '://sweaver/sweaver_image_' . $image->fid . '.' . $extension;
+        $new_image_name = 'public://sweaver/sweaver_image_' . $image->fid . '.' . $extension;
         file_unmanaged_move($image->uri, $new_image_name);
 
         // Save permanent.
@@ -288,9 +288,9 @@ class sweaver_plugin_images extends sweaver_plugin {
       'file_validate_is_image' => array(),
     );
 
-    $sweaver_directory = file_default_scheme() . '://sweaver';
+    $sweaver_directory = 'public://sweaver';
     file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
-    $image = file_save_upload('image', $validators, file_default_scheme() . '://sweaver');
+    $image = file_save_upload('image', $validators, 'public://sweaver');
     if ($image) {
       $form_state['image'] = $image;
     }
@@ -310,7 +310,7 @@ class sweaver_plugin_images extends sweaver_plugin {
       $image->fid = $image_uploaded->fid;
       $image_parts = explode('.', $image_uploaded->uri);
       $extension = array_pop($image_parts);
-      $new_image_name = file_default_scheme() . '://sweaver/sweaver_image_' . $image_uploaded->fid . '.' . $extension;
+      $new_image_name = 'public://sweaver/sweaver_image_' . $image_uploaded->fid . '.' . $extension;
       file_unmanaged_move($image_uploaded->uri, $new_image_name);
 
       // Resave.

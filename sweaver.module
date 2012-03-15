@@ -358,7 +358,7 @@ function sweaver_preprocess_page(&$vars) {
         'preprocess' => TRUE,
         'group' => CSS_THEME,
       );
-      $css_path = file_default_scheme() . '://sweaver/sweaver_' . $sweaver->get_theme_key() . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . '.css';
+      $css_path = 'public://sweaver/sweaver_' . $sweaver->get_theme_key() . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . '.css';
       drupal_add_css($css_path, $settings);
 
       foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {

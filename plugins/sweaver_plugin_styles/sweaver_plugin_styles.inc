@@ -257,7 +257,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
    */
   public function sweaver_form_submit($form, &$form_state) {
       
-    $sweaver_directory = file_default_scheme() . '://sweaver';
+    $sweaver_directory = 'public://sweaver';
     file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
 
     $styles_form = $form['sweaver_plugin_styles']['form'];
@@ -421,7 +421,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $filename = 'sweaver_' . $style->theme . '_'. $style->style_id .'_'. $type .'.css';
 
     // Create the css within the files folder.
-    $sweaver_directory = file_default_scheme() . '://sweaver';
+    $sweaver_directory = 'public://sweaver';
     file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
     $file = $sweaver_directory . '/' . $filename;
     if (!$fp = fopen($file, 'w')) {
@@ -474,13 +474,13 @@ class sweaver_plugin_styles extends sweaver_plugin {
   public function sweaver_delete_style($style) {
     db_query("DELETE FROM {sweaver_style} WHERE style_id = :style_id", array(':style_id' => $style->style_id));
     db_query("DELETE FROM {sweaver_style_draft} WHERE style_id = :style_id", array(':style_id' => $style->style_id));
-    $draft = file_default_scheme() . '://sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_draft.css';
-    $live = file_default_scheme() . '://sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_live.css';
+    $draft = 'public://sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_draft.css';
+    $live = 'public://sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_live.css';
     file_unmanaged_delete($draft);
     file_unmanaged_delete($live);
 
     // Remove files tied to theme.
-    $dir = file_default_scheme() . '://sweaver';
+    $dir = 'public://sweaver';
     $mask = '/(.*)' . $style->theme . '_' . $style->style_id . '_(.*)/';
     $files = file_scan_directory($dir, $mask);
     // Get temp files.

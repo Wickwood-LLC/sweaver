@@ -134,7 +134,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
       else {
         $source = drupal_get_path('module', 'sweaver') .'/tests/'. $favicon;
         $parts = pathinfo($source);
-        $dest = file_default_scheme() . '://sweaver/temp_favicon.' . $parts['extension'];
+        $dest = 'public://sweaver/temp_favicon.' . $parts['extension'];
         $return = file_unmanaged_copy($source, $dest, FILE_EXISTS_REPLACE);
         $this->assertTrue($return, 'Favicon file copied to '. $dest .' for style id '. $style_id .' in scenario '. $scenario);
         $form['sweaver_plugin_themesettings']['form']['#favicon_path'] = $dest;
@@ -153,7 +153,7 @@ class sweaverThemeSettings extends DrupalWebTestCase {
       else {
         $source = drupal_get_path('module', 'sweaver') .'/tests/'. $logo;
         $parts = pathinfo($source);
-        $dest = file_default_scheme() . '://sweaver/temp_logo.' . $parts['extension'];
+        $dest = 'public://sweaver/temp_logo.' . $parts['extension'];
         $return = file_unmanaged_copy($source, $dest, FILE_EXISTS_REPLACE);
         $this->assertTrue($return, 'Favicon file copied to '. $dest .' for style id '. $style_id .' in scenario '. $scenario);
         $form['sweaver_plugin_themesettings']['form']['#logo_path'] = $dest;
