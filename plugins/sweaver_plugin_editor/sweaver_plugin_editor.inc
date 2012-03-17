@@ -265,12 +265,13 @@ class sweaver_plugin_editor extends sweaver_plugin {
       $container_count = 1;
       $container_total = 1;
       foreach ($container_value['properties'] as $property) {
+        //var_dump($form[$name]['form'][$property]);
         if (isset($form[$name]['form'][$property]['#theme'])){
             if ($form[$name]['form'][$property]['#theme'] == 'table') {
                 $form[$name]['form'][$property]['#rows'] = $this->sweaver_recursive_table_element($form[$name]['form'][$property]['#rows'], $form[$name]['form'][$property]);
                 $i = 4; // The container is closed after the table
             }
-            elseif($form[$name]['form'][$property]['#type'] == 'managed_file'){
+            elseif($form[$name]['form'][$property]['#name'] == 'background-image'){
                 $i = 4; // The container is closed after the table
             }
         }
@@ -302,7 +303,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
                 $form[$name]['form'][$property]['#rows'] = $this->sweaver_recursive_table_element($form[$name]['form'][$property]['#rows'], $form[$name]['form'][$property]);
                 $i = 4; // The container is closed after the table
             }
-            elseif($form[$name]['form'][$property]['#type'] == 'managed_file'){
+            elseif($form[$name]['form'][$property]['#name'] == 'background-image'){
                 $i = 4; // The container is closed after the table
             }
         }
