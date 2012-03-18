@@ -8,7 +8,7 @@
 /**
  * Default paths to exclude the frontend editor from.
  */
-define('SWEAVER_PATHS_EXCLUDE', "admin*\nnode/add*\nnode/*/edit\nnode/*/panel*\npanels/ajax*\nuser/*/edit\nbatch*\nwysiwyg_imageupload/*\nmedia/*");
+define('SWEAVER_PATHS_EXCLUDE', "admin*\nnode/add*\nnode/*/edit\nnode/*/panel*\npanels/ajax*\nuser/*/edit\nbatch*\nwysiwyg_imageupload/*\nmedia/*\ntaxonomy/*");
 
 /**
  * Default selectors to exclude from selecting.
