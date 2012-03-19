@@ -558,7 +558,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
       case 'radio':
         $return_markup = '';
         foreach ($property->property_options as $key => $value)
-            $return_markup .= '<div id="button-radio-'.$property->name.'-'.$key.'" name="'.$property->description.' : '.$property->name.'" class="editor_icons form-item-'.$property->name.'" title="'.$value.'"></div>';
+            $return_markup .= '<div id="button-radio-'.$property->name.'-'.$key.'" name="'. $property->name.'" class="editor_icons form-item-'.$property->name.'" title="'.$property->description . ' : ' . $value.'"></div>';
         return array(
           '#markup' => $return_markup,
           '#prefix' => '<div class="sweaver-group clearfix"><label>'. $property->description .':</label><div class="sweaver-group-content">',
