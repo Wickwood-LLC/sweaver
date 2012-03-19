@@ -39,7 +39,7 @@
 /* correct the body so that the Sweaver frontend does not overlap any content */
 
 body.sweaver {
-  margin-bottom: 299px;
+  margin-bottom: 299px !important;
 }
 
 /* Show which selector was hovered/clicked */
@@ -911,7 +911,7 @@ body.sweaver {
   clear: both;
   margin-bottom: 5px !important;
   padding: 7px !important;
-  width: 150px;
+  width: 200px;
 }
 
 #sweaver_plugin_palettes .colors:hover,
