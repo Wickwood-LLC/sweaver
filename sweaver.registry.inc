@@ -388,69 +388,31 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        '' => 'Theme default',
-        'Arial, Helvetica,Sans-Serif' => 'Arial',
-        '\'Arial Black\',Sans-Serif' => 'Arial Black',
-        '\'Comic Sans MS\',Cursive' => 'Comic Sans MS',
-        '\'Courier New\',Courier,Monospace' => 'Courier',
-        'Georgia,Serif' => 'Georgia',
-        'Helvetica,Arial,Sans-Serif' => 'Helvetica',
-        'Impact,Charcoal,Sans-Serif' => 'Impact',
-        '\'Lucida Sans\',\'Lucida Grande\',Sans-Serif' => 'Lucida',
-        '\'Palatino Linotype\',Palatino,Serif' => 'Palatino',
-        'Tahoma,Geneva,Sans-Serif' => 'Tahoma',
-        '\'Times New Roman\',Times,Serif' => 'Times New Roman',
-        '\'Trebuchet\',Helvetica,Sans-Serif' => 'Trebuchet',
-        'Verdana,Geneva,Sans-Serif' => 'Verdana',
-      );
+    '' => 'Theme default',
+    'Arial, Helvetica,Sans-Serif' => 'Arial',
+    '\'Arial Black\',Sans-Serif' => 'Arial Black',
+    '\'Comic Sans MS\',Cursive' => 'Comic Sans MS',
+    '\'Courier New\',Courier,Monospace' => 'Courier',
+    'Georgia,Serif' => 'Georgia',
+    'Helvetica,Arial,Sans-Serif' => 'Helvetica',
+    'Impact,Charcoal,Sans-Serif' => 'Impact',
+    '\'Lucida Sans\',\'Lucida Grande\',Sans-Serif' => 'Lucida',
+    '\'Palatino Linotype\',Palatino,Serif' => 'Palatino',
+    'Tahoma,Geneva,Sans-Serif' => 'Tahoma',
+    '\'Times New Roman\',Times,Serif' => 'Times New Roman',
+    '\'Trebuchet\',Helvetica,Sans-Serif' => 'Trebuchet',
+    'Verdana,Geneva,Sans-Serif' => 'Verdana',
+  );
   $property->css_prefix = '<fieldset>';
   $property->css_suffix = '</fieldset>';
   $propertys['font-family'] = $property;  
   
-  // Font style.
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'font-style';
-  $property->description = t('Font style');
-  $property->property = 'font-style';
-  $property->property_parent = 'font-properties-wrapper';
-  $property->property_type = 'checkbox';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array(
-        'normal' => false, // Not checked
-        'italic' => true,
-      );
-  $propertys['font-style'] = $property;
-
-  // Font weight.
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'font-weight';
-  $property->description = t('Font weight');
-  $property->property = 'font-weight';
-  $property->property_parent = 'font-properties-wrapper';
-  $property->property_type = 'checkbox';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array(
-        'normal' => false,
-        'bold' => true,
-      );
-  $propertys['font-weight'] = $property;
-
   // Font size group
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'font-properties-wrapper';
-  $property->description = t('Font size');
+  $property->description = t('Font properties');
   $property->property = '';
   $property->property_parent = '';
   $property->property_type = 'parent';
@@ -495,7 +457,7 @@ function _sweaver_default_sweaver_property() {
     )
   );
   $propertys['font-properties-wrapper'] = $property;
-
+  
   // Font size
   $property = new stdClass;
   $property->api_version = 1;
@@ -508,12 +470,12 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 1;
-  $property->property_slider_max = 200;
+  $property->property_slider_max = 75;
   $property->css_prefix = '<div id="logo-font-size" class="editor_logos"></div>';
   $property->css_suffix = '';
   $property->property_options = array();
   $propertys['font-size'] = $property;
-
+  
   // Line height
   $property = new stdClass;
   $property->api_version = 1;
@@ -526,33 +488,12 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 1;
-  $property->property_slider_max = 200;
+  $property->property_slider_max = 100;
   $property->css_prefix = '<div id="logo-line-height" class="editor_logos"></div>';
   $property->css_suffix = '';
   $property->property_options = array();
   $propertys['line-height'] = $property;
-
-  // Text alignment.
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'text-align';
-  $property->description = t('Text alignment');
-  $property->property = 'text-align';
-  $property->property_parent = 'font-properties-wrapper';
-  $property->property_type = 'radio';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array(
-        'left' => t('Left'),
-        'center' => t('Center'),
-        'right' => t('Right'),
-        'justify' => t('Justified'),
-      );
-  $propertys['text-align'] = $property;
-
+  
   // Color.
   $property = new stdClass;
   $property->api_version = 1;
@@ -568,7 +509,48 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = '';
   $property->property_options = array();
   $propertys['color'] = $property;
+  
+  // Font style.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'font-style';
+  $property->description = t('Font style');
+  $property->property = 'font-style';
+  $property->property_parent = 'font-properties-wrapper';
+  $property->property_type = 'checkbox';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+    'normal' => false, // Not checked
+    'italic' => true,
+  );
+  $propertys['font-style'] = $property;
 
+  // Font weight.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'font-weight';
+  $property->description = t('Font weight');
+  $property->property = 'font-weight';
+  $property->property_parent = 'font-properties-wrapper';
+  $property->property_type = 'checkbox';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+    'normal' => false,
+    'bold' => true,
+    '700' => true,
+    '800' => true,
+    '900' => true,
+  );
+  $propertys['font-weight'] = $property;
+  
   // Text-decoration.
   $property = new stdClass;
   $property->api_version = 1;
@@ -583,11 +565,32 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        'none' => t('None'),
-        'underline' => t('Underline'),
-        'line-through' => t('Line through'),
-      );
+    'none' => t('None'),
+    'underline' => t('Underline'),
+    'line-through' => t('Line through'),
+  );
   $propertys['text-decoration'] = $property;
+
+  // Text alignment.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'text-align';
+  $property->description = t('Text alignment');
+  $property->property = 'text-align';
+  $property->property_parent = 'font-properties-wrapper';
+  $property->property_type = 'radio';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+    'left' => t('Left'),
+    'center' => t('Center'),
+    'right' => t('Right'),
+    'justify' => t('Justified'),
+  );
+  $propertys['text-align'] = $property;
 
   // Background.
   $property = new stdClass;
@@ -633,11 +636,11 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_min = '';
   $property->property_slider_max = '';
   $property->property_options = array(
-        'no-repeat' => 'None',
-        'repeat-x' => 'Horizontally',
-        'repeat-y' => 'Vertically',
-        'repeat' => 'Both',
-      );
+    'no-repeat' => 'None',
+    'repeat-x' => 'Horizontally',
+    'repeat-y' => 'Vertically',
+    'repeat' => 'Both',
+  );
   $propertys['background-repeat'] = $property;
 
   // Background position.
@@ -757,7 +760,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'position-settings';
-  $property->description = '';
+  $property->description = t('Position settings');
   $property->property = '';
   $property->property_parent = '';
   $property->property_type = 'parent';
@@ -908,7 +911,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 250;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -925,7 +928,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 250;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -942,7 +945,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 250;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -959,7 +962,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 250;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -977,7 +980,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 100;
+  $property->property_slider_max = 20;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -994,7 +997,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 100;
+  $property->property_slider_max = 20;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -1011,7 +1014,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 100;
+  $property->property_slider_max = 20;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -1028,7 +1031,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 100;
+  $property->property_slider_max = 20;
   $property->property_options = array(
     'title_display' => 'invisible',
   );
@@ -1106,7 +1109,7 @@ function _sweaver_default_sweaver_property() {
   $property->property_prefix = '';
   $property->property_suffix = 'px';
   $property->property_slider_min = 0;
-  $property->property_slider_max = 500;
+  $property->property_slider_max = 20;
   $property->property_options = array();
   $propertys['border-spacing'] = $property;
 
