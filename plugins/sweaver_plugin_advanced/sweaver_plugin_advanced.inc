@@ -100,9 +100,6 @@ class sweaver_plugin_advanced extends sweaver_plugin {
     $output .= '<div class="vertical-tabs">' . $vertical_tabs . '</div>';
     $output .= '<div class="vertical-content">' . $containers . '</div>';
 
-    // Changes
-    $output .= drupal_render($form[$name]['form']['editor_changes']);
-
     $output .= '</div>';
 
     $vars['tabs_data'][$name]['content'] = $output;

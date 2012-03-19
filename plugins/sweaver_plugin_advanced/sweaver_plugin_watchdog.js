@@ -27,7 +27,6 @@ $(document).ready(function() {
  */
 Drupal.Sweaver.reloadInterface = function() {
   Drupal.Sweaver.writeCss();
-  Drupal.Sweaver.writeChanges();
   Drupal.Sweaver.updateForm();
   Drupal.Sweaver.writeModifications();
 }

@@ -18,7 +18,6 @@ Drupal.Sweaver.activePath = ''; // Currently active path including pseudo-classe
 Drupal.Sweaver.safeActivePath = ''; // Currently active path excluding pseudo-classes.
 Drupal.Sweaver.activeElement = new Object(); // Currently active element.
 Drupal.Sweaver.updateMode = true; // should the form updates be saved in css?
-Drupal.Sweaver.changesboxcheck = false; // Changes box check.
 
 /**
  * Hook onload behavior
@@ -473,12 +472,6 @@ Drupal.Sweaver.bindClicks = function() {
     }
   });
 
-  // Toggle changes area.
-  $('#changes-toggler').click(function(event){
-    event.stopPropagation();
-    Drupal.Sweaver.ChangesBox(false);
-  });
-
   // Hide sliders and close groups when clicking outside of them.
   $("#sweaver").click(function() {
     Drupal.Sweaver.hideOverlays();
@@ -505,7 +498,6 @@ Drupal.Sweaver.bindClicks = function() {
   $("#sweaver_plugin_editor div[id^=button-radio-]").click(function(){
     var property_to_update = $(this).attr('name');
     var value = $(this).attr('id').replace('button-radio-' + property_to_update + '-', '');
-    
     $("#sweaver_plugin_editor div[id^=button-radio-" + property_to_update + "-]").removeClass('button_active');
     $(this).addClass('button_active');
     
@@ -679,12 +671,6 @@ Drupal.Sweaver.editSelection = function (tempObject, clicked_object) {
 
       // clear the old paths.
       $('#sweaver_plugin_editor .sweaver-header').html('<div id="full-path" class="clearfix"></div><div id="selected-path" class="clear-block"></div>');
-
-      // Initial check for the changesbox.
-      if (Drupal.Sweaver.changesboxcheck == false) {
-        Drupal.Sweaver.ChangesBox(true);
-        Drupal.Sweaver.changesboxcheck = true;
-      }
 
       // Reset some values.
       Drupal.Sweaver.path.length = 0;
@@ -1041,32 +1027,6 @@ Drupal.Sweaver.setValue = function(property, value) {
     'hidden' : false,
   };
   Drupal.Sweaver.writeCss();
-
-  // Check for state of changes box.
-  if (Drupal.Sweaver.cookie('sweaver_changes_box') == 'true') {
-    Drupal.Sweaver.writeChanges();
-  }
-}
-
-/**
- * Write changes to the changes popup so that people can remove them again.
- */
-Drupal.Sweaver.writeChanges = function() {
-  $('#editor-changes').html('');
-  for (key in Drupal.Sweaver.css) {
-    var target = Drupal.Sweaver.css[key];
-    for (prop in target) {
-      if (Drupal.Sweaver.properties[prop] && (target[prop]['value'] != '' || target[prop]['value'] == '0') && target[prop]['hidden'] != true) {
-      // Special case for transparent.
-        if ((prop == 'background-color' && target[prop]['value'] == 'transparent') || (prop == 'background-image' && target[prop]['value'] == 'none')) {
-          $('#editor-changes').prepend($('<p onclick="Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + target[prop]['value'] + '</p>'));
-        }
-        else {
-          $('#editor-changes').prepend($('<p onclick="Drupal.Sweaver.deleteProperty(\'' + key + '\', \'' + prop + '\')">' + key + ': '+ prop + ': ' + Drupal.Sweaver.properties[prop].prefix + target[prop]['value'] + Drupal.Sweaver.properties[prop].suffix + '</p>'));
-        }
-      }
-    }
-  }
 }
 
 /**
@@ -1081,7 +1041,6 @@ Drupal.Sweaver.deleteProperty = function(key, property) {
     }
   }
   Drupal.Sweaver.writeCss();
-  Drupal.Sweaver.writeChanges();
   Drupal.Sweaver.updateForm();
 }
 
@@ -1376,34 +1335,6 @@ Drupal.Sweaver.hideOverlays = function() {
 
   // Remove all active classes from form-items and groups
   $('#sweaver_plugin_editor .form-item, #sweaver_plugin_editor .sweaver-group').removeClass('active');
-}
-
-/**
- * Open or close the changes box().
- */
-Drupal.Sweaver.ChangesBox = function(cookie_check) {
-
-  var show_box = false;
-  box = $('#editor-changes');
-  toggler = $('#changes-toggler');
-
-  if (cookie_check == true && Drupal.Sweaver.cookie('sweaver_changes_box') == 'true') {
-    show_box = true;
-  }
-  else if (parseInt(box.css('right')) < 0 && cookie_check == false) {
-    show_box = true;
-  }
-
-  if (show_box == true) {
-    Drupal.Sweaver.writeChanges();
-    box.css({'right' : '10px'});
-    toggler.addClass('open').html(Drupal.t('Hide changes'));
-    Drupal.Sweaver.cookie('sweaver_changes_box', true);
-  } else {
-    box.css({'right' : '-10000px'});
-    toggler.removeClass('open').html(Drupal.t('Show changes'));
-    Drupal.Sweaver.cookie('sweaver_changes_box', false);
-  }
 }
 
 /**

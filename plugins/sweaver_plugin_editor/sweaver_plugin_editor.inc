@@ -178,12 +178,7 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     $properties = sweaver_object_load(NULL, 'property');
     $sweaver_editor_form_configuration = variable_get('sweaver_editor_form_configuration', array());
-
-    // Switcher.
-    $tab_switcher = '<div id="changes-toggler">'. t('Show changes') .'</div>';
-    $form['editor_switcher'] = array(
-      '#markup' => $tab_switcher,
-    );
+    
 
     // Images.
     $images = array('' => t('Theme default'), 'none' => t('No image'));
@@ -220,11 +215,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
         }
       }
     }
-
-    // Changes.
-    $form['editor_changes'] = array(
-      '#markup' => '<div id="editor-changes"></div>',
-    );
 
     return $form;
   }
@@ -324,9 +314,6 @@ class sweaver_plugin_editor extends sweaver_plugin {
 
     $output .= '<div class="vertical-tabs">' . $vertical_tabs . '</div>';
     $output .= '<div class="vertical-content">' . $containers . '</div>';
-
-    // Changes
-    $output .= drupal_render($form[$name]['form']['editor_changes']);
 
     $output .= '</div>';
 
