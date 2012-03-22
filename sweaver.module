@@ -240,6 +240,9 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
       $objects = new stdClass;
       foreach (array('sweaver_selector', 'sweaver_property', 'sweaver_type') as $object_to_load) {
         $loaded_objects = ctools_export_load_object($object_to_load);
+        if ($object_to_load == 'sweaver_selector') {
+            $loaded_objects += sweaver_load_theme_selectors();
+        }
         foreach ($loaded_objects as $key => $object) {
           $object_type_key = str_replace('sweaver_', '', $object->table);
           if (!isset($object->disabled)) {
@@ -270,6 +273,51 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
   else {
     return isset($objects->{$object_type}->{$status}) ? $objects->{$object_type}->{$status} : array();
   }
+}
+
+/**
+ * Load all inclusive selectors defined in the theme .info
+ * 
+ * @return
+ *   An array of selectors
+ */
+function sweaver_load_theme_selectors() {
+  $selectors = array();
+  if (variable_get('sweaver_selectors_source', false)) {
+    $theme_key = Sweaver::get_instance()->get_theme_key();
+    $theme_info = sweaver_get_theme_info($theme_key);
+    if (isset($theme_info['sweaver']['selectors'])) {
+      foreach ($theme_info['sweaver']['selectors'] as $selector_selector => $selector_description) {
+        if (is_array($selector_description)) {
+          if (isset($selector_description['type'])) {
+            if ($selector_description['type'] == 'add') {
+              // in this case this is a selector that needs to be added to others defined in regestry
+              $selector = new stdClass;
+              if (isset($selector_description['name'])) {
+                $name = $selector_description['name'];
+              }
+              else {
+                $name = str_replace(array('', '.', '-'), array(''), $selector_selector);
+              }
+              $selector->name = $name;
+              $selector->description = isset($selector_description['description']) ? $selector_description['description'] :
+                $selector->name;
+              $selector->selector_selector = $selector_selector;
+              $selector->selector_highlight = true;
+              $selector->table = 'sweaver_selector';
+              $selector->type = t('From the theme');
+              $selector->export_type = 2;
+              if (isset($selector_description['weight'])) {
+                $selector->weight = $selector_description['weight'];
+              }
+              $selectors[$selector->name] = $selector;
+            }
+          }
+        }
+      }
+    }
+  }
+  return $selectors;
 }
 
 /**

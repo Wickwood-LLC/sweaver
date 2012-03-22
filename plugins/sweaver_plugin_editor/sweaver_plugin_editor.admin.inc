@@ -136,19 +136,27 @@ function sweaver_plugin_editor_objects_list($form, $form_state, $object_type) {
     '#markup' => l(t('Add new @sweaver_object', array('@sweaver_object' => $object_type)), 'admin/config/user-interface/sweaver/editor/add/'. $object_type),
   );
 
-  $new_weight = 100;
+  $new_weight = 20;
   $objects = sweaver_object_load(NULL, $object_type, 'all');
+    
   if (!empty($objects)) {
-
     if ($object_type == 'selector') {
       $order = variable_get('sweaver_selector_order', array());
     }
-
     foreach ($objects as $key => $object) {
-
       $object_name = check_plain($object->name);
       $object_export_type = $object->export_type;
-      $weight = isset($order[$object_name]) ? $order[$object_name] : $new_weight++;
+      if (isset($order[$object_name])) {
+        $weight = $order[$object_name];
+      }
+      else {
+        if (isset($object->weight)) {
+          $weight = $object->weight;
+        }
+        else {
+          $weight = $new_weight++;
+        }
+      }
 
       $form[$object_name]['name'] = array(
         '#markup' => $object_name,

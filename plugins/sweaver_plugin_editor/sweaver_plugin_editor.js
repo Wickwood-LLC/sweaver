@@ -1290,9 +1290,6 @@ Drupal.Sweaver.LoadPosition = function() {
     Drupal.Sweaver.cookie('sweaver_indexed_path', null);
     Drupal.Sweaver.cookie('sweaver_active_vertical_tab', null);
   }
-  else {
-    Drupal.Sweaver.editSelection($('body'), false);
-  }
 }
 
 

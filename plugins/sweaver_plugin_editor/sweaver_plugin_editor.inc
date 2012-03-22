@@ -349,13 +349,15 @@ class sweaver_plugin_editor extends sweaver_plugin {
       $theme_info = sweaver_get_theme_info($theme_key);
       if (isset($theme_info['sweaver']['selectors'])) {
         foreach ($theme_info['sweaver']['selectors'] as $selector_name => $selector_description) {
-          $selector = new stdClass;
-          $name = str_replace(array('', '.', '-'), array(''), $selector_name);
-          $selector->name = $name;
-          $selector->description = $selector_description;
-          $selector->selector_selector = $selector_name;
-          $selector->selector_highlight = FALSE;
-          $selectors[$name] = $selector;
+          if (!is_array($selector_description)) {
+            $selector = new stdClass;
+            $name = str_replace(array('', '.', '-'), array(''), $selector_name);
+            $selector->name = $name;
+            $selector->description = $selector_description;
+            $selector->selector_selector = $selector_name;
+            $selector->selector_highlight = FALSE;
+            $selectors[$name] = $selector;
+          }
         }
 
         if (!empty($selectors)) {
@@ -369,10 +371,20 @@ class sweaver_plugin_editor extends sweaver_plugin {
       $order = variable_get('sweaver_selector_order', array());
     }
     
-    $new_weight = 100;
+    $new_weight = 20;
     $js_selectors = array();
     foreach ($selectors as $key => $selector) {
-      $weight = isset($order[$selector->name]) ? $order[$selector->name] : $new_weight++;
+      if (isset($order[$key])) {
+        $weight = $order[$key];
+      }
+      else {
+        if (isset($selector->weight)) {
+          $weight = $selector->weight;
+        }
+        else {
+          $weight = $new_weight++;
+        }
+      }
       $options = array(
         'weight' => $weight,
         'name' => $selector->name,
