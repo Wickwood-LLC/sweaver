@@ -306,7 +306,7 @@ function sweaver_load_theme_selectors() {
               $selector->selector_highlight = true;
               $selector->table = 'sweaver_selector';
               $selector->type = t('From the theme');
-              $selector->export_type = 2;
+              $selector->export_type = 4;
               if (isset($selector_description['weight'])) {
                 $selector->weight = $selector_description['weight'];
               }

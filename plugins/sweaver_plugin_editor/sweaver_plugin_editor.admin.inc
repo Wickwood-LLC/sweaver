@@ -170,9 +170,11 @@ function sweaver_plugin_editor_objects_list($form, $form_state, $object_type) {
 
       // Operations.
       $operations = array();
-      $operations['edit'] = l(t('Edit'), 'admin/config/user-interface/sweaver/editor/edit/'. $object_type .'/'. $object_name);
+      if ($object_export_type != 4) {
+        $operations['edit'] = l(t('Edit'), 'admin/config/user-interface/sweaver/editor/edit/'. $object_type .'/'. $object_name);
+      }
 
-      if ($object_export_type != 2) {
+      if ($object_export_type != 2 && $object_export_type != 4) {
         $operations['export'] = l(t('Export'), 'admin/config/user-interface/sweaver/editor/export/'. $object_type .'/'. $object_name);
       }
 
