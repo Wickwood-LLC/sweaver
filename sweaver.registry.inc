@@ -198,7 +198,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'allclasses';
-  $selector->description = 'All other classes';
+  $selector->description = t('All other classes');
   $selector->selector_selector = '';
   $selector->selector_highlight = FALSE;
   $selectors['allclasses'] = $selector;
@@ -207,7 +207,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'allids';
-  $selector->description = 'All other id\'s';
+  $selector->description = t('All other id\'s');
   $selector->selector_selector = '';
   $selector->selector_highlight = FALSE;
   $selectors['allids'] = $selector;
@@ -216,7 +216,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'alltags';
-  $selector->description = 'All other tags';
+  $selector->description = t('All other tags');
   $selector->selector_selector = '';
   $selector->selector_highlight = FALSE;
   $selectors['alltags'] = $selector;
@@ -225,7 +225,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'body';
-  $selector->description = 'Body';
+  $selector->description = t('Body');
   $selector->selector_selector = 'body';
   $selector->selector_highlight = FALSE;
   $selectors['body'] = $selector;
@@ -234,7 +234,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'link';
-  $selector->description = 'a link';
+  $selector->description = t('a link');
   $selector->selector_selector = 'a';
   $selector->selector_highlight = FALSE;
   $selectors['link'] = $selector;
@@ -243,7 +243,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'div';
-  $selector->description = 'a region';
+  $selector->description = t('a region');
   $selector->selector_selector = 'div';
   $selector->selector_highlight = FALSE;
   $selectors['div'] = $selector;
@@ -252,7 +252,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'span';
-  $selector->description = 'an item';
+  $selector->description = t('an item');
   $selector->selector_selector = 'span';
   $selector->selector_highlight = FALSE;
   $selectors['span'] = $selector;
@@ -261,7 +261,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'ul';
-  $selector->description = 'an unordered list';
+  $selector->description = t('an unordered list');
   $selector->selector_selector = 'ul';
   $selector->selector_highlight = FALSE;
   $selectors['ul'] = $selector;
@@ -270,7 +270,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'ol';
-  $selector->description = 'an ordered list';
+  $selector->description = t('an ordered list');
   $selector->selector_selector = 'ol';
   $selector->selector_highlight = FALSE;
   $selectors['ol'] = $selector;
@@ -279,7 +279,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'li';
-  $selector->description = 'a list item';
+  $selector->description = t('a list item');
   $selector->selector_selector = 'li';
   $selector->selector_highlight = FALSE;
   $selectors['li'] = $selector;
@@ -288,7 +288,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'h1';
-  $selector->description = 'Heading 1';
+  $selector->description = t('Heading 1');
   $selector->selector_selector = 'h1';
   $selector->selector_highlight = FALSE;
   $selectors['h1'] = $selector;
@@ -297,7 +297,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'h2';
-  $selector->description = 'Heading 2';
+  $selector->description = t('Heading 2');
   $selector->selector_selector = 'h2';
   $selector->selector_highlight = FALSE;
   $selectors['h2'] = $selector;
@@ -306,7 +306,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'h3';
-  $selector->description = 'Heading 3';
+  $selector->description = t('Heading 3');
   $selector->selector_selector = 'h3';
   $selector->selector_highlight = FALSE;
   $selectors['h3'] = $selector;
@@ -315,7 +315,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'p';
-  $selector->description = 'a paragraph';
+  $selector->description = t('a paragraph');
   $selector->selector_selector = 'p';
   $selector->selector_highlight = FALSE;
   $selectors['p'] = $selector;
@@ -324,7 +324,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'form';
-  $selector->description = 'a form';
+  $selector->description = t('a form');
   $selector->selector_selector = 'form';
   $selector->selector_highlight = FALSE;
   $selectors['form'] = $selector;
@@ -333,7 +333,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'label';
-  $selector->description = 'a label';
+  $selector->description = t('a label');
   $selector->selector_selector = 'label';
   $selector->selector_highlight = FALSE;
   $selectors['label'] = $selector;
@@ -342,7 +342,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'input';
-  $selector->description = 'an input field';
+  $selector->description = t('an input field');
   $selector->selector_selector = '.form-text';
   $selector->selector_highlight = FALSE;
   $selectors['input'] = $selector;
@@ -351,7 +351,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'textarea';
-  $selector->description = 'a textarea';
+  $selector->description = t('a textarea');
   $selector->selector_selector = '.form-textarea';
   $selector->selector_highlight = FALSE;
   $selectors['textarea'] = $selector;
@@ -360,7 +360,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->api_version = 1;
   $selector->disabled = FALSE;
   $selector->name = 'submit';
-  $selector->description = 'a submit button';
+  $selector->description = t('a submit button');
   $selector->selector_selector = '.form-submit';
   $selector->selector_highlight = FALSE;
   $selectors['submit'] = $selector;
