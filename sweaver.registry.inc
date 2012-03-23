@@ -384,7 +384,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->weight = 104;
   $selectors['div'] = $selector;
 
-  return $selectors;
+  return $selectors + sweaver_load_theme_selectors();
 }
 
 /**
