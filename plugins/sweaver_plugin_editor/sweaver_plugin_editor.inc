@@ -348,15 +348,47 @@ class sweaver_plugin_editor extends sweaver_plugin {
     if (variable_get('sweaver_selectors_source', FALSE)) {
       $theme_info = sweaver_get_theme_info($theme_key);
       if (isset($theme_info['sweaver']['selectors'])) {
-        foreach ($theme_info['sweaver']['selectors'] as $selector_name => $selector_description) {
+        foreach ($theme_info['sweaver']['selectors'] as $selector_selector => $selector_description) {
+          $selector = new stdClass;
           if (!is_array($selector_description)) {
-            $selector = new stdClass;
-            $name = str_replace(array('', '.', '-'), array(''), $selector_name);
+            $name = str_replace(array('', '.', '-'), array(''), $selector_selector);
             $selector->name = $name;
             $selector->description = $selector_description;
-            $selector->selector_selector = $selector_name;
+            $selector->selector_selector = $selector_selector;
             $selector->selector_highlight = FALSE;
             $selectors[$name] = $selector;
+          }
+          else {
+            if ($selector_description['type'] == 'replace') {
+              if (isset($selector_description['name'])) {
+                $name = $selector_description['name'];
+              }
+              else {
+                $name = str_replace(array('', '.', '-'), array(''), $selector_selector);
+              }
+              $selector->name = $name;
+              $selector->description = isset($selector_description['description']) ? $selector_description['description'] :
+                $selector->name;
+              $selector->selector_selector = $selector_selector;
+              
+              if (isset($selector_description['selector_highlight'])) {
+                if ($selector_description['selector_highlight']) {
+                  $selector->selector_highlight = TRUE;
+                }
+                else {
+                  $selector->selector_highlight = FALSE;
+                }
+              }
+              else {
+                $selector->selector_highlight = FALSE;
+              }
+              
+              if (isset($selector_description['weight'])) {
+                $selector->weight = $selector_description['weight'];
+              }
+              
+              $selectors[$selector->name] = $selector;
+            }
           }
         }
 
