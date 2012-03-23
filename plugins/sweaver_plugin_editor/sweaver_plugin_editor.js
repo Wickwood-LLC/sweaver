@@ -631,7 +631,7 @@ Drupal.Sweaver.editSelection = function (tempObject, clicked_object) {
     }
 
     object = Drupal.Sweaver.buildSweaverObject(tempObject);
-
+    
     // If the clicked object is a link, or an element in a link, prevent default behavior.
     $('#follow-link').hide();
     if (object.tag == 'a' || tempObject.parents('a').length > 0) {
@@ -667,6 +667,11 @@ Drupal.Sweaver.editSelection = function (tempObject, clicked_object) {
             return false;
           }
         });
+      }
+      
+      // Prevent from selecting non modifiable selectors
+      if (!object.translation[0]) {
+        return false;
       }
 
       // clear the old paths.
@@ -1234,7 +1239,7 @@ Drupal.Sweaver.SavePosition = function() {
 }
 
 /**
- * Load a saved position
+ * Load a saved position in the editor (active path and tab)
  */
 Drupal.Sweaver.LoadPosition = function() {
   active_path = Drupal.Sweaver.cookie('sweaver_active_path');
