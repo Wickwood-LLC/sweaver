@@ -398,9 +398,18 @@ created in the regestry) you need to add options to your selectors
 
 sweaver[selectors][h4][name] = h4
 sweaver[selectors][h4][description] = Heading 4
-sweaver[selectors][h4][selector_highlight] = TRUE // Highlight or not the selector
-sweaver[selectors][h4][weight] = 20 // A value between 20 and 100 is advisable
-sweaver[selectors][h4][type] = add // Tell Sweaver that it is inclusive
+sweaver[selectors][h4][selector_highlight] = TRUE
+sweaver[selectors][h4][weight] = 20
+sweaver[selectors][h4][type] = add
+
+ - The name must contain only lowercase letters, numbers, underscores or hyphens
+ and must be unique.
+ - The selector description is the text shown to the Sweaver front end user
+ - The selector_highlight property define weither or not the selector should be
+ highlighted by default
+ - The weight is a very important element as it define the priority of this
+ selector on others. A value between 20 and 100 is advisable.
+ - The type is either set as add for inclusive or replace f r excluse selector
 
 Note: if you add new theme extensions but they don't show up,
 then you need to clear the theme registry.
