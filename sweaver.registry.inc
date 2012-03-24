@@ -207,11 +207,31 @@ function _sweaver_default_sweaver_selector() {
   $selector = new stdClass;
   $selector->api_version = 1;
   $selector->disabled = FALSE;
+  $selector->name = 'menu';
+  $selector->description = t('Menu');
+  $selector->selector_selector = '.menu';
+  $selector->selector_highlight = TRUE;
+  $selector->weight = 50;
+  $selectors['menu'] = $selector;
+  
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
+  $selector->name = 'read_more';
+  $selector->description = t('Read more');
+  $selector->selector_selector = '.node-readmore';
+  $selector->selector_highlight = TRUE;
+  $selector->weight = 51;
+  $selectors['read_more'] = $selector;
+  
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
   $selector->name = 'h1';
   $selector->description = t('Heading 1');
   $selector->selector_selector = 'h1';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 1;
+  $selector->weight = 52;
   $selectors['h1'] = $selector;
 
   $selector = new stdClass;
@@ -221,7 +241,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('Heading 2');
   $selector->selector_selector = 'h2';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 2;
+  $selector->weight = 53;
   $selectors['h2'] = $selector;
 
   $selector = new stdClass;
@@ -231,7 +251,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('Heading 3');
   $selector->selector_selector = 'h3';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 3;
+  $selector->weight = 54;
   $selectors['h3'] = $selector;
 
   $selector = new stdClass;
@@ -241,7 +261,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('a list item');
   $selector->selector_selector = 'li';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 4;
+  $selector->weight = 55;
   $selectors['li'] = $selector;
   
   $selector = new stdClass;
@@ -251,7 +271,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('a link');
   $selector->selector_selector = 'a';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 5;
+  $selector->weight = 56;
   $selectors['link'] = $selector;
   
   $selector = new stdClass;
@@ -261,7 +281,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('an ordered list');
   $selector->selector_selector = 'ol';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 6;
+  $selector->weight = 57;
   $selectors['ol'] = $selector;
 
   $selector = new stdClass;
@@ -271,7 +291,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('a paragraph');
   $selector->selector_selector = 'p';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 7;
+  $selector->weight = 58;
   $selectors['p'] = $selector;
 
   $selector = new stdClass;
@@ -281,7 +301,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('an unordered list');
   $selector->selector_selector = 'ul';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 8;
+  $selector->weight = 59;
   $selectors['ul'] = $selector;
 
   $selector = new stdClass;
@@ -291,7 +311,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('a form');
   $selector->selector_selector = 'form';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 9;
+  $selector->weight = 60;
   $selectors['form'] = $selector;
 
   $selector = new stdClass;
@@ -301,7 +321,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('a label');
   $selector->selector_selector = 'label';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 10;
+  $selector->weight = 61;
   $selectors['label'] = $selector;
 
   $selector = new stdClass;
@@ -311,7 +331,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('an input field');
   $selector->selector_selector = '.form-text';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 11;
+  $selector->weight = 62;
   $selectors['input'] = $selector;
 
   $selector = new stdClass;
@@ -321,7 +341,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('a textarea');
   $selector->selector_selector = '.form-textarea';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 12;
+  $selector->weight = 63;
   $selectors['textarea'] = $selector;
 
   $selector = new stdClass;
@@ -331,7 +351,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('a submit button');
   $selector->selector_selector = '.form-submit';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 13;
+  $selector->weight = 64;
   $selectors['submit'] = $selector;
   
   $selector = new stdClass;
