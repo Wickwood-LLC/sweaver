@@ -359,35 +359,40 @@ class sweaver_plugin_editor extends sweaver_plugin {
             $selectors[$name] = $selector;
           }
           else {
-            if ($selector_description['type'] == 'replace') {
-              if (isset($selector_description['name'])) {
-                $name = $selector_description['name'];
-              }
-              else {
-                $name = str_replace(array('', '.', '-'), array(''), $selector_selector);
-              }
-              $selector->name = $name;
-              $selector->description = isset($selector_description['description']) ? $selector_description['description'] :
-                $selector->name;
-              $selector->selector_selector = $selector_selector;
-              
-              if (isset($selector_description['selector_highlight'])) {
-                if ($selector_description['selector_highlight']) {
-                  $selector->selector_highlight = TRUE;
+            if (isset($selector_description['type'])) {
+              if ($selector_description['type'] == 'replace') {
+                if (isset($selector_description['name'])) {
+                  $name = $selector_description['name'];
                 }
                 else {
-                  $selector->selector_highlight = FALSE;
+                  $name = str_replace(array(
+                    '',
+                    '.',
+                    '-'), array(''), $selector_selector);
                 }
+                $selector->name = $name;
+                $selector->description = isset($selector_description['description']) ? $selector_description['description'] :
+                  $selector->name;
+                $selector->selector_selector = $selector_selector;
+
+                if (isset($selector_description['selector_highlight'])) {
+                  if ($selector_description['selector_highlight']) {
+                    $selector->selector_highlight = true;
+                  }
+                  else {
+                    $selector->selector_highlight = false;
+                  }
+                }
+                else {
+                  $selector->selector_highlight = false;
+                }
+
+                if (isset($selector_description['weight'])) {
+                  $selector->weight = $selector_description['weight'];
+                }
+
+                $selectors[$selector->name] = $selector;
               }
-              else {
-                $selector->selector_highlight = FALSE;
-              }
-              
-              if (isset($selector_description['weight'])) {
-                $selector->weight = $selector_description['weight'];
-              }
-              
-              $selectors[$selector->name] = $selector;
             }
           }
         }
