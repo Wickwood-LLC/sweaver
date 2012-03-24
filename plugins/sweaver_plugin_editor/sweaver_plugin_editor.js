@@ -743,15 +743,15 @@ Drupal.Sweaver.buildPath = function(object) {
         }
         if (selector.selector == '#' + parent.id || selector.selector == parent.tag) {
           match = selector.selector;
-           if (selector.highlight == '1') {
+          if (selector.highlight == '1') {
             active = true;
             Drupal.Sweaver.addToActivePathIndex(i);
           }
         } else {
           $.each(parent.classes, function(index, aClass) {
             if (selector.selector == '.' + aClass) {
-               match = selector.selector;
-               if (selector.highlight == '1') {
+              match = selector.selector;
+              if (selector.highlight == '1') {
                 active = true;
                 Drupal.Sweaver.addToActivePathIndex(i);
                 return false;
@@ -773,8 +773,10 @@ Drupal.Sweaver.buildPath = function(object) {
   });
   if (i > 2) // There are always at least 2 levels
   {
+    if (!(1 in Drupal.Sweaver.pathIndexes)) {
       Drupal.Sweaver.addToActivePathIndex(1);
       $('#sweaver #full-path #sid-1').addClass('active');
+    }
   }
   Drupal.Sweaver.printActivePath();
 }
