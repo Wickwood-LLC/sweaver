@@ -36,7 +36,7 @@ class sweaver_plugin_advanced extends sweaver_plugin {
     $form['#editor_containers']['one']['content'][] = array('#markup' => '<div id="scrollable_area"></div>');
     $form['#editor_containers']['one']['content'][] = array('#markup' => '</div>');
     
-    $form['#editor_containers']['two']['title'] = 'Customm css';
+    $form['#editor_containers']['two']['title'] = 'Custom css';
     $form['#editor_containers']['two']['content']['sweaver_plugin_custom_css'] = 'sweaver_plugin_custom_css';
     $form['sweaver_plugin_custom_css'] = array(
       '#type' => 'textarea',
