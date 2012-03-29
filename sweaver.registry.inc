@@ -361,7 +361,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('All other id\'s');
   $selector->selector_selector = '';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 100;
+  $selector->weight = 97;
   $selectors['allids'] = $selector;
   
   $selector = new stdClass;
@@ -371,7 +371,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('All other classes');
   $selector->selector_selector = '';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 101;
+  $selector->weight = 98;
   $selectors['allclasses'] = $selector;
 
   $selector = new stdClass;
@@ -381,7 +381,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('All other tags');
   $selector->selector_selector = '';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 102;
+  $selector->weight = 99;
   $selectors['alltags'] = $selector;
 
   $selector = new stdClass;
@@ -391,7 +391,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('an item');
   $selector->selector_selector = 'span';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 103;
+  $selector->weight = 100;
   $selectors['span'] = $selector;
 
   $selector = new stdClass;
@@ -401,7 +401,7 @@ function _sweaver_default_sweaver_selector() {
   $selector->description = t('a region');
   $selector->selector_selector = 'div';
   $selector->selector_highlight = FALSE;
-  $selector->weight = 104;
+  $selector->weight = 100;
   $selectors['div'] = $selector;
 
   return $selectors + sweaver_load_theme_selectors();
