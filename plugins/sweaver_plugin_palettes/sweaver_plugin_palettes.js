@@ -12,7 +12,7 @@ $(document).ready(function() {
 
   // Check if we need to load the stylesheet when the editor is active.
   var palette = $('#sweaver_plugin_palettes [name=sweaver_plugin_palette]').val();
-  console 
+  
   if (palette != '') {
     // Add a external stylesheet container in the head section.
     var link = '<link id="sweaver-palette" href="' + $('#palette-' + palette + ' .file').text() + '" media="all" rel="stylesheet" />';
