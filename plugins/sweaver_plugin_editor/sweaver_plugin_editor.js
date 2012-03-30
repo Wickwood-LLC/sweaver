@@ -468,7 +468,7 @@ Drupal.Sweaver.bindClicks = function() {
       // If we don't do this, then we will get the parent element of the excluded element, which is not what we want.
       tempObject = $(event.target);
       
-      Drupal.Sweaver.editSelection(tempObject, true);
+      Drupal.Sweaver.editSelection(tempObject, event);
     }
   });
 
@@ -624,7 +624,8 @@ Drupal.Sweaver.bindClicks = function() {
 /**
  * Load an object to the editor from a selector
  */
-Drupal.Sweaver.editSelection = function (tempObject, clicked_object) {
+Drupal.Sweaver.editSelection = function (tempObject, event) {
+  clicked_object = (event == null) ? false : true;
   if (!tempObject.parents(Drupal.settings.sweaver['exclude_selectors']).length > 0) {
     if (clicked_object) {
       event.stopPropagation();
@@ -1253,7 +1254,7 @@ Drupal.Sweaver.LoadPosition = function() {
     tempObject = $(active_path);
     
     // Load active path in the editor
-    Drupal.Sweaver.editSelection(tempObject, false);
+    Drupal.Sweaver.editSelection(tempObject);
     
     // Reset full path
     $('#sweaver_plugin_editor #full-path div[id^=sid-]').removeClass('active');
