@@ -176,14 +176,13 @@ function sweaver_install() {
     'sweaver_plugin' => -51,
     'sweaver_plugin_editor' => -49,
     'sweaver_plugin_styles' => -48,
-    'sweaver_plugin_customcss' => -47,
+    'sweaver_plugin_advanced' => -47,
     'sweaver_plugin_palettes' => -46,
     'sweaver_plugin_images' => -45,
     'sweaver_plugin_themeswitch' => -44,
     'sweaver_plugin_themesettings' => -43,
     'sweaver_plugin_themeclasses' => -42,
     'sweaver_plugin_fontface' => -41,
-    'sweaver_plugin_ds' => -40,
     'sweaver_plugin_kb' => -39,
   );
   variable_set('sweaver_plugins_weight', $plugins_weight);
