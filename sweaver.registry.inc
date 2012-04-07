@@ -217,6 +217,16 @@ function _sweaver_default_sweaver_selector() {
   $selector = new stdClass;
   $selector->api_version = 1;
   $selector->disabled = FALSE;
+  $selector->name = 'navigation';
+  $selector->description = t('Navigation');
+  $selector->selector_selector = '.navigation';
+  $selector->selector_highlight = TRUE;
+  $selector->weight = 50;
+  $selectors['navigation'] = $selector;
+  
+  $selector = new stdClass;
+  $selector->api_version = 1;
+  $selector->disabled = FALSE;
   $selector->name = 'read_more';
   $selector->description = t('Read more');
   $selector->selector_selector = '.node-readmore';
