@@ -48,7 +48,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     drupal_prepare_form('system_theme_settings', $form, $form_state);
     // We need to unset the #type, otherwise a nested form is created, which breaks in IE7.
     unset($form['#type']);
-
+    
     // Convert all fieldsets to buttons. The content of those fieldsets
     // will be moved into the Sweaver popup.
     $i = 1;

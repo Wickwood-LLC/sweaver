@@ -42,7 +42,7 @@ class sweaver_plugin_toolbar extends sweaver_plugin {
         ? $_SESSION['sweaver_plugin_toolbar_session_on']
         : variable_get('sweaver_plugin_toolbar_session_default_on', TRUE);
     $_SESSION['sweaver_plugin_toolbar_session_on'] = !$session;
-    
+
     // Go back to previous page.
     drupal_goto($_SERVER['HTTP_REFERER']);
   }

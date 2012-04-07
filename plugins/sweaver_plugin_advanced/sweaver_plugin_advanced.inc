@@ -110,12 +110,14 @@ class sweaver_plugin_advanced extends sweaver_plugin {
    * Frontend form submit handler.
    */
   function sweaver_form_submit($form, &$form_state) {
-    $clicked_button = $form_state['clicked_button']['#value'];
-    if (($clicked_button == t('Save and continue') || $clicked_button == t('Save and publish') || $clicked_button == t('Publish style')) && isset($form_state['style_id'])) {
-      db_query("UPDATE {sweaver_style_draft} set customcss = :customcss WHERE style_id = :style_id", array(':customcss' => $form_state['values']['sweaver_plugin_custom_css'], ':style_id' => $form_state['style_id']));
-      if ($form_state['publish']) {
-        db_query("UPDATE {sweaver_style} set customcss = :customcss WHERE style_id = :style_id", array(':customcss' => $form_state['values']['sweaver_plugin_custom_css'], ':style_id' => $form_state['style_id']));
-      }
+    if (isset($form_state['values']['sweaver_plugin_custom_css'])) {
+        $clicked_button = $form_state['clicked_button']['#value'];
+        if (($clicked_button == t('Save and continue') || $clicked_button == t('Save and publish') || $clicked_button == t('Publish style')) && isset($form_state['style_id'])) {
+          db_query("UPDATE {sweaver_style_draft} set customcss = :customcss WHERE style_id = :style_id", array(':customcss' => $form_state['values']['sweaver_plugin_custom_css'], ':style_id' => $form_state['style_id']));
+          if ($form_state['publish']) {
+            db_query("UPDATE {sweaver_style} set customcss = :customcss WHERE style_id = :style_id", array(':customcss' => $form_state['values']['sweaver_plugin_custom_css'], ':style_id' => $form_state['style_id']));
+          }
+        }
     }
   }
 

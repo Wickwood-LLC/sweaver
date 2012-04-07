@@ -329,15 +329,22 @@ class sweaver_plugin_styles extends sweaver_plugin {
 
       // Always save the draft version.
       $style->theme = $theme_key;
-      $style->css = $form_state['values']['sweaver-css'];
+      
+      $sweaver = Sweaver::get_instance();
+      $working_style = $sweaver->get_current_style();
+      
+      $sweaver_css = isset($form_state['values']['sweaver-css']) ? $form_state['values']['sweaver-css'] : $working_style->css;
+      $css_rendered = isset($form_state['values']['css-rendered']) ? $form_state['values']['css-rendered'] : '';
+      
+      $style->css = $sweaver_css;
       drupal_write_record('sweaver_style_draft', $style, $update);
-      $this->sweaver_export_file($form_state['values']['css-rendered'], $style);
+      $this->sweaver_export_file($css_rendered, $style);
       $form_state['style_id'] = $style->style_id;
 
       // Publish style.
       if ($submit_type == SWEAVER_STYLE_PUBLISH || $submit_type == SWEAVER_STYLE_SAVE_PUBLISH) {
         $style->active = 1;
-        $this->sweaver_export_file($form_state['values']['css-rendered'], $style, 'live');
+        $this->sweaver_export_file($css_rendered, $style, 'live');
         $message = 'The style @style has been published.';
         db_query("UPDATE {sweaver_style} set active = 0 WHERE theme = :theme", array(':theme' => $style->theme));
         // Find out first if this style already exists or not.
@@ -613,25 +620,25 @@ class sweaver_plugin_styles extends sweaver_plugin {
     $GLOBALS['devel_shutdown'] = FALSE;
     // Load CTools object cache.
     ctools_include('object-cache');
-
+    
+    $sweaver = Sweaver::get_instance();
+    $working_style = $sweaver->get_current_style();
+        
     // Save current styling.
     $style = new stdClass;
     $style->style_id = 0;
     $style->style = t('Temporary');
-    $style->css = $_POST['css'];
-    $style->customcss = $_POST['customcss'];
-    $style->palette = $_POST['palette'];
-
+    $style->css = isset($_POST['css']) ? $_POST['css'] : $working_style->css;
+    $style->customcss = isset($_POST['customcss']) ? $_POST['customcss'] : $working_style->customcss;
+    $style->palette = isset($_POST['palette']) ? $_POST['palette'] : $working_style->palette;
+    
     // Get the themesettings if applicable and overwrite style id & style name.
-    $sweaver = Sweaver::get_instance();
-    $working_style = $sweaver->get_current_style();
     if (isset($working_style->themesettings)) {
       $style->theme = $working_style->theme;
       $style->themesettings = $working_style->themesettings;
     }
 
-    // An image might have been uploaded by a managed_file field, permanant status needs to be set up
-    
+    // An image might have been uploaded by a managed_file field, permanant status needs to be set up 
     if (!empty($_POST['managed_file_fid'])) {
       $fid = filter_input(INPUT_POST, 'managed_file_fid', FILTER_SANITIZE_NUMBER_INT);
       if ($fid > 0){
