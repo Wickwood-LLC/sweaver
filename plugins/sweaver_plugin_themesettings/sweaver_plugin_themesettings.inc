@@ -108,7 +108,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
    * Frontend form submit.
    */
   public function sweaver_form_submit($form, &$form_state) {
-
+    
     $values = $form_state['values'];
     $theme_key = $values['var'];
     $clicked_button = $form_state['clicked_button']['#value'];
@@ -139,11 +139,13 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         $this->sweaver_get_theme_specific_keys($form['sweaver_plugin_themesettings']['form']['theme_specific'], $theme_specific_keys, $fapi_types);
         $theme_form_keys = array_merge($theme_form_keys, $theme_specific_keys);
       }
-
+      
+      
       // Other variables which are set by other form alters.
-      // All keys must be put in a $form['#sweaver_other_themesettings'];
-      $theme_form_keys = array_merge($theme_form_keys, $form['sweaver_plugin_themesettings']['form']['#sweaver_other_themesettings']);
-
+      // All keys must be put in a $form['sweaver_plugin_themesettings']['form']['other_theme_settings'];
+      $other_theme_settings = explode(',', $values['other_theme_settings']);
+      $theme_form_keys = array_merge($theme_form_keys, $other_theme_settings);
+      
       // Only save the necessary theme values.
       foreach ($values as $fkey => $fvalue) {
         if (in_array($fkey, $theme_form_keys)) {
@@ -187,14 +189,16 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
           $theme_values[$file] = $dest_live;
         }
       }
-
+        
       // Save when style_id is found. Always save the draft version. If the
       // save_live key is found also update the live table.
       if ($style_id != 'temp') {
         $theme_values_serialized = serialize($theme_values);
         db_query("UPDATE {sweaver_style_draft} set themesettings = :themesettings WHERE style_id = :style_id", array(':themesettings' => $theme_values_serialized, ':style_id' => $style_id));
         if ($form_state['publish']) {
-          variable_set($theme_key, $theme_values);
+          $old_settings = variable_get($theme_key);
+          $new_settings = array_merge($old_settings, $theme_values);
+          variable_set($theme_key, $new_settings);
           db_query("UPDATE {sweaver_style} set themesettings = :themesettings WHERE style_id = :style_id", array(':themesettings' => $theme_values_serialized, ':style_id' => $style_id));
         }
 
@@ -288,7 +292,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     else {
       $var = 'theme_settings';
     }
-
+    
     $form['var'] = array('#type' => 'hidden', '#value' => $var);
 
     // Check for a new uploaded logo. Put it in the form
@@ -369,7 +373,7 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
     if (!element_children($form['theme_settings'])) {
       // If there is no element in the theme settings fieldset then do not show
       // it -- but keep it in the form if another module wants to alter.
-      $form['theme_settings']['#access'] = FALSE;
+      $form['sweaver_plugin_themesettings']['#access'] = FALSE;
     }
 
     // Logo settings
@@ -453,22 +457,29 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
       // without having to pass the theme name to it.
       $default_theme = !empty($GLOBALS['theme_key']) ? $GLOBALS['theme_key'] : NULL;
       $GLOBALS['theme_key'] = $key;
-
-      // Process the theme and all its base themes.
+      
+      $other_theme_settings = array();
+      
+      // Process the theme and (all its base themes).
       foreach ($theme_keys as $theme) {
         // Include the theme-settings.php file.
         $filename = DRUPAL_ROOT . '/' . str_replace("/$theme.info", '', $theme_info->filename) . '/theme-settings.php';
         if (file_exists($filename)) {
           require_once $filename;
         }
-
-        // Call theme-specific settings.
-        $function = $theme . '_form_system_theme_settings_alter';
+        
+        $function = $theme.'_form_system_theme_settings_alter';
         if (function_exists($function)) {
+          $form_before = $form;
           $function($form, $form_state);
+          $diff = array_diff_key($form, $form_before);
+          $other_theme_settings = array_merge($other_theme_settings, $this->sweaver_recursive_list_children($diff));
         }
       }
-
+      
+      $other_theme_settings_str = implode(',', $other_theme_settings);
+      $form['other_theme_settings'] = array('#type' => 'hidden', '#value' => $other_theme_settings_str);
+      
       // Restore the original current theme.
       if (!is_null($default_theme)) {
         $GLOBALS['theme_key'] = $default_theme;
@@ -477,8 +488,27 @@ class sweaver_plugin_themesettings extends sweaver_plugin {
         unset($GLOBALS['theme_key']);
       }
     }
-
+    
     return $form;
+  }
+  
+  function sweaver_recursive_list_children($form, $children = array(), $known_children = array()) {
+    if (empty($known_children)) {
+      $first_children = element_children($form);
+    }
+    else {
+      $first_children = $known_children;
+    }
+    foreach($first_children as $child) {
+      $second_children = element_children($form[$child]);
+      if (!empty($second_children)) {
+        $children = $this->sweaver_recursive_list_children($form[$child], $children, $second_children);
+      }
+      else {
+        $children[] = $child;
+      }
+    }
+    return $children;
   }
 
   /**
