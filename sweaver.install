@@ -55,6 +55,7 @@ function sweaver_update_7100()
 {
   variable_del('sweaver_plugin_status_sweaver_plugin_customcss');
   variable_set('sweaver_plugin_status_sweaver_plugin_advanced', true);
+  drupal_theme_rebuild();
 }
 
 function sweaver_update_7101()

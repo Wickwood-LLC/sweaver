@@ -34,9 +34,12 @@ function _sweaver_menu() {
     $page_arguments = array(
       'plugin' => $plugin_name,
     );
-    $item = $sweaver_plugin->sweaver_menu($weight, $page_arguments, $base);
-
-    $items += $item;
+    // Allow drupal to load even if sweaver update process gone wrong
+    if (is_object($sweaver_plugin)) {
+      $item = $sweaver_plugin->sweaver_menu($weight, $page_arguments, $base);
+      $items += $item;
+    }
+    
   }
   return $items;
 }
@@ -65,8 +68,11 @@ function _sweaver_theme() {
   $sweaver = Sweaver::get_instance();
   foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
     $sweaver_plugin = $sweaver->get_plugin($plugin_name);
-    $theme_function = $sweaver_plugin->sweaver_theme();
-    $theme_functions += $theme_function;
+    // Allow drupal to load even if sweaver update process gone wrong
+    if (is_object($sweaver_plugin)) {
+      $theme_function = $sweaver_plugin->sweaver_theme();
+      $theme_functions += $theme_function;
+    }
   }
 
   return $theme_functions;
