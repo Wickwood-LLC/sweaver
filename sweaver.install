@@ -193,6 +193,7 @@ function sweaver_install() {
   variable_set('sweaver_plugin_status_sweaver_plugin_editor', TRUE);
   variable_set('sweaver_plugin_status_sweaver_plugin_styles', TRUE);
   variable_set('sweaver_plugin_status_sweaver_plugin_images', TRUE);
+  variable_set('sweaver_plugin_status_sweaver_plugin_advanced', TRUE);
 
   // Let images be handled by the images plugin.
   variable_set('sweaver_plugin_handle_images', 'sweaver_plugin_images');
