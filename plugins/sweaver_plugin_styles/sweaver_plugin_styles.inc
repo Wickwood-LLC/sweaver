@@ -594,7 +594,10 @@ class sweaver_plugin_styles extends sweaver_plugin {
       if (!$style->active) {
         $operations .= l(t('Enable'), 'admin/config/user-interface/sweaver/styles/enable/'. $style->style_id) . ' - ';
       }
-      $operations .=  l(t('Disable'), 'admin/config/user-interface/sweaver/styles/disable/'. $style->style_id) . ' - ' . l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/'. $style->style_id);
+      else {
+        $operations .=  l(t('Disable'), 'admin/config/user-interface/sweaver/styles/disable/'. $style->style_id) . ' - ';
+      }
+      $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/'. $style->style_id);
       
       $row[] = $operations;
       $rows[] = $row;
