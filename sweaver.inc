@@ -188,11 +188,28 @@ class Sweaver {
         $css->type = 'draft';
       }
       else {
-        $css = db_query("SELECT style_id, theme, style, css, customcss, palette, themesettings, active FROM {sweaver_style} where theme = :theme and active = 1", array(':theme' => $this->theme))->fetchObject();
+        $css = db_query("SELECT * FROM {sweaver_style} where theme = :theme and active = 1", array(':theme' => $this->theme))->fetchObject();
         if (!isset($css->style_id)) {
           $css = new stdClass();
         }
-        $css->type = 'live';
+        $css->type = 'live'; 
+      }
+      
+      // We check if the style can be loaded on this page
+      if (isset($css->pages)){
+      $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+      $css->pages = drupal_strtolower($css->pages);
+          
+      $page_match = drupal_match_path($path, $css->pages);
+      if ($path != $_GET['q']) {
+        $page_match = $page_match || drupal_match_path($_GET['q'], $css->pages);
+      }
+          
+      $page_match = !($css->visibility xor $page_match);  
+      
+      if (!$page_match) {
+        $css = NULL;
+      }
       }
       if (!isset($css->style_id)) {
         $css = NULL;
@@ -200,6 +217,44 @@ class Sweaver {
     }
     $this->style = $css;
     return $css;
+  }
+  
+  
+  /**
+   * Return all styles that affect the current page except the one active
+   */
+  public function get_secondary_styles() {
+    $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+    $styles_to_load = array();
+    
+    $styles = db_query("SELECT style_id, visibility, pages FROM {sweaver_style} where theme = :theme and active = 2", array(':theme' => $this->theme));
+    
+    while ($style = $styles->fetchObject()) {
+      $style->pages = drupal_strtolower($style->pages);
+      $page_match = drupal_match_path($path, $style->pages);
+      
+      if ($path != $_GET['q']) {
+        $page_match = $page_match || drupal_match_path($_GET['q'], $style->pages);
+      }
+          
+      $page_match = !($style->visibility xor $page_match);  
+      
+      if ($page_match) {
+        $styles_to_load[] = $style->style_id;
+      }
+    }
+    if (!empty($styles_to_load)) {
+      $list = implode(', ', $styles_to_load);
+      $styles = db_query("SELECT style_id, css FROM {sweaver_style} where style_id IN (:list)", array(':list' => $list));
+      
+      $styles_to_return = array();
+      while ($style = $styles->fetchObject()) {
+        $style->type = 'live';
+        $styles_to_return[] = $style;
+      }
+      return $styles_to_return;
+    }
+    else return array();
   }
 
   /**

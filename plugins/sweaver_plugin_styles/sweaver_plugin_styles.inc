@@ -28,11 +28,35 @@ class sweaver_plugin_styles extends sweaver_plugin {
       'type' => MENU_LOCAL_TASK,
       'weight' => $weight++,
     );
+    
+    // Enable a style
+    $page_arguments['callback_method'] = 'sweaver_style_enable';
+    $items['admin/config/user-interface/sweaver/styles/enable'] = $base + array(
+      'title' => 'Enable style',
+      'page arguments' => array($page_arguments),
+      'type' => MENU_CALLBACK,
+    );
+    
+    // Disable a style
+    $page_arguments['callback_method'] = 'sweaver_style_disable';
+    $items['admin/config/user-interface/sweaver/styles/disable'] = $base + array(
+      'title' => 'Disable style',
+      'page arguments' => array($page_arguments),
+      'type' => MENU_CALLBACK,
+    );
 
     // Delete a style.
     $page_arguments['callback_method'] = 'sweaver_style_confirm_form_delete';
     $items['admin/config/user-interface/sweaver/styles/delete'] = $base + array(
       'title' => 'Delete style',
+      'page arguments' => array($page_arguments),
+      'type' => MENU_CALLBACK,
+    );
+    
+    // Set to default a style
+    $page_arguments['callback_method'] = 'sweaver_style_set_to_default';
+    $items['admin/config/user-interface/sweaver/styles/default'] = $base + array(
+      'title' => 'Set to default',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
     );
@@ -540,6 +564,10 @@ class sweaver_plugin_styles extends sweaver_plugin {
       '#description' => t('Check for changes on your style and custom CSS every x seconds. If a change has been identified, sweaver will save those settings in a temporary cache table with AJAX. So leaving a page - or even worse, a browser crash - will make sure you keep your current configuration.'),
     );
     $form = system_settings_form($form);
+    
+    $form['table_explenation'] = array(
+      '#markup' => 'The following table list all styles defined in Sweaver. You have the possibility to enable multiple styles, it is very usefull if you want to use different styles for different pages (see tab context in the advanced plugin. The style set as default is the last one modified and will be load next time you try you launch sweaver editor.'
+    );
 
     // Styles list.
     $rows = array();
@@ -548,8 +576,21 @@ class sweaver_plugin_styles extends sweaver_plugin {
       $row = array();
       $row[] = check_plain($style->style);
       $row[] = str_replace('_', ' ', check_plain($style->theme));
-      $row[] = ($style->active) ? t('active') : t('inactive');
-      $operations = l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/'. $style->style_id);
+      switch($style->active) {
+        case 0:
+          $row[] = t('Inactive');
+          break;
+        case 1:
+          $row[] = t('Default');
+          break;
+        case 2:
+          $row[] = t('Active');
+          break;
+      }
+      $operations = l(t('Enable'), 'admin/config/user-interface/sweaver/styles/enable/'. $style->style_id) . ' - ' . l(t('Disable'), 'admin/config/user-interface/sweaver/styles/disable/'. $style->style_id) . ' - ' . l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/'. $style->style_id);
+      if ($style->active != 1) {
+        $operations .= ' - ' . l(t('Set to default'), 'admin/config/user-interface/sweaver/styles/default/'. $style->style_id);
+      }
       $row[] = $operations;
       $rows[] = $row;
     }
@@ -582,6 +623,32 @@ class sweaver_plugin_styles extends sweaver_plugin {
 
     return $form;
   }
+  
+  /**
+   * Menu callback, enable style.
+   */
+  public function sweaver_style_enable() {
+    $style_id = arg(6);
+    db_update('sweaver_style')
+      ->fields(array('active' => 2))
+      ->condition('style_id', $style_id, '=')
+      ->execute();
+    drupal_set_message(t('Style enabled'));
+    drupal_goto('admin/config/user-interface/sweaver/styles');
+  }
+  
+  /**
+   * Menu callback, disable style.
+   */
+  public function sweaver_style_disable() {
+    $style_id = arg(6);
+    db_update('sweaver_style')
+      ->fields(array('active' => 0))
+      ->condition('style_id', $style_id, '=')
+      ->execute();
+    drupal_set_message(t('Style disabled'));
+    drupal_goto('admin/config/user-interface/sweaver/styles');
+  }
 
   /**
    * Menu callback, delete style.
@@ -608,6 +675,36 @@ class sweaver_plugin_styles extends sweaver_plugin {
     sweaver_clear_cache();
     drupal_set_message(t('Style %style has been removed', array('%style' => $form['#style']->style)));
     $form_state['redirect'] = 'admin/config/user-interface/sweaver/styles';
+  }
+  
+  /**
+   * Menu callback, set to default a style.
+   */
+  public function sweaver_style_set_to_default() {
+    $style = arg(6);
+    
+    $theme = db_select('sweaver_style', 's')
+      ->fields('s', array('theme'))
+      ->condition('style_id', $style, '=')
+      ->execute()
+      ->fetchColumn();
+
+    db_update('sweaver_style')
+      ->fields(array('active' => 0))
+      ->condition('theme', $theme, '=')
+      ->condition('active', 1, '=')
+      ->execute();
+    
+    db_update('sweaver_style')
+      ->fields(array(
+        'active' => 1
+        ))
+      ->condition('style_id', $style, '=')
+      ->execute();
+      
+    sweaver_clear_cache();
+    drupal_set_message(t('The default style has been modified'));
+    drupal_goto('admin/config/user-interface/sweaver/styles');
   }
 
   /**

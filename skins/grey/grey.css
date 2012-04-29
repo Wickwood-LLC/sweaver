@@ -472,7 +472,7 @@ body.sweaver {
   padding-right: 0 !important;
 }
 
-/* Custom css */
+/* Plugin advanced : Custom css */
 
 #sweaver .form-floater .form-submit,
 #sweaver .form-floater .form-item {
@@ -490,6 +490,17 @@ body.sweaver {
 
 #sweaver .form-item-sweaver-plugin-custom-css textarea{
   width:100%;
+}
+
+/* Plugin advanced : Context */
+
+#sweaver-frontend #sweaver-advanced .context-container input{
+  width: 50px;
+}
+
+#sweaver-frontend #sweaver-advanced .context-container textarea{
+  width: 95% !important;
+  height: 110px !important;
 }
 
 /* link for 'theme styles' tab */

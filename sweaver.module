@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Sweaver functions.
@@ -403,10 +402,11 @@ function sweaver_custom_theme() {
  * Implements hook_preprocess_page().
  */
 function sweaver_preprocess_page(&$vars) {
+  $sweaver = Sweaver::get_instance();
+  $styles = array();
+  
   // Load css for this theme if available.
   if (drupal_static('load_style')) {
-
-    $sweaver = Sweaver::get_instance();
 
     // Extra check for the theme if we need to load css files.
     if (drupal_static('load_style')) {
@@ -416,20 +416,27 @@ function sweaver_preprocess_page(&$vars) {
     }
 
     $sweaver_style = $sweaver->get_current_style();
-    if (isset($sweaver_style->css) && drupal_static('load_style')) {
-      $settings = array(
-        'weight' => 1000,
-        'preprocess' => TRUE,
-        'group' => CSS_THEME,
-      );
+    if (!is_null($sweaver_style)){
+      $styles[] = $sweaver_style;
+    }
+  }
+  
+  //$styles = array_merge($styles, $sweaver->get_secondary_styles());
+  if (!empty($styles)) {
+    $settings = array(
+      'weight' => 1000,
+      'preprocess' => TRUE,
+      'group' => CSS_THEME,
+    );
+    foreach($styles as $sweaver_style) {   
       $css_path = 'public://sweaver/sweaver_' . $sweaver->get_theme_key() . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . '.css';
       drupal_add_css($css_path, $settings);
+    }
 
-      foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
-        $sweaver_plugin = $sweaver->get_plugin($plugin_name);
-        // Fire preprocess.
-        $sweaver_plugin->sweaver_preprocess_page($vars);
-      }
+    foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
+      $sweaver_plugin = $sweaver->get_plugin($plugin_name);
+      // Fire preprocess.
+      $sweaver_plugin->sweaver_preprocess_page($vars);
     }
   }
 }
