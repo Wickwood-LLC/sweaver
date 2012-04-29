@@ -587,10 +587,15 @@ class sweaver_plugin_styles extends sweaver_plugin {
           $row[] = t('Active');
           break;
       }
-      $operations = l(t('Enable'), 'admin/config/user-interface/sweaver/styles/enable/'. $style->style_id) . ' - ' . l(t('Disable'), 'admin/config/user-interface/sweaver/styles/disable/'. $style->style_id) . ' - ' . l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/'. $style->style_id);
+      $operations = '';
       if ($style->active != 1) {
-        $operations .= ' - ' . l(t('Set to default'), 'admin/config/user-interface/sweaver/styles/default/'. $style->style_id);
+        $operations .= l(t('Set to default'), 'admin/config/user-interface/sweaver/styles/default/'. $style->style_id) . ' - ';
       }
+      if (!$style->active) {
+        $operations .= l(t('Enable'), 'admin/config/user-interface/sweaver/styles/enable/'. $style->style_id) . ' - ';
+      }
+      $operations .=  l(t('Disable'), 'admin/config/user-interface/sweaver/styles/disable/'. $style->style_id) . ' - ' . l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/'. $style->style_id);
+      
       $row[] = $operations;
       $rows[] = $row;
     }
@@ -629,12 +634,32 @@ class sweaver_plugin_styles extends sweaver_plugin {
    */
   public function sweaver_style_enable() {
     $style_id = arg(6);
-    db_update('sweaver_style')
-      ->fields(array('active' => 2))
-      ->condition('style_id', $style_id, '=')
-      ->execute();
-    drupal_set_message(t('Style enabled'));
-    drupal_goto('admin/config/user-interface/sweaver/styles');
+    
+    // First we check if the style has a live version
+    $check = db_select('sweaver_style', 's')
+     ->fields('s', array('style_id'))
+     ->condition('style_id', $style_id, '=')
+     ->execute()
+     ->rowCount();
+     
+    if (!$check) {
+      $style = db_select('sweaver_style_draft', 's')
+        ->fields('s')
+        ->condition('style_id', $style_id, '=')
+        ->execute()
+        ->fetchObject();
+      
+      $style->active = 2;
+      drupal_write_record('sweaver_style', $style);
+    }
+    else {
+      db_update('sweaver_style')
+        ->fields(array('active' => 2))
+        ->condition('style_id', $style_id, '=')
+        ->execute();
+      drupal_set_message(t('Style enabled'));
+      drupal_goto('admin/config/user-interface/sweaver/styles');
+    }
   }
   
   /**
@@ -681,26 +706,45 @@ class sweaver_plugin_styles extends sweaver_plugin {
    * Menu callback, set to default a style.
    */
   public function sweaver_style_set_to_default() {
-    $style = arg(6);
+    $style_id = arg(6);
     
-    $theme = db_select('sweaver_style', 's')
+    $theme = db_select('sweaver_style_draft', 's')
       ->fields('s', array('theme'))
-      ->condition('style_id', $style, '=')
+      ->condition('style_id', $style_id, '=')
       ->execute()
       ->fetchColumn();
-
+      
     db_update('sweaver_style')
       ->fields(array('active' => 0))
       ->condition('theme', $theme, '=')
       ->condition('active', 1, '=')
       ->execute();
     
-    db_update('sweaver_style')
-      ->fields(array(
-        'active' => 1
-        ))
-      ->condition('style_id', $style, '=')
-      ->execute();
+    // We check if there is a live version
+    $check = db_select('sweaver_style', 's')
+     ->fields('s', array('style_id'))
+     ->condition('style_id', $style_id, '=')
+     ->execute()
+     ->rowCount();
+     
+    if (!$check) {
+      $style = db_select('sweaver_style_draft', 's')
+        ->fields('s')
+        ->condition('style_id', $style_id, '=')
+        ->execute()
+        ->fetchObject();
+      
+      $style->active = 1;
+      drupal_write_record('sweaver_style', $style);
+    }
+    else { 
+      db_update('sweaver_style')
+        ->fields(array(
+          'active' => 1
+          ))
+        ->condition('style_id', $style_id, '=')
+        ->execute();
+    }
       
     sweaver_clear_cache();
     drupal_set_message(t('The default style has been modified'));
