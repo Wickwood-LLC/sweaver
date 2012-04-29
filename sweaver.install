@@ -100,6 +100,26 @@ function sweaver_update_7101()
   variable_set('sweaver_editor_form_configuration', $editor_form_configuration);
 }
 
+function sweaver_update_7102()
+{
+  $visibility_spec = array(
+    'description' => 'Flag to indicate how to show blocks on pages. (0 = Show on all pages except listed pages, 1 = Show only on listed pages, 2 = Use custom PHP code to determine visibility)',
+    'type' => 'int',
+    'size' => 'tiny',
+    'default' => 0,
+  );
+  $pages_spec = array(
+    'description' => 'Contents of the "Pages" block; contains either a list of paths on which to include/exclude the block or PHP code, depending on "visibility" setting.',
+    'type' => 'text',
+    'size' => 'big',
+  );
+  db_add_field('sweaver_style', 'visibility', $visibility_spec);
+  db_add_field('sweaver_style', 'pages', $pages_spec);
+  
+  db_add_field('sweaver_style_draft', 'visibility', $visibility_spec);
+  db_add_field('sweaver_style_draft', 'pages', $pages_spec);
+}
+
 /**
  * Implements hook_install().
  */
@@ -260,6 +280,17 @@ function sweaver_schema() {
         'type' => 'text',
         'size' => 'big'
       ),
+      'visibility' => array(
+        'description' => 'Flag to indicate how to show blocks on pages. (0 = Show on all pages except listed pages, 1 = Show only on listed pages, 2 = Use custom PHP code to determine visibility)',
+        'type' => 'int',
+        'size' => 'tiny',
+        'default' => 0,
+      ),
+      'pages' => array(
+        'description' => 'Contents of the "Pages" block; contains either a list of paths on which to include/exclude the block or PHP code, depending on "visibility" setting.',
+        'type' => 'text',
+        'size' => 'big',
+      ),
       'active' => array(
         'description' => 'Should this style be active?',
         'type' => 'int',
@@ -313,6 +344,17 @@ function sweaver_schema() {
         'description' => 'Theme settings',
         'type' => 'text',
         'size' => 'big'
+      ),
+      'visibility' => array(
+        'description' => 'Flag to indicate how to show blocks on pages. (0 = Show on all pages except listed pages, 1 = Show only on listed pages, 2 = Use custom PHP code to determine visibility)',
+        'type' => 'int',
+        'size' => 'tiny',
+        'default' => 0,
+      ),
+      'pages' => array(
+        'description' => 'Contents of the "Pages" block; contains either a list of paths on which to include/exclude the block or PHP code, depending on "visibility" setting.',
+        'type' => 'text',
+        'size' => 'big',
       ),
     ),
     'primary key' => array('style_id'),
