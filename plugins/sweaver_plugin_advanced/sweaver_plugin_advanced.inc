@@ -116,7 +116,7 @@ class sweaver_plugin_advanced extends sweaver_plugin {
 
       // Combine all properties in containers.
       $class = 'container-wrapper';
-      if ($container_value['class']) {
+      if (isset($container_value['class'])) {
         $class .= ' '.implode(' ', $container_value['class']);
       }
       $containers .= '<div id="container-'. $key .'" class="'.$class.'">';
