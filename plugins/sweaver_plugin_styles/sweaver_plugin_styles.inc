@@ -60,6 +60,14 @@ class sweaver_plugin_styles extends sweaver_plugin {
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
     );
+    
+    // Downlaod a style
+    $page_arguments['callback_method'] = 'sweaver_style_export';
+    $items['admin/config/user-interface/sweaver/styles/export'] = $base + array(
+      'title' => 'Exportation options',
+      'page arguments' => array($page_arguments),
+      'type' => MENU_CALLBACK,
+    );
 
     // Autosave callback.
     $base['access arguments'] = array('use editor');
@@ -598,6 +606,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
         $operations .=  l(t('Disable'), 'admin/config/user-interface/sweaver/styles/disable/'. $style->style_id) . ' - ';
       }
       $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/'. $style->style_id);
+      $operations .= l(t('Export'), 'admin/config/user-interface/sweaver/styles/export/'. $style->style_id);
       
       $row[] = $operations;
       $rows[] = $row;
@@ -752,6 +761,53 @@ class sweaver_plugin_styles extends sweaver_plugin {
     sweaver_clear_cache();
     drupal_set_message(t('The default style has been modified'));
     drupal_goto('admin/config/user-interface/sweaver/styles');
+  }
+  
+  /**
+   * Exportation options for a style
+   */
+  public function sweaver_style_export() {
+    $style_id = arg(6);
+    
+    $result_live = db_select('sweaver_style', 's')
+        ->fields('s', array('theme'))
+        ->condition('style_id', $style_id, '=')
+        ->execute();
+    // Is the style live ?
+     if ($result_live->rowCount()) {
+        $type = 'live';
+        $theme = $result_live->fetchField();
+     }
+     // Or is it a draft ?
+     else {
+        $result_draft = db_select('sweaver_style_draft', 's')
+            ->fields('s', array('theme'))
+            ->condition('style_id', $style_id, '=')
+            ->execute();
+        if ($result_draft->rowCount()) {
+            $type = 'draft';
+            $theme = $result_draft->fetchField();
+        }
+        // This style doesn't exist
+        // Exit
+        else {
+            drupal_set_message(t('There was an error during the process, please try again'), 'warning');
+            drupal_goto('admin/config/user-interface/sweaver/styles');
+        }
+     }
+    
+    // Prepping all infos for trasnfer
+    $file_URI = 'public://sweaver/sweaver_' . $theme . '_' . $style_id . '_' . $type . '.css';
+    $headers = array(
+        'Content-Type'              => 'force-download',
+        'Content-Disposition'       => 'attachment; filename="' . 'sweaver_' . $theme . '_' . $style_id . '_' . $type . '.css' . '"',
+        'Content-Transfer-Encoding' => 'binary',
+        'Pragma'                    => 'no-cache',
+        'Cache-Control'             => 'must-revalidate, post-check=0, pre-check=0',
+        'Expires'                   => '0',
+        'Accept-Ranges'             => 'bytes'
+    );
+    file_transfer($file_URI, $headers);
   }
 
   /**
