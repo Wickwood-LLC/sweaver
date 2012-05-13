@@ -30,11 +30,9 @@ function sweaver_drush_command() {
   $items['sweaver-edit'] = array(
     'callback' => 'sweaver_drush_style',
     'description' => dt('Edit the style with your favorite Editor.'),
-    'arguments' => array(
-      'style_id' => dt('A style ID'),
-    ),
+    'arguments' => array('style_id' => dt('A style ID'), ),
     'aliases' => array('swe'),
-  );
+    );
 
   $items['sweaver-variables'] = array(
     'callback' => 'sweaver_drush_variables',
@@ -42,9 +40,9 @@ function sweaver_drush_command() {
     'arguments' => array(
       'type' => dt('The type of variable to store. Currenlty only "editor" or "warning".'),
       'value' => dt('The value of the variable. Currently your favorite editor command (+ any arguments if needed) or "true" or "false" for the warning message.'),
-    ),
+      ),
     'aliases' => array('swv'),
-  );
+    );
 
   return $items;
 }
@@ -103,12 +101,12 @@ function sweaver_drush_edit_style($style) {
   $css = (!empty($css)) ? sweaver_drush_json_to_css($css) : '';
 
   // Create a static $data variable with CTools.
-  $data = &drupal_static('sweaver_drush_style_data' , array());
+  $data = &drupal_static('sweaver_drush_style_data', array());
   $data = array(
     'style' => $style,
     'editor' => $editor,
     'ts_enabled' => FALSE,
-  );
+    );
 
   // Get some plugins.
   $sweaver = Sweaver::get_instance();
@@ -116,9 +114,7 @@ function sweaver_drush_edit_style($style) {
   $sweaver_ts = $sweaver->get_plugin('sweaver_plugin_themesettings');
 
   // Create steps array.
-  $steps = array(
-    'css' => $css
-  );
+  $steps = array('css' => $css);
   // Add custom css if enabled.
   if ($sweaver_cs) {
     $steps['customcss'] = $style->customcss;
@@ -140,11 +136,14 @@ function sweaver_drush_edit_style($style) {
       $temp_file = drush_save_data_to_temp_file($step_value);
       $data['tempfiles'][$step] = $temp_file;
       $data['current_step'] = $step;
-      $edit_command = $editor .' '. $temp_file;
+      $edit_command = $editor . ' ' . $temp_file;
       $pipes = array();
 
       // Opend the editor.
-      proc_close(proc_open($edit_command, array(0 => STDIN, 1 => STDOUT, 2 => STDERR), $pipes));
+      proc_close(proc_open($edit_command, array(
+        0 => STDIN,
+        1 => STDOUT,
+        2 => STDERR), $pipes));
 
       // We need to save the new content already here, because we lose the temporary data file.
       $step = $data['current_step'];
@@ -193,7 +192,7 @@ function sweaver_drush_edit_style($style) {
 
     // Create stylesheet.
     $stylesheet = $style->write_css;
-    $stylesheet .= "\n". $style->customcss;
+    $stylesheet .= "\n" . $style->customcss;
 
     // Save draft version.
     if (!isset($style->active)) {
@@ -212,7 +211,7 @@ function sweaver_drush_edit_style($style) {
     if (isset($style->active)) {
       $sweaver_styles->sweaver_export_file($stylesheet, $style, 'live');
       if ($data['ts_enabled']) {
-        $theme_settings_var = str_replace('/', '_', 'theme_'. $style->theme .'_settings');
+        $theme_settings_var = str_replace('/', '_', 'theme_' . $style->theme . '_settings');
         variable_set($theme_settings_var, unserialize($style->themesettings));
       }
     }
@@ -239,11 +238,14 @@ function sweaver_drush_print_styles($styles) {
       unset($styles[$key]->themesettings);
       $style->style_id = $key;
       if (isset($style->active)) {
-        $style->style = $style->style .' '. dt('(live)');
+        $style->style = $style->style . ' ' . dt('(live)');
         unset($style->active);
       }
     }
-    $rows = array(0 => array(dt('ID'), dt('Theme'), dt('Name')));
+    $rows = array(0 => array(
+        dt('ID'),
+        dt('Theme'),
+        dt('Name')));
     $rows += $styles;
     drush_print_table($rows, TRUE);
   }
@@ -350,8 +352,8 @@ function sweaver_drush_verify($args, $type = 'styles') {
 function sweaver_drush_verify_edit($style) {
   $write = TRUE;
   $public_path = variable_get('file_public_path', conf_path() . '/files');
-  $draft_file = $public_path . '/sweaver/sweaver_' . $style->theme .'_' . $style->style_id . '_draft.css';
-  $live_file = $public_path . '/sweaver/sweaver_' . $style->theme .'_' . $style->style_id . '_live.css';
+  $draft_file = $public_path . '/sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_draft.css';
+  $live_file = $public_path . '/sweaver/sweaver_' . $style->theme . '_' . $style->style_id . '_live.css';
   $touch_file = (isset($style->active)) ? $live_file : $draft_file;
   $write = @touch($touch_file);
 
@@ -418,7 +420,10 @@ function sweaver_drush_css_to_json($css) {
         // Get the property.
         $sp = $sweaver_properties[$property];
         // Use str replaces to remove prefixes, suffixes and ;
-        $new_value = str_replace(array($sp->property_prefix, $sp->property_suffix, ';'), '', $value);
+        $new_value = str_replace(array(
+          $sp->property_prefix,
+          $sp->property_suffix,
+          ';'), '', $value);
         $json_css->$selector->$property = $new_value;
       }
     }

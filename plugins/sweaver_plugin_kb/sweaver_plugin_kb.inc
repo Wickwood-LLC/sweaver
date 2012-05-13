@@ -27,7 +27,7 @@ class sweaver_plugin_kb extends sweaver_plugin {
       'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
       'weight' => $weight++,
-    );
+      );
 
     return $items;
   }
@@ -36,8 +36,8 @@ class sweaver_plugin_kb extends sweaver_plugin {
    * Frontend css and js.
    */
   public function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/jquery.hotkeys.js');
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_kb/sweaver_plugin_kb.js');
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_kb/jquery.hotkeys.js');
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_kb/sweaver_plugin_kb.js');
     $bindings = $this->sweaver_kb_bindings();
     $binding_options = $this->sweaver_kb_binding_options();
 
@@ -49,13 +49,13 @@ class sweaver_plugin_kb extends sweaver_plugin {
       }
 
       // Get keyboard key. Make sure it's not empty.
-      $keyboard_key = variable_get('sweaver_plugin_kb_'. $key, $value['default']);
+      $keyboard_key = variable_get('sweaver_plugin_kb_' . $key, $value['default']);
       if (!empty($keyboard_key)) {
         $inline_settings['sweaver']['kb'][$key] = array(
           'kb_code' => $keyboard_key,
           'kb_button' => $binding_options[$keyboard_key],
           'element' => isset($value['element']) ? $value['element'] : '',
-        );
+          );
       }
     }
   }
@@ -68,17 +68,15 @@ class sweaver_plugin_kb extends sweaver_plugin {
     $bindings = $this->sweaver_kb_bindings();
     $binding_options = $this->sweaver_kb_binding_options();
 
-    $form['info'] = array(
-      '#markup' => t('Select keys for every event possible. Note, there is no validation when saving this form, so make sure every event has a unique key.'),
-    );
+    $form['info'] = array('#markup' => t('Select keys for every event possible. Note, there is no validation when saving this form, so make sure every event has a unique key.'), );
 
     foreach ($bindings as $key => $value) {
-      $form['sweaver_plugin_kb_'. $key] = array(
+      $form['sweaver_plugin_kb_' . $key] = array(
         '#type' => 'select',
         '#options' => $binding_options,
         '#title' => $value['title'],
-        '#default_value' => variable_get('sweaver_plugin_kb_'. $key, $value['default']),
-      );
+        '#default_value' => variable_get('sweaver_plugin_kb_' . $key, $value['default']),
+        );
     }
 
     return system_settings_form($form);
@@ -94,32 +92,32 @@ class sweaver_plugin_kb extends sweaver_plugin {
         'default' => '83',
         'element' => '.save-style-popup',
         'double' => TRUE,
-      ),
+        ),
       'load' => array(
         'title' => t('Load style popup'),
         'default' => '76',
         'element' => '.load-style-popup',
         'double' => TRUE,
-      ),
+        ),
       'publish' => array(
         'title' => t('Publish style popup'),
         'default' => '80',
         'element' => '.publish-style-popup',
         'double' => TRUE,
-      ),
+        ),
       'delete' => array(
         'title' => t('Delete style popup'),
         'default' => '68',
         'variable' => 'sweaver_styles_delete_tab',
         'element' => '.delete-style-popup',
         'double' => TRUE,
-      ),
+        ),
       'close' => array(
         'title' => t('Close popup'),
         'default' => '27',
         'double' => FALSE,
-      ),
-    );
+        ),
+      );
 
     return $bindings;
   }
@@ -167,6 +165,6 @@ class sweaver_plugin_kb extends sweaver_plugin {
       '88' => 'x',
       '89' => 'y',
       '90' => 'z',
-    );
+      );
   }
 }

@@ -15,10 +15,10 @@ function template_preprocess_sweaver_plugin_editor_config_editor(&$vars) {
   // Iterate containers.
   foreach ($form['#containers'] as $container_key => $container_name) {
 
-    drupal_add_tabledrag('properties', 'match', 'sibling', 'property-container-select', 'property-container-'. $container_key, NULL, TRUE);
-    drupal_add_tabledrag('properties', 'order', 'sibling', 'property-weight', 'property-weight-'. $container_key, NULL, TRUE);
+    drupal_add_tabledrag('properties', 'match', 'sibling', 'property-container-select', 'property-container-' . $container_key, NULL, TRUE);
+    drupal_add_tabledrag('properties', 'order', 'sibling', 'property-weight', 'property-weight-' . $container_key, NULL, TRUE);
 
-    $rows[$container_key]['textfield'] = drupal_render($form['container_form_'. $container_key]);
+    $rows[$container_key]['textfield'] = drupal_render($form['container_form_' . $container_key]);
 
     // Iterate over properties in this container.
     if (isset($form['#properties_region'][$container_key])) {
@@ -37,6 +37,6 @@ function template_preprocess_sweaver_plugin_editor_config_editor(&$vars) {
   $vars['submit'] = drupal_render_children($form);
 
   drupal_add_js('misc/tableheader.js');
-  drupal_add_css(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.css');
-  drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.js');
+  drupal_add_css(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.css');
+  drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_editor/sweaver_plugin_editor.admin.js');
 }

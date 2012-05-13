@@ -10,7 +10,7 @@ class sweaver_plugin_palettes extends sweaver_plugin {
    * Frontend css and js.
    */
   public function sweaver_form_css_js(&$inline_settings) {
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_palettes/sweaver_plugin_palettes.js');
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_palettes/sweaver_plugin_palettes.js');
   }
 
   /**
@@ -33,7 +33,7 @@ class sweaver_plugin_palettes extends sweaver_plugin {
           'weight' => 1001,
           'preprocess' => TRUE,
           'group' => CSS_THEME,
-        );
+          );
         drupal_add_css($css, $settings);
       }
     }
@@ -58,7 +58,7 @@ class sweaver_plugin_palettes extends sweaver_plugin {
       // Combine all properties in containers.
       $i = 0;
       $container_count = 1;
-      $container_total = ceil(count($theme_info['sweaver']['palettes'])/5);
+      $container_total = ceil(count($theme_info['sweaver']['palettes']) / 5);
 
       $containers .= '<div class="container-wrapper">';
 
@@ -72,22 +72,22 @@ class sweaver_plugin_palettes extends sweaver_plugin {
           if ($container_total == $container_count) {
             $container_class .= ' container-last';
           }
-          $containers .= '<div class="container '. $container_class .'"><div class="container-inner">';
+          $containers .= '<div class="container ' . $container_class . '"><div class="container-inner">';
         }
         // Add the actual content.
         $extra_class = ($active_palette == $key ? ' active' : '');
-        $containers .= '<div id="palette-' . $key .'" class="colors clearfix'. $extra_class .'">';
+        $containers .= '<div id="palette-' . $key . '" class="colors clearfix' . $extra_class . '">';
 
         foreach ($palette['colors'] as $color) {
-          $containers .= '<div class="color" style="background-color:'. $color .' !important">'. $color .'</div>';
+          $containers .= '<div class="color" style="background-color:' . $color . ' !important">' . $color . '</div>';
         }
-        $containers .= '<div class="name">'. $palette['name'] .'</div>';
+        $containers .= '<div class="name">' . $palette['name'] . '</div>';
 
         // Add a hidden field with the path to the css file.
-        $containers .= '<div class="file" style="display: none;">'. $base_path . drupal_get_path('theme', $theme_key) .'/'. $palette['file'] .'</div>';
+        $containers .= '<div class="file" style="display: none;">' . $base_path . drupal_get_path('theme', $theme_key) . '/' . $palette['file'] . '</div>';
 
         // Add a hidden field with the key.
-        $containers .= '<div class="key" style="display: none;">'. $key .'</div>';
+        $containers .= '<div class="key" style="display: none;">' . $key . '</div>';
         $containers .= '</div>';
         $i++;
         // close the container div if necessary.
@@ -106,11 +106,9 @@ class sweaver_plugin_palettes extends sweaver_plugin {
       $form['sweaver_plugin_palette'] = array(
         '#type' => 'hidden',
         '#default_value' => $active_palette ? $active_palette : '',
-      );
+        );
 
-      $form['markup'] = array(
-        '#markup' => $containers,
-      );
+      $form['markup'] = array('#markup' => $containers, );
     }
 
     return $form;

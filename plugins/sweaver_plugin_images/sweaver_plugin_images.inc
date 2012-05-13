@@ -18,25 +18,25 @@ class sweaver_plugin_images extends sweaver_plugin {
       'page arguments' => array($page_arguments),
       'type' => MENU_LOCAL_TASK,
       'weight' => $weight++,
-    );
+      );
     $page_arguments['callback_method'] = 'sweaver_images_backend_form';
     $items['admin/config/user-interface/sweaver/images/add'] = $base + array(
       'title' => 'Add new image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
-    );
+      );
     $page_arguments['callback_method'] = 'sweaver_images_backend_form';
     $items['admin/config/user-interface/sweaver/images/edit'] = $base + array(
       'title' => 'Edit image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
-    );
+      );
     $page_arguments['callback_method'] = 'sweaver_images_confirm_form_delete';
     $items['admin/config/user-interface/sweaver/images/delete'] = $base + array(
       'title' => 'Add new image',
       'page arguments' => array($page_arguments),
       'type' => MENU_CALLBACK,
-    );
+      );
 
     return $items;
   }
@@ -51,18 +51,17 @@ class sweaver_plugin_images extends sweaver_plugin {
       $form['image_form']['image_description'] = array(
         '#type' => 'textfield',
         '#title' => t('Description'),
-        '#description' => t('Description of the image used in the select box for files.')
-      );
+        '#description' => t('Description of the image used in the select box for files.'));
       $form['image_form']['image_image'] = array(
         '#type' => 'file',
         '#title' => t('Image'),
         '#size' => '40',
         '#description' => t('Upload images which you can use as background images. Extensions are limited to jpg, jpeg, png and gif.<br />Note: there is no scaling on the images on upload.'),
-      );
+        );
       $form['image_form']['image_submit'] = array(
         '#type' => 'submit',
         '#value' => t('Save image'),
-      );
+        );
     }
 
     return $form;
@@ -75,9 +74,7 @@ class sweaver_plugin_images extends sweaver_plugin {
 
     if ($form_state['clicked_button']['#value'] == t('Save image')) {
 
-      $validators = array(
-        'file_validate_is_image' => array(),
-      );
+      $validators = array('file_validate_is_image' => array(), );
 
       $sweaver_directory = 'public://sweaver';
       file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
@@ -140,7 +137,7 @@ class sweaver_plugin_images extends sweaver_plugin {
 
       // Styles presets.
       foreach ($styles as $preset_key => $preset) {
-        $images[image_style_url($preset_key, $image->uri)] = $image->description .' ('. $preset['name'] .')';
+        $images[image_style_url($preset_key, $image->uri)] = $image->description . ' (' . $preset['name'] . ')';
       }
     }
   }
@@ -156,7 +153,7 @@ class sweaver_plugin_images extends sweaver_plugin {
       '#title' => t('Editor tab'),
       '#description' => t('Toggle this checkbox if you want to enable the images tab on the editor.'),
       '#default_value' => variable_get('sweaver_plugin_images_tab', TRUE),
-    );
+      );
 
     // Use styles on images ?
     if (function_exists('image_styles')) {
@@ -165,28 +162,26 @@ class sweaver_plugin_images extends sweaver_plugin {
         '#title' => t('Allow to see styled version of images'),
         '#description' => t('Toggle this checkbox if you want to create styled versions of the images uploaded by the Image plugin.'),
         '#default_value' => variable_get('sweaver_plugin_images_styles', FALSE),
-      );
+        );
     }
     else {
-      $form['style_disabled'] = array(
-        '#markup' => '<p>' . t('If you enable the image module, all images can be made available with all style variants.') . '</p>',
-      );
+      $form['style_disabled'] = array('#markup' => '<p>' . t('If you enable the image module, all images can be made available with all style variants.') . '</p>', );
       $form['sweaver_plugin_images_styles'] = array(
         '#type' => 'value',
         '#value' => 0,
-      );
+        );
     }
 
     $form['sweaver_plugin_handle_images'] = array(
       '#type' => 'hidden',
       '#value' => variable_get('sweaver_plugin_handle_images', 'sweaver_plugin_images'),
-    );
+      );
 
     $form = system_settings_form($form);
 
     // Images list
     $rows = array();
-    $output = '<p>'. l(t('Add new image'), 'admin/config/user-interface/sweaver/images/add') .'</p>';
+    $output = '<p>' . l(t('Add new image'), 'admin/config/user-interface/sweaver/images/add') . '</p>';
 
     $query = 'SELECT ti.fid, ti.description, f.uri FROM {sweaver_image} ti
               INNER JOIN {file_managed} f on f.fid = ti.fid order by description ASC';
@@ -207,11 +202,11 @@ class sweaver_plugin_images extends sweaver_plugin {
       $header = array(
         t('Image'),
         t('Operations'),
-      );
+        );
       $variables = array(
         'header' => $header,
         'rows' => $rows,
-      );
+        );
 
       $output .= theme('table', $variables);
     }
@@ -219,9 +214,7 @@ class sweaver_plugin_images extends sweaver_plugin {
       $output .= '<p>' . t('No images uploaded.') . '</p>';
     }
 
-    $form['images_list'] = array(
-      '#markup' => $output,
-    );
+    $form['images_list'] = array('#markup' => $output, );
 
     return $form;
   }
@@ -263,19 +256,18 @@ class sweaver_plugin_images extends sweaver_plugin {
       '#title' => t('Description'),
       '#required' => TRUE,
       '#default_value' => $description,
-      '#description' => t('Description of the image used in the select box for files.')
-    );
+      '#description' => t('Description of the image used in the select box for files.'));
     if (!$fid) {
       $form['image_form']['image'] = array(
         '#type' => 'file',
         '#title' => t('Image'),
         '#description' => t('Upload images which you can use as background images. Extensions are limited to jpg, jpeg, png and gif.<br />Note: there is no scaling on the images on upload.'),
-      );
+        );
     }
     $form['image_form']['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Save image'),
-    );
+      );
 
     return $form;
   }
@@ -284,9 +276,7 @@ class sweaver_plugin_images extends sweaver_plugin {
    * Images validate.
    */
   public function sweaver_images_backend_form_validate($form, &$form_state) {
-    $validators = array(
-      'file_validate_is_image' => array(),
-    );
+    $validators = array('file_validate_is_image' => array(), );
 
     $sweaver_directory = 'public://sweaver';
     file_prepare_directory($sweaver_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
@@ -319,7 +309,8 @@ class sweaver_plugin_images extends sweaver_plugin {
       file_save($image_uploaded);
     }
 
-    if (!isset($image->fid)) $image->fid = $form['#fid'];
+    if (!isset($image->fid))
+      $image->fid = $form['#fid'];
     $update = (!$form['#check_upload']) ? array('fid') : array();
     $image->description = $form_state['values']['description'];
     drupal_write_record('sweaver_image', $image, $update);

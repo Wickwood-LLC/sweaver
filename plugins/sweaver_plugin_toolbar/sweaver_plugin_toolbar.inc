@@ -14,13 +14,16 @@ class sweaver_plugin_toolbar extends sweaver_plugin {
     $items = array();
 
     // Theme classes groups administration.
-    $base['access arguments'] = array(array('sweaver_plugin_toolbar', 'sweaver_menu_access_callback', 'use editor'));
+    $base['access arguments'] = array(array(
+        'sweaver_plugin_toolbar',
+        'sweaver_menu_access_callback',
+        'use editor'));
     $items['admin/sweaver'] = $base + array(
       'title' => 'Sweaver',
       'page arguments' => array($page_arguments),
       'access callback' => 'sweaver_menu_access_callback',
-      'weight' => -6,                  
-    );
+      'weight' => -6,
+      );
 
     return $items;
   }
@@ -30,7 +33,7 @@ class sweaver_plugin_toolbar extends sweaver_plugin {
    */
   public function sweaver_form_css_js(&$inline_settings) {
     if (module_exists('overlay')) {
-      drupal_add_js(drupal_get_path('module', 'sweaver') .'/plugins/sweaver_plugin_toolbar/sweaver_plugin_toolbar.js');
+      drupal_add_js(drupal_get_path('module', 'sweaver') . '/plugins/sweaver_plugin_toolbar/sweaver_plugin_toolbar.js');
     }
   }
 
@@ -38,9 +41,7 @@ class sweaver_plugin_toolbar extends sweaver_plugin {
    * The plugin does not really have a page of its own
    */
   public function sweaver_menu_callback() {
-     $session = isset($_SESSION['sweaver_plugin_toolbar_session_on'])
-        ? $_SESSION['sweaver_plugin_toolbar_session_on']
-        : variable_get('sweaver_plugin_toolbar_session_default_on', TRUE);
+    $session = isset($_SESSION['sweaver_plugin_toolbar_session_on']) ? $_SESSION['sweaver_plugin_toolbar_session_on'] : variable_get('sweaver_plugin_toolbar_session_default_on', TRUE);
     $_SESSION['sweaver_plugin_toolbar_session_on'] = !$session;
 
     // Go back to previous page.
@@ -58,9 +59,7 @@ class sweaver_plugin_toolbar extends sweaver_plugin {
    * Show editor
    */
   public function show_editor() {
-    return isset($_SESSION['sweaver_plugin_toolbar_session_on'])
-        ? $_SESSION['sweaver_plugin_toolbar_session_on']
-        : variable_get('sweaver_plugin_toolbar_session_default_on', TRUE);
+    return isset($_SESSION['sweaver_plugin_toolbar_session_on']) ? $_SESSION['sweaver_plugin_toolbar_session_on'] : variable_get('sweaver_plugin_toolbar_session_default_on', TRUE);
   }
 
   /**

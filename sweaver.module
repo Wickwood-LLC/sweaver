@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Sweaver functions.
@@ -32,20 +33,16 @@ define('SWEAVER_SKIN', "default");
 /**
  * Require sweaver.inc
  */
-require_once('sweaver.inc');
+require_once ('sweaver.inc');
 
 /**
  * Implements hook_permission().
  */
 function sweaver_permission() {
   return array(
-    'configure sweaver' => array(
-      'title' => t('Configure the editor, selectors, properties, types and other plugins.')
-    ),
-    'use editor' => array(
-      'title' => t('Use the front end editor.'),
-    ),
-  );
+    'configure sweaver' => array('title' => t('Configure the editor, selectors, properties, types and other plugins.')),
+    'use editor' => array('title' => t('Use the front end editor.'), ),
+    );
 }
 
 /**
@@ -77,13 +74,11 @@ function sweaver_ctools_plugin_api($owner, $api) {
  * Implements hook_ctools_plugin_type().
  */
 function sweaver_ctools_plugin_type() {
-  return array(
-    'plugins' => array(
+  return array('plugins' => array(
       'cache' => TRUE,
       'use hooks' => TRUE,
       'classes' => array('handler'),
-    ),
-  );
+      ), );
 }
 
 /**
@@ -154,7 +149,7 @@ function sweaver_ctools_object_list($object_type, $export_type = 2, $parent_chec
           continue;
         }
         elseif (!empty($object->property_parent)) {
-          $object->description = $objects[$object->property_parent]->description .': '. $object->description;
+          $object->description = $objects[$object->property_parent]->description . ': ' . $object->description;
         }
       }
       $list[$object->name] = $object->description;
@@ -190,7 +185,7 @@ function sweaver_export_sweaver_type($object) {
 function sweaver_export_sweaver_object($object, $object_type) {
   ctools_include('export');
   sweaver_export_check_serialized_keys($object);
-  $output = ctools_export_object('sweaver_'. $object_type, $object, '  ');
+  $output = ctools_export_object('sweaver_' . $object_type, $object, '  ');
   return $output;
 }
 
@@ -203,7 +198,7 @@ function sweaver_export_sweaver_object($object, $object_type) {
 function sweaver_export_check_serialized_keys($object) {
   if (isset($object->table)) {
     $object_type = str_replace('sweaver_', '', $object->table);
-    $key = $object_type .'_options';
+    $key = $object_type . '_options';
     if (isset($object->{$key}) && !empty($object->{$key}) && is_string($object->{$key})) {
       $object->{$key} = unserialize($object->{$key});
     }
@@ -237,7 +232,10 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
     else {
       ctools_include('export');
       $objects = new stdClass;
-      foreach (array('sweaver_selector', 'sweaver_property', 'sweaver_type') as $object_to_load) {
+      foreach (array(
+        'sweaver_selector',
+        'sweaver_property',
+        'sweaver_type') as $object_to_load) {
         $loaded_objects = ctools_export_load_object($object_to_load);
         foreach ($loaded_objects as $key => $object) {
           $object_type_key = str_replace('sweaver_', '', $object->table);
@@ -279,7 +277,7 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
  */
 function sweaver_load_theme_selectors() {
   $selectors = array();
-  if (variable_get('sweaver_selectors_source', false)) {
+  if (variable_get('sweaver_selectors_source', FALSE)) {
     $theme_key = Sweaver::get_instance()->get_theme_key();
     $theme_info = sweaver_get_theme_info($theme_key);
     if (isset($theme_info['sweaver']['selectors'])) {
@@ -294,7 +292,7 @@ function sweaver_load_theme_selectors() {
 
             // Major properties
             $selector->api_version = 1;
-            $selector->disabled = false;
+            $selector->disabled = FALSE;
             $selector->export_type = 2;
 
             if (isset($selector_description['name'])) {
@@ -307,20 +305,19 @@ function sweaver_load_theme_selectors() {
                 '-'), array(''), $selector_selector);
             }
             $selector->name = $name;
-            $selector->description = isset($selector_description['description']) ? $selector_description['description'] :
-              $selector->name;
+            $selector->description = isset($selector_description['description']) ? $selector_description['description'] : $selector->name;
             $selector->selector_selector = $selector_selector;
 
             if (isset($selector_description['selector_highlight'])) {
               if ($selector_description['selector_highlight']) {
-                $selector->selector_highlight = true;
+                $selector->selector_highlight = TRUE;
               }
               else {
-                $selector->selector_highlight = false;
+                $selector->selector_highlight = FALSE;
               }
             }
             else {
-              $selector->selector_highlight = false;
+              $selector->selector_highlight = FALSE;
             }
 
             if (isset($selector_description['weight'])) {
@@ -373,8 +370,8 @@ function sweaver_init() {
     $inline_js_settings = array('sweaver' => array());
     $skin = variable_get('sweaver_skin', SWEAVER_SKIN);
 
-    drupal_add_js(drupal_get_path('module', 'sweaver') .'/sweaver_plugin.js');
-    drupal_add_css(drupal_get_path('module', 'sweaver') .'/skins/'. $skin .'/'. $skin .'.css');
+    drupal_add_js(drupal_get_path('module', 'sweaver') . '/sweaver_plugin.js');
+    drupal_add_css(drupal_get_path('module', 'sweaver') . '/skins/' . $skin . '/' . $skin . '.css');
 
     foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
       $sweaver_plugin = $sweaver->get_plugin($plugin_name);
@@ -404,7 +401,7 @@ function sweaver_custom_theme() {
 function sweaver_preprocess_page(&$vars) {
   $sweaver = Sweaver::get_instance();
   $styles = array();
-  
+
   // Load css for this theme if available.
   if (drupal_static('load_style')) {
 
@@ -416,19 +413,19 @@ function sweaver_preprocess_page(&$vars) {
     }
 
     $sweaver_style = $sweaver->get_current_style();
-    if (!is_null($sweaver_style)){
+    if (!is_null($sweaver_style)) {
       $styles[] = $sweaver_style;
     }
   }
-  
+
   //$styles = array_merge($styles, $sweaver->get_secondary_styles());
   if (!empty($styles)) {
     $settings = array(
       'weight' => 1000,
       'preprocess' => TRUE,
       'group' => CSS_THEME,
-    );
-    foreach($styles as $sweaver_style) {   
+      );
+    foreach ($styles as $sweaver_style) {
       $css_path = 'public://sweaver/sweaver_' . $sweaver->get_theme_key() . '_' . $sweaver_style->style_id . '_' . $sweaver_style->type . '.css';
       drupal_add_css($css_path, $settings);
     }
@@ -449,9 +446,7 @@ function sweaver_page_alter(&$page) {
   if (sweaver_show_editor()) {
     $content = drupal_get_form('sweaver_frontend');
     $content['#suffix'] = '<div id="sweaver-messages"><div class="close">x</div><div class="message"></div></div>';
-    $page['page_bottom']['sweaver'] = array(
-      '#markup' => drupal_render($content),
-    );
+    $page['page_bottom']['sweaver'] = array('#markup' => drupal_render($content), );
   }
 }
 
@@ -464,7 +459,7 @@ function sweaver_containers() {
     'two' => t('Background'),
     'three' => t('Spacing'),
     'four' => t('Empty'),
-  );
+    );
 }
 
 /**
@@ -509,7 +504,7 @@ function sweaver_theme_image($path, $alt = '', $title = '', $attributes = NULL, 
   if (!$getsize || (is_file($path) && (list($width, $height, $type, $image_attributes) = @getimagesize($path)))) {
     $attributes = drupal_attributes($attributes);
     $url = (url($path, array('alias' => TRUE)) == $path) ? $path : (base_path() . $path);
-    return '<img src="'. check_url($url) .'" alt="'. check_plain($alt) .'" title="'. check_plain($title) .'" '. (isset($image_attributes) ? $image_attributes : '') . $attributes .' />';
+    return '<img src="' . check_url($url) . '" alt="' . check_plain($alt) . '" title="' . check_plain($title) . '" ' . (isset($image_attributes) ? $image_attributes : '') . $attributes . ' />';
   }
 }
 
@@ -531,12 +526,14 @@ function sweaver_theme_image($path, $alt = '', $title = '', $attributes = NULL, 
 function sweaver_session($value = NULL, $session_key = 'sweaver_editor_messages', $remove = FALSE, $return_string = TRUE) {
   // Add value to session key.
   if (isset($session_key) && isset($value) && !$remove) {
-    if (!isset($_SESSION[$session_key])) $_SESSION[$session_key] = array();
+    if (!isset($_SESSION[$session_key]))
+      $_SESSION[$session_key] = array();
     $_SESSION[$session_key][] = $value;
   }
   // Remove complete session key.
   elseif (isset($_SESSION[$session_key]) && !isset($value) && $remove) {
-    if (isset($_SESSION[$session_key])) unset($_SESSION[$session_key]);
+    if (isset($_SESSION[$session_key]))
+      unset($_SESSION[$session_key]);
   }
   // Return values from session key.
   elseif (isset($_SESSION[$session_key])) {
@@ -545,7 +542,7 @@ function sweaver_session($value = NULL, $session_key = 'sweaver_editor_messages'
       $values = $_SESSION[$session_key];
       if (count($values) > 1) {
         foreach ($values as $key => $value) {
-          $return .= $value ."\n";
+          $return .= $value . "\n";
         }
       }
       elseif (isset($values[0])) {
@@ -622,7 +619,8 @@ function sweaver_frontend($form, &$form_state) {
 
     // Calculate weight.
     $default_weight = isset($plugins_order[$plugin_name]) ? $plugins_order[$plugin_name] : $weight++;
-    if ($plugin_name == 'sweaver_plugin') $default_weight = -100;
+    if ($plugin_name == 'sweaver_plugin')
+      $default_weight = -100;
     $form['#plugins_order'][$plugin_name] = $default_weight;
     $form['#plugins_full'][$plugin_name] = $plugin;
 
@@ -643,13 +641,13 @@ function sweaver_frontend($form, &$form_state) {
   $form['sweaver-editor-messages'] = array(
     '#type' => 'hidden',
     '#value' => trim($messages),
-  );
+    );
 
   $form['#current_theme'] = $sweaver->get_theme_key();
   $form['destination'] = array(
     '#type' => 'hidden',
     '#value' => $_GET['q'],
-  );
+    );
 
   return $form;
 }
@@ -690,7 +688,7 @@ function sweaver_frontend_submit($form, &$form_state) {
  */
 function sweaver_menu_callback($settings) {
   $plugin_name = $settings['plugin'];
-  $callback_method = (isset($settings['callback_method'])) ? $settings['callback_method']: 'sweaver_menu_callback';
+  $callback_method = (isset($settings['callback_method'])) ? $settings['callback_method'] : 'sweaver_menu_callback';
   $return_method = (isset($settings['return_method'])) ? $settings['return_method'] : 'drupal_get_form';
   $js = (isset($settings['js'])) ? TRUE : FALSE;
 
@@ -725,7 +723,7 @@ function sweaver_menu_access_callback($args) {
 
   $plugin_name = array_shift($args);
   $callback_access_method = array_shift($args);
-  $callback_access_method = (!empty($callback_access_method)) ? $callback_access_method: 'sweaver_menu_access_callback';
+  $callback_access_method = (!empty($callback_access_method)) ? $callback_access_method : 'sweaver_menu_access_callback';
 
   if ($sweaver_plugin = Sweaver::get_instance()->get_plugin($plugin_name, TRUE)) {
     return $sweaver_plugin->$callback_access_method($args);
@@ -755,7 +753,7 @@ function sweaver_menu_callback_form($dform, $form_state, $form, $plugin_name, $c
  */
 function sweaver_menu_callback_form_validate($form, &$form_state) {
   $sweaver_plugin = Sweaver::get_instance()->get_plugin($form['#plugin_name']);
-  $callback_validate_function = $form['#callback_method'] .'_validate';
+  $callback_validate_function = $form['#callback_method'] . '_validate';
   if (method_exists($sweaver_plugin, $callback_validate_function)) {
     $sweaver_plugin->$callback_validate_function($form, $form_state);
   }
@@ -766,7 +764,7 @@ function sweaver_menu_callback_form_validate($form, &$form_state) {
  */
 function sweaver_menu_callback_form_submit($form, &$form_state) {
   $sweaver_plugin = Sweaver::get_instance()->get_plugin($form['#plugin_name']);
-  $callback_submit_function = $form['#callback_method'] .'_submit';
+  $callback_submit_function = $form['#callback_method'] . '_submit';
   if (method_exists($sweaver_plugin, $callback_submit_function)) {
     $sweaver_plugin->$callback_submit_function($form, $form_state);
   }
