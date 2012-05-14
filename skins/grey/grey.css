@@ -827,6 +827,15 @@ body.sweaver {
   display: block;
 }
 
+#sweaver_plugin_editor #full-path .deploy-selectors {
+  cursor: pointer;
+  float: left;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 /* Follow link */
 
 #follow-link {

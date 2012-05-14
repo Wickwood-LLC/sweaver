@@ -779,7 +779,58 @@ Drupal.Sweaver.buildPath = function(object) {
       $('#sweaver #full-path #sid-1').addClass('active');
     }
   }
+  
   Drupal.Sweaver.printActivePath();
+  
+  // Tentative to keep Full Path on a single line by reducing everything not essential
+  if ($("#full-path").outerHeight() > 30) {
+    // We have now to select which selectors to keep and the others will be hiden
+    
+    // All active elements are shown
+    selectorsToKeep = Drupal.Sweaver.pathIndexes;
+    selectorsToHide = new Array();
+    spaceAvailable = $('#full-path .path-content').outerWidth();
+    
+    //Calculate how much space we use right now
+    spaceUsed = 0;
+    for (var key in Drupal.Sweaver.path) {
+      spaceUsed += $('#full-path .path-content #sid-' + key).outerWidth();
+    }
+    
+    var i = Drupal.Sweaver.path.length - 1;
+    while (i-- && spaceUsed > spaceAvailable) {
+      if (!(i in selectorsToKeep)) {
+        selectorsToHide.push(i);
+        // Check if we will constitute a new group of selectors with this one
+        if (selectorsToHide[selectorsToHide.length - 2] - 1 != i) {
+          spaceUsed += 30;
+        }
+        spaceUsed -= $('#full-path .path-content #sid-' + i).outerWidth();
+      }
+    }
+    
+    // We constitute groups of selectors to hide
+    while (selectorsToHide.length) {
+      group = new Array();
+      do {
+        latestValue = selectorsToHide.shift();
+        group.push(latestValue);
+        $('#full-path .path-content #sid-' + latestValue).hide();
+      } while (latestValue - 1 == selectorsToHide[0])
+      
+      $('#full-path .path-content').prepend('<div class="deploy-selectors" ref="' + group.join('-') + '">...</div>');
+    }
+    
+    // Button to display hidden selectors
+    $('#full-path .path-content .deploy-selectors').click(function() {
+      $(this).hide();
+      selectors = $(this).attr('ref').split('-');
+      var i = selectors.length;
+      while (i--) {
+        $('#full-path .path-content #sid-' + selectors[i]).show();
+      }
+    });
+  }
 }
 
 /**
@@ -981,7 +1032,7 @@ Drupal.Sweaver.printActivePath = function() {
       var j = Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].preferredSelector ? Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].preferredSelector : 0;
       j++;
       $path.append(Drupal.Sweaver.path[Drupal.Sweaver.pathIndexes[i]].translation[j]);
-    }
+    }    
     // Save the currently active css path.
     Drupal.Sweaver.pathIndexes.reverse();
     for (var i=0, len=Drupal.Sweaver.pathIndexes.length; i<len; ++i){
