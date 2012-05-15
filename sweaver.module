@@ -371,7 +371,7 @@ function sweaver_init() {
     $skin = variable_get('sweaver_skin', SWEAVER_SKIN);
 
     drupal_add_js(drupal_get_path('module', 'sweaver') . '/sweaver_plugin.js');
-    drupal_add_css(drupal_get_path('module', 'sweaver') . '/skins/' . $skin . '/' . $skin . '.css');
+    drupal_add_css(drupal_get_path('module', 'sweaver') . '/skins/' . $skin . '/sweaver-' . $skin . '.css');
 
     foreach (array_keys($sweaver->get_plugins_registry(TRUE)) as $plugin_name) {
       $sweaver_plugin = $sweaver->get_plugin($plugin_name);
