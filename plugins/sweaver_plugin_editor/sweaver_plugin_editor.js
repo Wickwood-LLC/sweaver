@@ -18,6 +18,7 @@ Drupal.Sweaver.activePath = ''; // Currently active path including pseudo-classe
 Drupal.Sweaver.safeActivePath = ''; // Currently active path excluding pseudo-classes.
 Drupal.Sweaver.activeElement = new Object(); // Currently active element.
 Drupal.Sweaver.updateMode = true; // should the form updates be saved in css?
+Drupal.Sweaver.lastModifications = {'done' : [], 'undone' : []}; // Associative array for KB plugin (List all mouvements for  undo/redo purposes)
 
 /**
  * Hook onload behavior
@@ -198,7 +199,6 @@ Drupal.Sweaver.updateForm = function() {
 	            // so we need two replacements.
 	            stripped = value.replace('url("', '').replace('")', '').replace('url(', '').replace(')', '');
                 var container = $('#sweaver_plugin_editor #edit-' + object + '-ajax-wrapper .form-managed-file');
-                if (1){
                 if (stripped != 'none') {
                   container.children('input[type="file"]').hide();
                   container.children('span').remove();
@@ -222,14 +222,15 @@ Drupal.Sweaver.updateForm = function() {
                   container.children('#edit-' + object + '-remove-button').attr('name', object + '_upload_button');
                   container.children('#edit-' + object + '-remove-button').attr('id', 'edit-' + object + '-upload-button');
                 }
-                }
-	            //$("#sweaver_plugin_editor #edit-" + object).val(stripped);
 	          }
               else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'checkbox') // Implement the new field checkbox
               {
-                if (Drupal.Sweaver.properties[object]['options'][value] == true)
-                    $("#sweaver_plugin_editor #button-checkbox-" + object).addClass('button_active');
-                else $("#sweaver_plugin_editor #button-checkbox-" + object).removeClass('button_active')
+                if (Drupal.Sweaver.properties[object]['options'][value] == true) {
+                  $("#sweaver_plugin_editor #button-checkbox-" + object).addClass('button_active');
+                }
+                else { 
+                  $("#sweaver_plugin_editor #button-checkbox-" + object).removeClass('button_active');
+                }
               }
               else if (value && !isEmpty(Drupal.Sweaver.properties[object]) && Drupal.Sweaver.properties[object].type == 'radio') // Implement the new field radio
 	          {
@@ -486,10 +487,12 @@ Drupal.Sweaver.bindClicks = function() {
     if (Drupal.Sweaver.updateMode) {
       var status = $(this).hasClass('button_active');
       var property_to_update = $(this).attr('id').replace('button-checkbox-', '');
-        
+      
       $.each(Drupal.Sweaver.properties[property_to_update]['options'], function(key, value) { 
-        if (value == status)
+        if (value == status) {
           Drupal.Sweaver.setValue(property_to_update, key);
+          return false; // Helps get out of the loop earlier
+        }
       });
     }
   });
@@ -1085,6 +1088,13 @@ Drupal.Sweaver.setValue = function(property, value) {
     'value' : value,
     'hidden' : false,
   };
+  //Save mouvement for undo/redo purposes
+  Drupal.Sweaver.lastModifications['done'].push({
+    'selector' : Drupal.Sweaver.activePath,
+    'property' : property,
+    'value' : value,
+  });
+  Drupal.Sweaver.lastModifications['undone'] = []; // Canceled modifications are wiped out when doing a new one
   Drupal.Sweaver.writeCss();
 }
 

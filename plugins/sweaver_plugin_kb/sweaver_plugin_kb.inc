@@ -55,6 +55,8 @@ class sweaver_plugin_kb extends sweaver_plugin {
           'kb_code' => $keyboard_key,
           'kb_button' => $binding_options[$keyboard_key],
           'element' => isset($value['element']) ? $value['element'] : '',
+          'page_callback' => isset($value['page_callback']) ? $value['page_callback'] : '',
+          'message' => isset($value['message']) ? $value['message'] : '',
           );
       }
     }
@@ -116,6 +118,20 @@ class sweaver_plugin_kb extends sweaver_plugin {
         'title' => t('Close popup'),
         'default' => '27',
         'double' => FALSE,
+        ),
+      'undo' => array(
+        'title' => t('Undo modification'),
+        'default' => '65',
+        'double' => FALSE,
+        'page_callback' => 'Drupal.Sweaver.undoModification',
+        'message' => t('Modification undone'),
+        ),
+      'redo' => array(
+        'title' => t('Redo modification'),
+        'default' => '90',
+        'double' => FALSE,
+        'page_callback' => 'Drupal.Sweaver.redoModification',
+        'message' => t('Modification redone'),
         ),
       );
 

@@ -40,9 +40,48 @@ Drupal.Sweaver.kbShowPopup = function(event, key_binding) {
       Drupal.Sweaver.showPopup($(key_binding.element), '400px', '200px');
     }
   }
+  else if (event.keyCode == parseInt(key_binding.kb_code) && key_binding.page_callback != '') {
+    // This is to understand functions present in objects
+    var objects = key_binding.page_callback.split('.');
+    var function_to_call = window;
+    for ( var i = 0; i < objects.length; i++ ) {
+      function_to_call = function_to_call[objects[i]];
+    }
+    function_to_call();
+  
+    if (key_binding.message != '') {
+      Drupal.Sweaver.setMessage(key_binding.message, 2000);
+    }
+  }
   else {
     kb_popup = '';
     Drupal.Sweaver.hidePopup();
+  }
+}
+
+// Undo and Redo functionalities
+Drupal.Sweaver.undoModification = function () {
+  if (Drupal.Sweaver.lastModifications['done'].length) {
+    modification = Drupal.Sweaver.lastModifications['done'].pop();
+    // We put this modification in undone array and then erase it from the screen
+    Drupal.Sweaver.lastModifications['undone'].push(modification);
+    Drupal.Sweaver.deleteProperty(modification['selector'], modification['property']);
+    // We do not need to reload the interface, the delete function is taking care of that part
+  }
+}
+
+Drupal.Sweaver.redoModification = function () {
+  if (Drupal.Sweaver.lastModifications['undone'].length) {
+    modification = Drupal.Sweaver.lastModifications['undone'].pop();
+    Drupal.Sweaver.lastModifications['done'].push(modification);
+    
+    // We change the Active path for the modification
+    actualActivePath = Drupal.Sweaver.activePath;
+    Drupal.Sweaver.activePath = modification['selector'];
+    Drupal.Sweaver.setValue(modification['property'], modification['value']); 
+    Drupal.Sweaver.activePath = actualActivePath;
+    Drupal.Sweaver.writeCss();
+    Drupal.Sweaver.updateForm();
   }
 }
 
