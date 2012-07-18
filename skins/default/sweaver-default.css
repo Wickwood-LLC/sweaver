@@ -39,7 +39,11 @@
 /* correct the body so that the Sweaver frontend does not overlap any content */
 
 body.sweaver {
-  margin-bottom: 287px !important;
+  margin-bottom: 299px !important;
+}
+
+html.sweaver {
+  height: auto;
 }
 
 /* Show which selector was hovered/clicked */

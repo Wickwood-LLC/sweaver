@@ -42,6 +42,10 @@ body.sweaver {
   margin-bottom: 299px !important;
 }
 
+html.sweaver {
+  height: auto;
+}
+
 /* Show which selector was hovered/clicked */
 
 .sweaver-hovered {

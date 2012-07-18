@@ -42,6 +42,7 @@ $(document).ready(function() {
   // Add sweaver class for extra margin at bottom.
   if (Drupal.Sweaver.open != 'false') {
     $('body').addClass('sweaver');
+    $('html').addClass('sweaver');
   }
   
   // Open/close the Sweaver bar.
@@ -96,6 +97,7 @@ Drupal.Sweaver.toggleBar = function (tab) {
   }
   // Hide the extra margin at the bottom of the screen.
   $('body').toggleClass('sweaver');
+  $('html').toggleClass('sweaver');
 
   Drupal.Sweaver.toggleClicked();
   Drupal.Sweaver.cookie('sweaver_open', Drupal.Sweaver.open);
