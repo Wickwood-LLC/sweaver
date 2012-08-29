@@ -64,7 +64,6 @@ function sweaver_update_7101() {
       'properties' => array(
         0 => 'font-family',
         1 => 'font-properties-wrapper',
-        2 => 'vertical-align',
         ),
       ),
     'two' => array(
@@ -85,6 +84,7 @@ function sweaver_update_7101() {
         2 => 'border-color',
         3 => 'border-collapse',
         4 => 'border-spacing',
+        5 => 'vertical-align',
         ),
       ),
     'four' => array(
@@ -92,6 +92,7 @@ function sweaver_update_7101() {
       'properties' => array(
         0 => 'height',
         1 => 'width',
+        2 => 'create-custom-code',
         ),
       ),
     );
@@ -116,7 +117,7 @@ function sweaver_update_7102() {
   db_add_field('sweaver_style_draft', 'visibility', $visibility_spec);
   db_add_field('sweaver_style_draft', 'pages', $pages_spec);
 
-  db_change_field('sweaver_style', 'active', array('description' => '0 => Disabled, 1 => Set as default, 2 => Enabled but not used by default'));
+  db_change_field('sweaver_style', 'active', 'active', array('description' => '0 => Disabled, 1 => Set as default, 2 => Enabled but not used by default'));
 }
 
 /**
@@ -130,15 +131,14 @@ function sweaver_install() {
   // Set default editor configuration.
   $editor_form_configuration = array(
     'one' => array(
-      'title' => st('Font'),
+      'title' => t('Font'),
       'properties' => array(
         0 => 'font-family',
         1 => 'font-properties-wrapper',
-        2 => 'vertical-align',
         ),
       ),
     'two' => array(
-      'title' => st('Background'),
+      'title' => t('Background'),
       'properties' => array(
         0 => 'background-color',
         1 => 'background-image',
@@ -148,48 +148,26 @@ function sweaver_install() {
         ),
       ),
     'three' => array(
-      'title' => st('Borders & Spacing'),
+      'title' => t('Borders & Spacing'),
       'properties' => array(
         0 => 'position-settings',
         1 => 'border-style',
         2 => 'border-color',
         3 => 'border-collapse',
         4 => 'border-spacing',
+        5 => 'vertical-align',
         ),
       ),
     'four' => array(
-      'title' => st('Other'),
+      'title' => t('Other'),
       'properties' => array(
         0 => 'height',
         1 => 'width',
+        2 => 'create-custom-code',
         ),
       ),
     );
   variable_set('sweaver_editor_form_configuration', $editor_form_configuration);
-
-  // Selector order.
-  $sweaver_selector_order = array(
-    'body' => -100,
-    'h1' => -99,
-    'h2' => -98,
-    'h3' => -97,
-    'li' => -96,
-    'link' => -95,
-    'ol' => -94,
-    'p' => -93,
-    'ul' => -92,
-    'form' => -91,
-    'label' => -90,
-    'input' => -89,
-    'textarea' => -88,
-    'submit' => -87,
-    'allids' => -86,
-    'allclasses' => -85,
-    'alltags' => -84,
-    'span' => -83,
-    'div' => -82,
-    );
-  variable_set('sweaver_selector_order', $sweaver_selector_order);
 
   // Weights for plugins.
   $plugins_weight = array(

@@ -543,7 +543,23 @@ class sweaver_plugin_editor extends sweaver_plugin {
           );
         break;
 
-        // New Type of Field implemented to improve the interface
+      case 'button':
+        $click = (isset($property->property_options['click'])) ? $property->property_options['click'] : '';
+        drupal_add_js("(function($) {
+          $(document).ready(function() {
+            $('#edit-" . $property->name . "').click(function(event) {
+              event.preventDefault();
+              " . $click . "
+            });
+          });
+
+        })(jQuery);", "inline");
+        return array(
+          '#type' => 'button',
+          '#value' => $property->description,
+         );
+
+      // New Type of Field implemented to improve the interface
       case 'checkbox':
         return array('#markup' => '<div id="button-checkbox-' . $property->name . '" class="editor_icons form-item-' . $property->name . '" title="' . $property->description . '"></div>', );
         break;

@@ -85,6 +85,7 @@ function sweaver_ctools_plugin_type() {
  * Implements hook_default_sweaver_selector().
  */
 function sweaver_default_sweaver_selector() {
+  sweaver_rebuild_containers();
   module_load_include('inc', 'sweaver', 'sweaver.registry');
   return _sweaver_default_sweaver_selector();
 }
@@ -94,6 +95,7 @@ function sweaver_default_sweaver_selector() {
  */
 function sweaver_default_sweaver_property() {
   module_load_include('inc', 'sweaver', 'sweaver.registry');
+
   return _sweaver_default_sweaver_property();
 }
 
@@ -271,7 +273,7 @@ function sweaver_object_load($name = NULL, $map = NULL, $status = 'enabled') {
 
 /**
  * Load all inclusive selectors defined in the theme .info
- * 
+ *
  * @return
  *   An array of selectors
  */
@@ -457,8 +459,8 @@ function sweaver_containers() {
   return array(
     'one' => t('Font'),
     'two' => t('Background'),
-    'three' => t('Spacing'),
-    'four' => t('Empty'),
+    'three' => t('Borders & Spacing'),
+    'four' => t('Other'),
     );
 }
 
@@ -658,6 +660,37 @@ function sweaver_frontend($form, &$form_state) {
 function sweaver_clear_cache() {
   cache_clear_all();
   drupal_clear_css_cache();
+
+  sweaver_rebuild_containers();
+}
+
+/**
+ * Rebuild properties' containers
+ */
+function sweaver_rebuild_containers() {
+  $containers = variable_get('sweaver_editor_form_configuration', array());
+  $initial_properties_count = 0;
+
+  // We establish the different containers available.
+  foreach ($containers as $key => $container) {
+    $initial_properties_count += count($container['properties']);
+    $containers[$key]['properties'] = array();
+  }
+
+  $properties = sweaver_object_load(NULL, 'property');
+  // Check up to see if we should rebuild the registry.
+  // Rebuilding process is engaged if a new property has been added
+  if (count($properties) > $initial_properties_count) {
+    foreach ($properties as $property_name => $property) {
+      if (isset($property->container)) {
+        if (!empty($property->container)) {
+          $containers[$property->container]['properties'][] = $property_name;
+        }
+      }
+    }
+
+    variable_set('sweaver_editor_form_configuration', $containers);
+  }
 }
 
 /**

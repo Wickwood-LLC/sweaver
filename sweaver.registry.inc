@@ -433,12 +433,15 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'font-family';
   $property->description = t('Font family');
   $property->property = 'font-family';
+  $property->container = 'one';
   $property->property_parent = '';
   $property->property_type = 'select';
   $property->property_prefix = '';
   $property->property_suffix = '';
   $property->property_slider_min = '';
   $property->property_slider_max = '';
+  $property->css_prefix = '<fieldset>';
+  $property->css_suffix = '</fieldset>';
   $property->property_options = array(
     '' => 'Theme default',
     'Arial, Helvetica,Sans-Serif' => 'Arial',
@@ -455,8 +458,6 @@ function _sweaver_default_sweaver_property() {
     '\'Trebuchet\',Helvetica,Sans-Serif' => 'Trebuchet',
     'Verdana,Geneva,Sans-Serif' => 'Verdana',
     );
-  $property->css_prefix = '<fieldset>';
-  $property->css_suffix = '</fieldset>';
   $propertys['font-family'] = $property;
 
   // Font size group
@@ -466,6 +467,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'font-properties-wrapper';
   $property->description = t('Font properties');
   $property->property = '';
+  $property->container = 'one';
   $property->property_parent = '';
   $property->property_type = 'parent';
   $property->property_prefix = '';
@@ -642,6 +644,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'background-color';
   $property->description = t('Color');
   $property->property = 'background-color';
+  $property->container = 'two';
   $property->property_parent = '';
   $property->property_type = 'color';
   $property->property_prefix = '#';
@@ -657,6 +660,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'background-image';
   $property->description = t('Image');
   $property->property = 'background-image';
+  $property->container = 'two';
   $property->property_parent = '';
   $property->property_type = 'image';
   $property->property_prefix = 'url(';
@@ -672,6 +676,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'background-repeat';
   $property->description = t('Repeat');
   $property->property = 'background-repeat';
+  $property->container = 'two';
   $property->property_parent = '';
   $property->property_type = 'radio';
   $property->property_prefix = '';
@@ -686,6 +691,26 @@ function _sweaver_default_sweaver_property() {
     );
   $propertys['background-repeat'] = $property;
 
+  // Background-attachment
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'background-attachment';
+  $property->description = t('Attachment', array(), array('context' => 'sweaver'));
+  $property->property = 'background-attachment';
+  $property->container = 'two';
+  $property->property_parent = '';
+  $property->property_type = 'radio';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+    'scroll' => 'Scroll',
+    'fixed' => 'Fixed',
+    );
+  $propertys['background-attachment'] = $property;
+
   // Background position.
   $property = new stdClass;
   $property->api_version = 1;
@@ -693,6 +718,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'background-position';
   $property->description = t('Position');
   $property->property = 'background-position';
+  $property->container = 'two';
   $property->property_parent = '';
   $property->property_type = 'select';
   $property->property_prefix = '';
@@ -710,86 +736,6 @@ function _sweaver_default_sweaver_property() {
     );
   $propertys['background-position'] = $property;
 
-  // Background-attachment
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'background-attachment';
-  $property->description = t('Attachment', array(), array('context' => 'sweaver'));
-  $property->property = 'background-attachment';
-  $property->property_parent = '';
-  $property->property_type = 'radio';
-  $property->property_prefix = '';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array(
-    'scroll' => 'Scroll',
-    'fixed' => 'Fixed',
-    );
-  $propertys['background-attachment'] = $property;
-
-  // Padding.
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'padding-top';
-  $property->description = t('Top');
-  $property->property = 'padding-top';
-  $property->property_parent = 'position-settings';
-  $property->property_type = 'slider';
-  $property->property_prefix = '';
-  $property->property_suffix = 'px';
-  $property->property_slider_min = 0;
-  $property->property_slider_max = 150;
-  $property->property_options = array('title_display' => 'invisible', );
-  $propertys['padding-top'] = $property;
-
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'padding-right';
-  $property->description = t('Right');
-  $property->property = 'padding-right';
-  $property->property_parent = 'position-settings';
-  $property->property_type = 'slider';
-  $property->property_prefix = '';
-  $property->property_suffix = 'px';
-  $property->property_slider_min = 0;
-  $property->property_slider_max = 150;
-  $property->property_options = array('title_display' => 'invisible', );
-  $propertys['padding-right'] = $property;
-
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'padding-bottom';
-  $property->description = t('Bottom');
-  $property->property = 'padding-bottom';
-  $property->property_parent = 'position-settings';
-  $property->property_type = 'slider';
-  $property->property_prefix = '';
-  $property->property_suffix = 'px';
-  $property->property_slider_min = 0;
-  $property->property_slider_max = 150;
-  $property->property_options = array('title_display' => 'invisible', );
-  $propertys['padding-bottom'] = $property;
-
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'padding-left';
-  $property->description = t('Left');
-  $property->property = 'padding-left';
-  $property->property_parent = 'position-settings';
-  $property->property_type = 'slider';
-  $property->property_prefix = '';
-  $property->property_suffix = 'px';
-  $property->property_slider_min = 0;
-  $property->property_slider_max = 150;
-  $property->property_options = array('title_display' => 'invisible', );
-  $propertys['padding-left'] = $property;
-
   // Position Settings.
   $property = new stdClass;
   $property->api_version = 1;
@@ -797,6 +743,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'position-settings';
   $property->description = t('Position settings');
   $property->property = '';
+  $property->container = 'three';
   $property->property_parent = '';
   $property->property_type = 'parent';
   $property->property_prefix = '';
@@ -915,6 +862,67 @@ function _sweaver_default_sweaver_property() {
     );
   $propertys['position-settings'] = $property;
 
+  // Padding.
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'padding-top';
+  $property->description = t('Top');
+  $property->property = 'padding-top';
+  $property->property_parent = 'position-settings';
+  $property->property_type = 'slider';
+  $property->property_prefix = '';
+  $property->property_suffix = 'px';
+  $property->property_slider_min = 0;
+  $property->property_slider_max = 150;
+  $property->property_options = array('title_display' => 'invisible', );
+  $propertys['padding-top'] = $property;
+
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'padding-right';
+  $property->description = t('Right');
+  $property->property = 'padding-right';
+  $property->property_parent = 'position-settings';
+  $property->property_type = 'slider';
+  $property->property_prefix = '';
+  $property->property_suffix = 'px';
+  $property->property_slider_min = 0;
+  $property->property_slider_max = 150;
+  $property->property_options = array('title_display' => 'invisible', );
+  $propertys['padding-right'] = $property;
+
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'padding-bottom';
+  $property->description = t('Bottom');
+  $property->property = 'padding-bottom';
+  $property->property_parent = 'position-settings';
+  $property->property_type = 'slider';
+  $property->property_prefix = '';
+  $property->property_suffix = 'px';
+  $property->property_slider_min = 0;
+  $property->property_slider_max = 150;
+  $property->property_options = array('title_display' => 'invisible', );
+  $propertys['padding-bottom'] = $property;
+
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'padding-left';
+  $property->description = t('Left');
+  $property->property = 'padding-left';
+  $property->property_parent = 'position-settings';
+  $property->property_type = 'slider';
+  $property->property_prefix = '';
+  $property->property_suffix = 'px';
+  $property->property_slider_min = 0;
+  $property->property_slider_max = 150;
+  $property->property_options = array('title_display' => 'invisible', );
+  $propertys['padding-left'] = $property;
+
   $property = new stdClass;
   $property->api_version = 1;
   $property->disabled = FALSE;
@@ -974,6 +982,8 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = 250;
   $property->property_options = array('title_display' => 'invisible', );
   $propertys['margin-left'] = $property;
+
+  /* End position settings */
 
   // Border.
   $property = new stdClass;
@@ -1036,22 +1046,6 @@ function _sweaver_default_sweaver_property() {
   $property->property_options = array('title_display' => 'invisible', );
   $propertys['border-left-width'] = $property;
 
-  // Border color
-  $property = new stdClass;
-  $property->api_version = 1;
-  $property->disabled = FALSE;
-  $property->name = 'border-color';
-  $property->description = t('Border color');
-  $property->property = 'border-top-color border-right-color border-bottom-color border-left-color';
-  $property->property_parent = '';
-  $property->property_type = 'color';
-  $property->property_prefix = '#';
-  $property->property_suffix = '';
-  $property->property_slider_min = '';
-  $property->property_slider_max = '';
-  $property->property_options = array();
-  $propertys['border-color'] = $property;
-
   // Border style
   $property = new stdClass;
   $property->api_version = 1;
@@ -1059,6 +1053,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-style';
   $property->description = t('Border style');
   $property->property = 'border-top-style border-right-style border-bottom-style border-left-style';
+  $property->container = 'three';
   $property->property_parent = '';
   $property->property_type = 'select';
   $property->property_prefix = '';
@@ -1078,6 +1073,23 @@ function _sweaver_default_sweaver_property() {
     );
   $propertys['border-style'] = $property;
 
+  // Border color
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'border-color';
+  $property->description = t('Border color');
+  $property->property = 'border-top-color border-right-color border-bottom-color border-left-color';
+  $property->container = 'three';
+  $property->property_parent = '';
+  $property->property_type = 'color';
+  $property->property_prefix = '#';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array();
+  $propertys['border-color'] = $property;
+
   // Table extras.
   $property = new stdClass;
   $property->api_version = 1;
@@ -1085,6 +1097,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-collapse';
   $property->description = t('Border collapse');
   $property->property = 'border-collapse';
+  $property->container = 'three';
   $property->property_parent = '';
   $property->property_type = 'select';
   $property->property_prefix = '';
@@ -1103,6 +1116,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'border-spacing';
   $property->description = t('Border spacing');
   $property->property = 'border-spacing';
+  $property->container = 'three';
   $property->property_parent = '';
   $property->property_type = 'slider';
   $property->property_prefix = '';
@@ -1118,6 +1132,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'vertical-align';
   $property->description = t('Vertical align');
   $property->property = 'vertical-align';
+  $property->container = 'three';
   $property->property_parent = '';
   $property->property_type = 'select';
   $property->property_prefix = '';
@@ -1139,6 +1154,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'width';
   $property->description = t('Width');
   $property->property = 'width';
+  $property->container = 'four';
   $property->property_parent = '';
   $property->property_type = 'slider';
   $property->property_prefix = '';
@@ -1155,6 +1171,7 @@ function _sweaver_default_sweaver_property() {
   $property->name = 'height';
   $property->description = t('Height');
   $property->property = 'height';
+  $property->container = 'four';
   $property->property_parent = '';
   $property->property_type = 'slider';
   $property->property_prefix = '';
@@ -1163,6 +1180,33 @@ function _sweaver_default_sweaver_property() {
   $property->property_slider_max = 2000;
   $property->property_options = array();
   $propertys['height'] = $property;
+
+  // Apply custom code
+  $property = new stdClass;
+  $property->api_version = 1;
+  $property->disabled = FALSE;
+  $property->name = 'create-custom-code';
+  $property->description = t('Create custom code 2');
+  $property->property = '';
+  $property->container = 'four';
+  $property->property_parent = '';
+  $property->property_type = 'button';
+  $property->property_prefix = '';
+  $property->property_suffix = '';
+  $property->property_slider_min = '';
+  $property->property_slider_max = '';
+  $property->property_options = array(
+    'click' => "
+      $('#tab-sweaver_plugin_advanced a').click();
+      $('#sweaver-advanced #tab-two a').click();
+      $('#edit-sweaver-plugin-custom-css').val( function(i, value) {
+        value += '\\n' + Drupal.Sweaver.activePath + '{\\n  \\n}';
+        return value;
+      });
+      $('#edit-sweaver-plugin-custom-css').focus();
+      ",
+    );
+  $propertys['create-custom-code'] = $property;
 
   return $propertys;
 }
