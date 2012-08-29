@@ -339,7 +339,8 @@ class sweaver_plugin_images extends sweaver_plugin {
    */
   public function sweaver_images_confirm_form_delete_submit(&$form, &$form_state) {
     $image = $form['#image'];
-    file_delete($image);
+    $file = file_load($image->fid); //load the file before delete.
+    file_delete($file); //delete the file.
     db_query("DELETE FROM {sweaver_image} where fid = :fid", array(':fid' => $image->fid));
     drupal_set_message(t('Image %description has been deleted.', array('%description' => $image->description)));
     $form_state['redirect'] = 'admin/config/user-interface/sweaver/images';
