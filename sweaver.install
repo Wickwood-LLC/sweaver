@@ -131,14 +131,14 @@ function sweaver_install() {
   // Set default editor configuration.
   $editor_form_configuration = array(
     'one' => array(
-      'title' => t('Font'),
+      'title' => st('Font'),
       'properties' => array(
         0 => 'font-family',
         1 => 'font-properties-wrapper',
         ),
       ),
     'two' => array(
-      'title' => t('Background'),
+      'title' => st('Background'),
       'properties' => array(
         0 => 'background-color',
         1 => 'background-image',
@@ -148,7 +148,7 @@ function sweaver_install() {
         ),
       ),
     'three' => array(
-      'title' => t('Borders & Spacing'),
+      'title' => st('Borders & Spacing'),
       'properties' => array(
         0 => 'position-settings',
         1 => 'border-style',
@@ -159,7 +159,7 @@ function sweaver_install() {
         ),
       ),
     'four' => array(
-      'title' => t('Other'),
+      'title' => st('Other'),
       'properties' => array(
         0 => 'height',
         1 => 'width',

@@ -600,7 +600,7 @@ class sweaver_plugin_styles extends sweaver_plugin {
       else {
         $operations .= l(t('Disable'), 'admin/config/user-interface/sweaver/styles/disable/' . $style->style_id) . ' - ';
       }
-      $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/' . $style->style_id);
+      $operations .= l(t('Delete'), 'admin/config/user-interface/sweaver/styles/delete/' . $style->style_id) . ' - ';
       $operations .= l(t('Export'), 'admin/config/user-interface/sweaver/styles/export/' . $style->style_id);
 
       $row[] = $operations;
