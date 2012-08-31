@@ -1186,7 +1186,7 @@ function _sweaver_default_sweaver_property() {
   $property->api_version = 1;
   $property->disabled = FALSE;
   $property->name = 'create-custom-code';
-  $property->description = t('Create custom code 2');
+  $property->description = t('Add custom code for this selection');
   $property->property = '';
   $property->container = 'four';
   $property->property_parent = '';
