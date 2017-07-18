@@ -117,7 +117,14 @@ function sweaver_update_7102() {
   db_add_field('sweaver_style_draft', 'visibility', $visibility_spec);
   db_add_field('sweaver_style_draft', 'pages', $pages_spec);
 
-  db_change_field('sweaver_style', 'active', 'active', array('description' => '0 => Disabled, 1 => Set as default, 2 => Enabled but not used by default'));
+  db_change_field('sweaver_style', 'active', 'active',
+    array(
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => '0 => Disabled, 1 => Set as default, 2 => Enabled but not used by default'
+    )
+  );
 }
 
 /**
