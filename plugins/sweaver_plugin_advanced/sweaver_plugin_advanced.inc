@@ -56,7 +56,7 @@ class sweaver_plugin_advanced extends sweaver_plugin {
     $form['#editor_containers']['three']['title'] = t('Context');
     $form['#editor_containers']['three']['class'][] = 'context-container';
 
-    $form['#editor_containers']['three']['content'][] = array('#markup' => t('Use the current style on')) . ' : ';
+    $form['#editor_containers']['three']['content'][] = array('#markup' => t('Use the current style on') . ' : ');
 
     $options = array(
       0 => t('All pages except those listed'),
