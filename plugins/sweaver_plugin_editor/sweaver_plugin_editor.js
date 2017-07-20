@@ -1366,7 +1366,13 @@ Drupal.Sweaver.LoadPosition = function() {
 Drupal.Sweaver.buildSweaverObject = function(object) {
   var tempObject = new Object;
   tempObject.id = object.attr('id');
-  tempObject.classes = trim(object.attr('class')).split(' ');
+  var classes = object.attr('class');
+  if (typeof classes !== typeof undefined && classes !== false) {
+    tempObject.classes = trim(classes).split(' ');
+  }
+  else {
+    tempObject.classes = [];
+  }
   tempObject.pseudoClass = '';
   tempObject.tag = object.get(0).tagName.toLowerCase();
   tempObject.type = object.css('display');
