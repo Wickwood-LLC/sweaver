@@ -766,10 +766,8 @@ Drupal.Sweaver.buildPath = function(object) {
         }
       });
 
-      // Add all items to the full path except for the html tag.
-      if (parent.tag != 'html') {
-        Drupal.Sweaver.addToFullPath(i, active);
-      }
+      // Add all items to the full path.
+      Drupal.Sweaver.addToFullPath(i, active);
       i++;
     }
   });
@@ -1139,7 +1137,13 @@ Drupal.Sweaver.objectToReadable = function(object) {
     name = this.name;
     description = this.description;
 
-    if (name == 'allids') {
+    if (object.tag === 'html') {
+      id_translation[i] = 'HTML';
+      id_css[i] = object.tag
+      tempSelectors.push(object.tag);
+      i++;
+    }
+    else if (name == 'allids') {
       if (object.id && $.inArray('#' + object.id, tempSelectors) < 0) {
         id_translation[i] = 'the ' + object.id + ' region';
         id_css[i] = '#' + object.id;
