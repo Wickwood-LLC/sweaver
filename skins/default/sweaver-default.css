@@ -113,6 +113,7 @@ html.sweaver {
   border-radius: 7px 7px 0 0 !important;
   -webkit-border-top-right-radius: 7px !important;
   -webkit-border-top-left-radius: 7px !important;
+  box-sizing: content-box;
 }
 
 #sweaver .close a {
